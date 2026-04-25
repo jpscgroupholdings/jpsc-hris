@@ -1,7 +1,11 @@
 "use server";
 
 import { auth } from "@/lib/auth/auth";
+import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { Double } from "mongodb";
 import { User } from "@/models/employee/user";
+import { UserRoundIcon } from "lucide-react";
+import dbConnect from "@/lib/database/dbConnect";
 
 export async function signUp(
   firstName: string,
@@ -15,8 +19,10 @@ export async function signUp(
   username: string,
   departmentId: string,
   roleId: string,
+  cardNumber: string,
+  balance: number,
 ) {
-  return await auth.api.signUpEmail({
+  const response = await auth.api.signUpEmail({
     body: {
       firstName,
       middleName,
@@ -31,4 +37,15 @@ export async function signUp(
       roleId,
     },
   });
+
+  if (response && response.user) {
+    await dbConnect();
+    DigitalWallet.create({
+      userId: response.user.id,
+      cardNumber: cardNumber,
+      balance: balance,
+      status: true,
+    });
+  }
+  return response;
 }

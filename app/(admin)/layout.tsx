@@ -1,20 +1,12 @@
 "use client";
-import Sidebar from "@/components/Sidebar";
+
 import React from "react";
-import Topbar from "@/components/Topbar";
+import NavBar from "@/components/NavBar";
 
 export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <>
-      <Topbar />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-7">{children}</main>
-      </div>
-    </>
-  );
+  return <NavBar>{children}</NavBar>;
 }

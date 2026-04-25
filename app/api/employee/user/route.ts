@@ -16,9 +16,7 @@ export async function GET() {
           roleId: {
             $toObjectId: { $ifNull: ["$roleId", null] },
           },
-          balance: {
-            //
-          },
+          balance: {},
         },
       },
       {
@@ -37,8 +35,17 @@ export async function GET() {
           as: "role_doc",
         },
       },
+      {
+        $lookup: {
+          from: "digitalwallets", // Verify this is your collection name in MongoDB
+          localField: "_id", // The User's ID
+          foreignField: "userId", // The field in DigitalWallet table
+          as: "wallet_doc",
+        },
+      },
       { $unwind: { path: "$dept_doc", preserveNullAndEmptyArrays: true } },
       { $unwind: { path: "$role_doc", preserveNullAndEmptyArrays: true } },
+      { $unwind: { path: "$card_doc", preserveNullAndEmptyArrays: true } },
       {
         $project: {
           firstName: 1,
@@ -47,10 +54,15 @@ export async function GET() {
           username: 1,
           mobileNumber: 1,
           birthDate: 1,
-          balance: 1,
           // Extract the names into the keys the frontend expects
           department: "$dept_doc.name",
           role: "$role_doc.name",
+          balance: {
+            $arrayElemAt: ["$wallet_doc.balance", 0],
+          },
+          cardNumber: {
+            $arrayElemAt: ["$wallet_doc.cardNumber", 0],
+          },
         },
       },
     ]);

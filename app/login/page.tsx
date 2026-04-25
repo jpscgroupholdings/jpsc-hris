@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import InputFields from "@/components/UI/InputFields";
+import InputField from "@/components/UI/InputField";
 import { LockIcon, MailIcon, LoaderIcon } from "lucide-react";
 import { signIn } from "@/actions/signIn";
 import { toast } from "sonner";
@@ -42,6 +42,7 @@ export default function Login() {
           alt="office-bg"
           width={1920}
           height={1080}
+          loading="eager"
         />
         {/* Dark Overlay to ensure text readability */}
         <div className="absolute inset-0 bg-jpsc-950/50 backdrop-blur-[2px]" />
@@ -60,9 +61,9 @@ export default function Login() {
           </div>
 
           <div className="space-y-4">
-            {/* Note: Ensure InputFields components have white text/labels to be visible on dark bg */}
+            {/* Note: Ensure InputField components have white text/labels to be visible on dark bg */}
             <div>
-              <InputFields
+              <InputField
                 label="Username or Email"
                 placeholder="Enter username"
                 type="text"
@@ -74,7 +75,7 @@ export default function Login() {
             </div>
 
             <div>
-              <InputFields
+              <InputField
                 label="Password"
                 placeholder="********"
                 type="password"

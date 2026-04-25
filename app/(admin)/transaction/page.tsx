@@ -4,10 +4,14 @@ import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { format } from "date-fns";
 import Loading from "@/components/Loading"; // Assuming you have this from the Employee page
+import Button from "@/components/UI/Button";
+import { BanknoteArrowUpIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Transaction() {
   const [data, setData] = useState([]);
   const [pending, setPending] = useState(true);
+  const router = useRouter();
 
   const columns = [
     {
@@ -39,7 +43,6 @@ export default function Transaction() {
     const fetchData = async () => {
       try {
         setPending(true);
-        // Ensure this endpoint matches your actual Transaction API route
         const res = await fetch("/api/transaction/txn");
         const json = await res.json();
         setData(json);
@@ -54,11 +57,21 @@ export default function Transaction() {
   }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Transactions</h1>
+    <div>
+      <div className="flex flex-row justify-between py-2 my-2 items-center">
+        <h1 className="text-sm md:text-2xl font-bold">Transactions</h1>
+        <Button
+          className="text-xs md:text-lg"
+          label="Top Up Wallet"
+          icon={BanknoteArrowUpIcon}
+          variant="success"
+          onClick={() => router.push("/transaction/create")}
+        />
+      </div>
 
-      <div className="bg-white rounded-lg shadow">
+      <div className="rounded-xl shadow-xl">
         <DataTable
+          className="font-sans"
           columns={columns}
           data={data}
           pagination

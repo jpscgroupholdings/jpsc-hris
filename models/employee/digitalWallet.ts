@@ -1,3 +1,4 @@
+import { Double } from "mongodb";
 import mongoose, { models, Schema } from "mongoose";
 
 const DigitalWalletSchema = new Schema({
@@ -5,16 +6,21 @@ const DigitalWalletSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  cardId: {
-    type: mongoose.Schema.Types.ObjectId,
+  cardNumber: {
+    type: String,
     required: true,
   },
   balance: {
-    type: Number,
+    type: Double,
     required: true,
-    default: 1000,
+    default: 0,
+  },
+  status: {
+    type: Boolean,
+    required: true,
+    default: true,
   },
 });
 
 export const DigitalWallet =
-  models.User || mongoose.model("DigitalWallet", DigitalWalletSchema);
+  models.DigitalWallet || mongoose.model("DigitalWallet", DigitalWalletSchema);

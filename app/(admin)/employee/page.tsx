@@ -52,7 +52,7 @@ export default function Employee() {
       sortable: true,
     },
     { name: "Balance", selector: (row: any) => row.balance },
-    { name: "Card Number", selector: (row: any) => row._id },
+    { name: "Card Number", selector: (row: any) => row.cardNumber },
   ];
 
   useEffect(() => {
@@ -72,26 +72,31 @@ export default function Employee() {
 
   return (
     <div>
-      <h1>Employee</h1>
+      <div className="flex flex-row justify-between py-2 my-2 items-center">
+        <h1 className="text-sm md:text-2xl font-bold">Employees</h1>
+        <Button
+          className="text-xs md:text-lg"
+          label="Add Employee"
+          icon={PlusCircleIcon}
+          iconSize={28}
+          variant="success"
+          onClick={() => router.push("/employee/create")}
+        />
+      </div>
 
-      <Button
-        className="text-sm"
-        label="Add Employee"
-        icon={PlusCircleIcon}
-        variant="info"
-        onClick={() => router.push("/employee/create")}
-      />
-
-      <DataTable
-        columns={columns}
-        data={data}
-        pagination
-        fixedHeader
-        progressPending={pending}
-        progressComponent={<Loading />}
-        highlightOnHover
-        pointerOnHover
-      />
+      <div className="rounded-xl shadow-xl">
+        <DataTable
+          className="font-sans"
+          columns={columns}
+          data={data}
+          pagination
+          fixedHeader
+          progressPending={pending}
+          progressComponent={<Loading />}
+          highlightOnHover
+          pointerOnHover
+        />
+      </div>
     </div>
   );
 }

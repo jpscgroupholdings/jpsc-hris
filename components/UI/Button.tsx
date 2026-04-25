@@ -4,11 +4,12 @@ import { LucideIcon } from "lucide-react";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label: string;
   icon: LucideIcon;
+  iconSize?: number;
   variant: "success" | "danger" | "info" | "warning";
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ label, icon: Icon, variant, className, ...props }, ref) => {
+  ({ label, icon: Icon, iconSize, variant, className, ...props }, ref) => {
     const variantStyles = {
       success: "bg-green-500 text-white hover:bg-green-600 ",
       danger: "bg-red-500 text-white hover:bg-red-600 ",
@@ -22,7 +23,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={`flex items-center gap-2 px-4 py-2 rounded-xl ${variantStyles[variant]} ${className}`}
         {...props}
       >
-        <Icon size={18} />
+        <Icon className={`${className}`} />
         <span>{label}</span>
       </button>
     );

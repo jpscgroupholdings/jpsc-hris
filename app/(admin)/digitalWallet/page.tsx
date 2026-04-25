@@ -1,39 +1,59 @@
 "use client";
-import DigitalWallet from "@/components/DigitalWallet";
-import CardId from "@/components/UI/CardId";
+import DigitalWallet from "@/components/UI/DigitalWallet";
 import { authClient } from "@/lib/auth/auth-client";
+import { useEffect, useState } from "react";
 
 export default function Wallet() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  const [isPending, setPending] = useState(true); // Start as true
+  const [data, setData] = useState<any>(null);
 
-  // 1. Show loading state to prevent "undefined" errors during fetch
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setPending(true);
+        // Corrected query param to use user.id
+        const res = await fetch(
+          `/api/employee/digitalWallet?userId=${user?.id}`,
+        );
+        const json = await res.json();
+        setData(json);
+      } catch (error) {
+        console.error("Fetch error: ", error);
+      } finally {
+        setPending(false);
+      }
+    };
+
+    fetchData();
+  }, [user?.id]);
+
   if (isPending)
     return (
       <div className="p-10 animate-pulse text-gray-400">Loading Wallet...</div>
     );
 
-  const user = session?.user;
+  // Formatting with optional chaining to prevent crashes
+  const firstName = user?.firstName || "Guest";
+  const lastName = user?.lastName || "";
+  const birthday = user?.birthDate ? new Date(user.birthDate) : null;
 
-  const firstName = user?.firstName ?? "Guest";
-  const lastName = user?.lastName ?? "";
-
-  const birthdayDate = new Date(
-    user?.birthDate ?? session?.user.createdAt ?? new Date(),
-  );
-
-  const displayId =
-    user?.id
-      .slice(0, 16)
-      .replace(/(.{4})/g, "$1 ")
-      .trim() ?? "0000 0000 0000 0000";
+  let birthDateString = "00/00";
+  if (birthday) {
+    const month = (birthday.getMonth() + 1).toString().padStart(2, "0");
+    const day = birthday.getDate().toString().padStart(2, "0");
+    birthDateString = `${month}/${day}`;
+  }
+  // const cardString =
 
   return (
-    <div className="p-10 flex">
-      <CardId
-        id={displayId}
+    <div>
+      <DigitalWallet
+        cardNumber={data?.cardNumber}
         firstName={firstName}
         lastName={lastName}
-        birthday={birthdayDate}
+        birthdayString={birthDateString} // Changed prop name to match component
       />
     </div>
   );

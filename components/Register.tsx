@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { signUp } from "@/actions/signUp";
-import InputFields from "@/components/UI/InputFields";
+import InputField from "@/components/UI/InputField";
 import { redirect, RedirectType } from "next/navigation";
 import {
   MailIcon,
@@ -12,6 +12,8 @@ import {
   CalendarIcon,
   BriefcaseIcon,
   BuildingIcon,
+  IdCardIcon,
+  WalletIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,6 +33,8 @@ export default function Register() {
   const [departmentsList, setDepartmentsList] = useState<Department[]>([]);
   const [role, setRole] = useState("");
   const [rolesList, setRolesList] = useState<Role[]>([]);
+  const [cardNumber, SetcardNumber] = useState("");
+  const [balance, setBalance] = useState(0);
 
   // Status State
   const [loading, setLoading] = useState(false);
@@ -113,7 +117,7 @@ export default function Register() {
     const username = (firstName.charAt(0) + middleName.charAt(0) + lastName)
       .toLowerCase()
       .replace(/\s/g, "");
-
+    let success = false;
     try {
       setLoading(true);
       await signUp(
@@ -128,20 +132,25 @@ export default function Register() {
         username,
         department,
         role,
+        cardNumber,
+        balance,
       );
 
       toast.success("Employee Created successfully");
-      redirect("employee", RedirectType.replace);
+      success = true;
     } catch (err) {
       toast.error(String(err));
     } finally {
       setLoading(false);
     }
+    if (success) {
+      redirect("/employee", RedirectType.replace);
+    }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
+    <div className="min-h-screen w-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl w-full space-y-8  ">
         <div className="text-center">
           <h1 className="text-3xl font-extrabold text-gray-900">
             Create a new Employee
@@ -151,9 +160,9 @@ export default function Register() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* ... Standard InputFields ... */}
-          <InputFields
+        <div className=" gap-5">
+          {/* ... Standard InputField ... */}
+          <InputField
             label="First Name"
             type="text"
             placeholder="John"
@@ -161,7 +170,7 @@ export default function Register() {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
-          <InputFields
+          <InputField
             label="Middle Name"
             type="text"
             placeholder="Optional"
@@ -169,7 +178,7 @@ export default function Register() {
             value={middleName}
             onChange={(e) => setMiddleName(e.target.value)}
           />
-          <InputFields
+          <InputField
             label="Last Name"
             type="text"
             placeholder="Dela Cruz"
@@ -177,14 +186,14 @@ export default function Register() {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
           />
-          <InputFields
+          <InputField
             label="Birthdate"
             type="date"
             icon={CalendarIcon}
             value={birthdate}
             onChange={(e) => setBirthdate(e.target.value)}
           />
-          <InputFields
+          <InputField
             label="Mobile Number"
             type="tel"
             placeholder="+639XXXXXXXXX"
@@ -192,7 +201,7 @@ export default function Register() {
             value={mobileNumber}
             onChange={(e) => setMobileNumber(e.target.value)}
           />
-          <InputFields
+          <InputField
             label="Email Address"
             type="email"
             placeholder="example@email.com"
@@ -250,7 +259,25 @@ export default function Register() {
             </select>
           </div>
 
-          <InputFields
+          <InputField
+            label="Card Number"
+            type="text"
+            placeholder="XXXX-XXXX-XXXX-XXXX"
+            icon={IdCardIcon}
+            value={cardNumber}
+            onChange={(e) => SetcardNumber(e.target.value)}
+          />
+
+          <InputField
+            label="Card Initial Balance"
+            type="number"
+            placeholder="1000"
+            icon={WalletIcon}
+            value={balance}
+            onChange={(e) => setBalance(Number(e.target.value))}
+          />
+
+          <InputField
             label="Password"
             type="password"
             placeholder="••••••••"
@@ -259,7 +286,7 @@ export default function Register() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <InputFields
+          <InputField
             label="Confirm Password"
             type="password"
             placeholder="••••••••"

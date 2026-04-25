@@ -6,7 +6,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col gap-7">
       {/* <Cards /> */}
-      <AttendanceTable />
+      {/* <AttendanceTable /> */}
     </div>
   );
 }
