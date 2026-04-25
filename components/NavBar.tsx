@@ -238,8 +238,8 @@ export default function NavBar({ children }: NavBarProps) {
         </aside>
 
         {/* ── PAGE CONTENT ── */}
-        <main className="flex-1 overflow-auto min-w-full">
-          <div className="w-full md:max-w-11/12 p-3 md:p-6">{children}</div>
+        <main className="flex-1 min-w-0 overflow-y-auto">
+          <div className="w-full p-3 md:p-6">{children}</div>
         </main>
       </div>
     </div>

@@ -20,30 +20,36 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
     return (
       <div className="flex flex-col gap-1 w-full py-2">
-        <label>{label}</label>
+        <label className="text-sm font-medium text-jpsc-900">{label}</label>
 
-        <div className="flex items-center border  px-2 py-1 rounded border-jpsc-500">
-          {Icon && <Icon className="mr-2 text-jpsc-950" />}
+        {/* CHANGE: Added 'focus-within:ring-2' and 'focus-within:border-jpsc-500'
+            This makes the wrapper react when the internal <input> is focused.
+        */}
+        <div
+          className="flex items-center border border-gray-300 rounded-lg shadow-sm px-3 py-2 transition-all
+                        bg-white focus-within:ring-2 focus-within:ring-jpsc-500/30 focus-within:border-jpsc-500"
+        >
+          {Icon && <Icon size={18} className="mr-2 text-gray-800 shrink-0" />}
 
           <input
             ref={ref}
             type={inputType}
             {...props}
-            className="flex-1 outline-none text-jpsc-950"
+            className="flex-1 outline-none text-sm text-jpsc-950 bg-transparent placeholder:text-gray-800"
           />
 
           {showPassword && type === "password" && (
             <button
               type="button"
               onClick={() => setEyes(!eyes)}
-              className="text-jpsc-50"
+              className="ml-2 text-gray-500 hover:text-jpsc-600 transition-colors"
             >
-              {eyes ? <EyeOffIcon /> : <EyeIcon />}
+              {eyes ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
             </button>
           )}
         </div>
 
-        {hint && <span className="text-xs">{hint}</span>}
+        {hint && <span className="text-xs text-gray-500 mt-1">{hint}</span>}
       </div>
     );
   },

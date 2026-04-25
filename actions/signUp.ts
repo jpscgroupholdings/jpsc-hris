@@ -40,7 +40,7 @@ export async function signUp(
 
   if (response && response.user) {
     await dbConnect();
-    DigitalWallet.create({
+    await DigitalWallet.create({
       userId: response.user.id,
       cardNumber: cardNumber,
       balance: balance,
