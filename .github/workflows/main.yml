@@ -14,6 +14,15 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
+      - name: Debug
+        run: |
+          echo "ORG_ID length: ${#VERCEL_ORG_ID}"
+          echo "PROJECT_ID length: ${#VERCEL_PROJECT_ID}"
+          vercel whoami --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+
       - name: Deploy to Vercel
         run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
