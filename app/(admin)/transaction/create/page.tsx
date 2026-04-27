@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import SearchSelect, { SearchSelectOption } from "@/components/UI/SelectField";
+import { createTransactionAction } from "@/actions/createTransactionAction";
 import InputField from "@/components/UI/InputField";
-import { UserIcon } from "lucide-react";
 import { toast } from "sonner";
 
 export default function CreateTransaction() {
@@ -34,6 +34,7 @@ export default function CreateTransaction() {
 
     fetchData(); // ← you were missing this call
   }, []); // ← empty array so it only runs once on mount
+
   const handleSubmit = async () => {
     if (!selected || !amount || !description) {
       toast.error("Please fill in all fields.");
@@ -42,28 +43,20 @@ export default function CreateTransaction() {
 
     try {
       setPending(true);
-      const res = await fetch("/api/transaction/txn", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: selected, // this is the _id from SearchSelect
-          amount,
-          date: new Date(),
-          description,
-        }),
+
+      // ✅ Call the Server Action instead of doing DB logic here
+      await createTransactionAction({
+        userId: selected,
+        amount: parseFloat(amount),
+        description,
       });
 
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error);
-
       toast.success("Transaction created!");
-      // Reset form
       setSelected(null);
       setAmount("");
       setDescription("");
     } catch (error) {
       toast.error("Failed to create transaction.");
-      console.error(error);
     } finally {
       setPending(false);
     }

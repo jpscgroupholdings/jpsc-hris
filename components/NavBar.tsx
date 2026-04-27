@@ -31,8 +31,8 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboardIcon },
   { label: "Attendance", path: "/attendance", icon: ClockIcon },
-  { label: "Digital Wallet", path: "/digitalWallet", icon: WalletIcon },
-  { label: "Transaction", path: "/transaction", icon: HandCoinsIcon },
+  { label: "My Digital Wallet", path: "/digitalWallet", icon: WalletIcon },
+  { label: "Transactions", path: "/transaction", icon: HandCoinsIcon },
   { label: "Employees", path: "/employee", icon: UsersIcon },
   { label: "Access Control", path: "/access", icon: DoorOpenIcon },
   { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
@@ -62,18 +62,6 @@ export default function NavBar({ children }: NavBarProps) {
       document.body.style.overflow = "";
     };
   }, [isMobileOpen]);
-
-  const handleSignOut = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-          router.refresh();
-          toast.success("User successfully logged out");
-        },
-      },
-    });
-  };
 
   return (
     /**
@@ -131,7 +119,9 @@ export default function NavBar({ children }: NavBarProps) {
 
         {/* User / sign out — shrink-0 so it never compresses */}
         <button
-          onClick={handleSignOut}
+          onClick={() => {
+            router.push("profile");
+          }}
           className="flex items-center gap-2 shrink-0 hover:opacity-75 transition-opacity"
         >
           <div className="text-right hidden md:block">
@@ -141,9 +131,6 @@ export default function NavBar({ children }: NavBarProps) {
               <>
                 <p className="text-sm font-semibold text-foreground leading-none">
                   {session?.user.username ?? "Admin"}
-                </p>
-                <p className="text-[10px] uppercase tracking-wider text-jpsc-400 mt-0.5">
-                  Sign Out
                 </p>
               </>
             )}

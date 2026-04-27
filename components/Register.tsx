@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { signUp } from "@/actions/signUp";
 import InputField from "@/components/UI/InputField";
+import Button from "@/components/UI/Button";
 import { redirect, RedirectType } from "next/navigation";
 import {
   MailIcon,
@@ -10,13 +11,14 @@ import {
   UserIcon,
   PhoneIcon,
   CalendarIcon,
-  BriefcaseIcon,
-  BuildingIcon,
   IdCardIcon,
   WalletIcon,
+  CopyIcon,
+  Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { generatePassword } from "@/actions/generatePassword";
 
 export default function Register() {
   // Form State
@@ -27,7 +29,6 @@ export default function Register() {
   const [birthdate, setBirthdate] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Selection State
   const [department, setDepartment] = useState("");
@@ -41,6 +42,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [loadingDepts, setLoadingDepts] = useState(false);
   const [loadingRoles, setLoadingRoles] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // 1. Fetch all departments on mount
   useEffect(() => {
@@ -100,13 +102,17 @@ export default function Register() {
     departmentId: string;
   }
 
+  const handleCopy = async () => {
+    if (!password) return;
+    await navigator.clipboard.writeText(password);
+    setCopied(true);
+    toast.success("Copied to clipboard");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   async function handleRegister() {
     if (!firstName || !lastName || !email || !role || !department) {
       return toast.error("Please fill in all required fields");
-    }
-
-    if (password !== confirmPassword) {
-      return toast.error("Passwords do not match!");
     }
 
     const birthDateObject = new Date(birthdate);
@@ -160,7 +166,6 @@ export default function Register() {
             Please fill in the details below
           </p>
         </div>
-
         <div className=" gap-5">
           {/* ... Standard InputField ... */}
           <InputField
@@ -212,8 +217,10 @@ export default function Register() {
           />
 
           {/* Department Selection */}
-          <div className="flex flex-col space-y-1">
-            <label>Department</label>
+          <div className="flex flex-col py-2">
+            <label className="text-sm font-medium text-jpsc-900">
+              Department
+            </label>
             <select
               value={department}
               onChange={(e) => {
@@ -221,7 +228,7 @@ export default function Register() {
                 setRole("");
               }}
               disabled={loadingDepts}
-              className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-jpsc-500 text-sm "
+              className="block w-full px-3 py-2.5 border bg-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-jpsc-500 text-sm "
             >
               <option value="">Select Department</option>
               {departmentsList.map((d) => (
@@ -233,13 +240,13 @@ export default function Register() {
           </div>
 
           {/* Role Selection */}
-          <div className="flex flex-col space-y-1">
-            <label>Role</label>
+          <div className="flex flex-col py-2">
+            <label className="text-sm font-medium text-jpsc-900">Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
               disabled={!department || loadingRoles}
-              className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-jpsc-500 text-sm disabled:bg-gray-900 disabled:text-gray-400"
+              className="block w-full px-3 py-2.5 border bg-white border-gray-300  rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-jpsc-500 text-sm disabled:bg-jpsc-600 disabled:text-jpsc-50"
             >
               <option value="">
                 {!department
@@ -273,36 +280,54 @@ export default function Register() {
             value={balance}
             onChange={(e) => setBalance(Number(e.target.value))}
           />
-
+        </div>
+        <div className="relative group">
           <InputField
-            label="Password"
-            type="password"
-            placeholder="••••••••"
+            label="New Password"
+            type="text"
+            placeholder="Click here to generate password"
             icon={LockIcon}
-            showPassword={true}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            // Clicking the input itself will now generate the password
+            onClick={() => setPassword(generatePassword(8))}
+            readOnly
+            aria-selected
+            onChange={() => {}}
+            className="hover:cursor-pointer"
+            // Important: Ensure your InputField has 'pr-12' class on the <input>
+            // so text doesn't overlap the copy button
           />
-          <InputField
-            label="Confirm Password"
-            type="password"
-            placeholder="••••••••"
-            icon={LockIcon}
-            showPassword={true}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
 
-        <div className="pt-4">
-          <button
-            onClick={handleRegister}
-            disabled={loading}
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-jpsc-500 hover:bg-jpsc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-jpsc-500 transition-all disabled:opacity-50"
-          >
-            {loading ? "Creating Account..." : "Sign Up"}
-          </button>
+          {/* Updated Alignment:
+            'top-[62%]' usually hits the center of the input box when a label is present.
+            'translate-y-[-50%]' ensures it stays mathematically centered.
+          */}
+          <div className="absolute right-2 top-[67%] -translate-y-1/2 flex items-center justify-center">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevents triggering the InputField onClick
+                handleCopy();
+              }}
+              disabled={!password}
+              className="p-2 text-gray-400 hover:text-jpsc-500 transition-colors disabled:opacity-0"
+              title="Copy"
+            >
+              {copied ? (
+                <Check className="w-5 h-5 text-green-500" />
+              ) : (
+                <CopyIcon className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
+        <button
+          onClick={handleRegister}
+          disabled={loading}
+          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-jpsc-500 hover:bg-jpsc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-jpsc-500 transition-all disabled:opacity-50"
+        >
+          {loading ? "Creating Account..." : "Sign Up"}
+        </button>
       </div>
     </div>
   );

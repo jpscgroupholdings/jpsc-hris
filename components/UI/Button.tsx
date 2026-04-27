@@ -24,7 +24,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         <Icon className={`${className}`} />
-        <span>{label}</span>
+        <span className="font-sans">{label}</span>
       </button>
     );
   },

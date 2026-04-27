@@ -20,7 +20,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
     return (
       <div className="flex flex-col gap-1 w-full py-2">
-        <label className="text-sm font-medium text-jpsc-900">{label}</label>
+        <label className="text-sm font-sans text-jpsc-900">{label}</label>
 
         {/* CHANGE: Added 'focus-within:ring-2' and 'focus-within:border-jpsc-500'
             This makes the wrapper react when the internal <input> is focused.
@@ -35,7 +35,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             ref={ref}
             type={inputType}
             {...props}
-            className="flex-1 outline-none text-sm text-jpsc-950 bg-transparent placeholder:text-gray-800"
+            className="flex-1 outline-none text-sm text-jpsc-950 bg-transparent placeholder:text-gray-800 font-sans"
           />
 
           {showPassword && type === "password" && (
