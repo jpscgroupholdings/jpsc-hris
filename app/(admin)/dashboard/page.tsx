@@ -1,5 +1,5 @@
 "use client";
-import AttendanceTable from "@/components/EmployeeTable";
+
 import Cards from "@/components/Cards";
 
 export default function Dashboard() {
