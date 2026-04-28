@@ -1,4 +1,3 @@
-import AttendanceTable from "@/components/EmployeeTable";
 import Cards from "@/components/Cards";
 import React from "react";
 import { redirect } from "next/navigation";
