@@ -1,17 +1,26 @@
 import { Double } from "mongodb";
 import mongoose, { models, Schema } from "mongoose";
+import type { User } from "./user";
 
-const DigitalWalletSchema = new Schema({
+export interface DigitalWallet {
+  _id: string;
+  userId: User;
+  cardNumber: string;
+  balance: number;
+  status: boolean;
+}
+const DigitalWalletSchema = new Schema<DigitalWallet>({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   cardNumber: {
     type: String,
+    unique: true,
     required: true,
   },
   balance: {
-    type: Double,
+    type: Number,
     required: true,
     default: 0,
   },

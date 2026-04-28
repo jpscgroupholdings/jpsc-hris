@@ -33,15 +33,15 @@ export default function Register() {
   // Selection State
   const [department, setDepartment] = useState("");
   const [departmentsList, setDepartmentsList] = useState<Department[]>([]);
-  const [role, setRole] = useState("");
-  const [rolesList, setRolesList] = useState<Role[]>([]);
+  const [designation, setDesignation] = useState("");
+  const [designationsList, setDesignationsList] = useState<Designation[]>([]);
   const [cardNumber, SetcardNumber] = useState("");
   const [balance, setBalance] = useState(0);
 
   // Status State
   const [loading, setLoading] = useState(false);
   const [loadingDepts, setLoadingDepts] = useState(false);
-  const [loadingRoles, setLoadingRoles] = useState(false);
+  const [loadingDesignations, setLoadingDesignations] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // 1. Fetch all departments on mount
@@ -63,32 +63,32 @@ export default function Register() {
     fetchDepartments();
   }, []);
 
-  // 2. Fetch roles whenever department changes
+  // 2. Fetch designations whenever department changes
   useEffect(() => {
-    const fetchRoles = async () => {
+    const fetchDesignations = async () => {
       if (!department) {
-        setRolesList([]);
-        setRole("");
+        setDesignationsList([]);
+        setDesignation("");
         return;
       }
 
-      setLoadingRoles(true);
+      setLoadingDesignations(true);
       try {
         const response = await fetch(
-          `/api/employee/role?departmentId=${department}`,
+          `/api/employee/designation?departmentId=${department}`,
         );
-        if (!response.ok) throw new Error("Failed to fetch roles");
+        if (!response.ok) throw new Error("Failed to fetch designations");
         const data = await response.json();
-        setRolesList(data);
+        setDesignationsList(data);
       } catch (err) {
         console.error(err);
-        toast.error("Could not load roles");
+        toast.error("Could not load designations");
       } finally {
-        setLoadingRoles(false);
+        setLoadingDesignations(false);
       }
     };
 
-    fetchRoles();
+    fetchDesignations();
   }, [department]);
 
   interface Department {
@@ -96,7 +96,7 @@ export default function Register() {
     name: string;
   }
 
-  interface Role {
+  interface Designation {
     _id: string;
     name: string;
     departmentId: string;
@@ -111,7 +111,7 @@ export default function Register() {
   };
 
   async function handleRegister() {
-    if (!firstName || !lastName || !email || !role || !department) {
+    if (!firstName || !lastName || !email || !designation || !department) {
       return toast.error("Please fill in all required fields");
     }
 
@@ -138,12 +138,12 @@ export default function Register() {
         password,
         username,
         department,
-        role,
+        designation,
         cardNumber,
         balance,
       );
 
-      toast.success("Employee Created successfully");
+      toast.success(`Employee Created successfully for user ${username}`);
       success = true;
     } catch (err) {
       toast.error(String(err));
@@ -225,7 +225,7 @@ export default function Register() {
               value={department}
               onChange={(e) => {
                 setDepartment(e.target.value);
-                setRole("");
+                setDesignation("");
               }}
               disabled={loadingDepts}
               className="block w-full px-3 py-2.5 border bg-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-jpsc-500 text-sm "
@@ -239,23 +239,25 @@ export default function Register() {
             </select>
           </div>
 
-          {/* Role Selection */}
+          {/* Designation Selection */}
           <div className="flex flex-col py-2">
-            <label className="text-sm font-medium text-jpsc-900">Role</label>
+            <label className="text-sm font-medium text-jpsc-900">
+              Designation
+            </label>
             <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              disabled={!department || loadingRoles}
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
+              disabled={!department || loadingDesignations}
               className="block w-full px-3 py-2.5 border bg-white border-gray-300  rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-jpsc-500 text-sm disabled:bg-jpsc-600 disabled:text-jpsc-50"
             >
               <option value="">
                 {!department
                   ? "Select Department first..."
-                  : loadingRoles
-                    ? "Loading roles..."
-                    : "Select a Role"}
+                  : loadingDesignations
+                    ? "Loading designations..."
+                    : "Select a Designation"}
               </option>
-              {rolesList.map((r) => (
+              {designationsList.map((r) => (
                 <option key={r._id} value={r._id}>
                   {r.name}
                 </option>

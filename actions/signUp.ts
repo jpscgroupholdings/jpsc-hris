@@ -18,7 +18,7 @@ export async function signUp(
   password: string,
   username: string,
   departmentId: string,
-  roleId: string,
+  designationId: string,
   cardNumber: string,
   balance: number,
 ) {
@@ -34,7 +34,7 @@ export async function signUp(
       password,
       username,
       departmentId,
-      roleId,
+      designationId,
     },
   });
 

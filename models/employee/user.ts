@@ -1,62 +1,52 @@
 import mongoose, { models, Schema } from "mongoose";
+import type { Department } from "./department";
+import type { Designation } from "./designation";
 
-const UserSchema = new Schema(
+export interface User {
+  _id: string;
+  email: string;
+  emailVerified: boolean;
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  name: string;
+  birthDate: Date;
+  mobileNumber: string;
+  username: string;
+  departmentId: Department;
+  designationId: Designation;
+}
+
+const UserSchema = new Schema<User>(
   {
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    middleName: {
-      type: String,
-      required: false,
-      trime: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    birthDate: {
-      type: Date,
-      required: true,
-    },
-    mobileNumber: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-    username: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
-    department: {
+    email: { type: String, required: true, trim: true, unique: true },
+    emailVerified: { type: Boolean, default: false },
+    image: { type: String },
+    firstName: { type: String, required: true, trim: true },
+    middleName: { type: String, trim: true },
+    lastName: { type: String, required: true, trim: true },
+    name: { type: String, required: true, trim: true },
+    birthDate: { type: Date, required: true },
+    mobileNumber: { type: String, required: true, trim: true },
+    username: { type: String, required: true, trim: true, unique: true },
+    departmentId: {
       type: Schema.Types.ObjectId,
       ref: "Department",
-      require: true,
+      required: true,
     },
-    role: {
+    designationId: {
       type: Schema.Types.ObjectId,
-      ref: "Role",
-      require: true,
+      ref: "Designation",
+      required: true,
     },
   },
   {
-    collection: "user",
+    collection: "user", // ← make sure this is there and is "user" not "users"
     strict: false,
+    timestamps: true,
   },
 );
 

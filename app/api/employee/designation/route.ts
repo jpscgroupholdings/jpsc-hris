@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { Role } from "@/models/employee/role";
+import { Designation } from "@/models/employee/designation";
 import dbConnect from "@/lib/database/dbConnect";
 
 export async function GET(req: Request) {
@@ -14,14 +14,14 @@ export async function GET(req: Request) {
     // If departmentId exists, filter by it. Otherwise, return all (or empty).
     const query = departmentId ? { departmentId } : {};
 
-    // 3. Fetch the roles
-    const roles = await Role.find(query).lean();
+    // 3. Fetch the designations
+    const designations = await Designation.find(query).lean();
 
-    return NextResponse.json(roles);
+    return NextResponse.json(designations);
   } catch (error) {
-    console.error("Roles GET ERROR:", error);
+    console.error("Designations GET ERROR:", error);
     return NextResponse.json(
-      { error: "Failed to fetch roles" },
+      { error: "Failed to fetch designations" },
       { status: 500 },
     );
   }
@@ -34,15 +34,15 @@ export async function POST(req: Request) {
 
     console.log("BODY:", body);
 
-    const roles = await Role.create(body);
+    const designations = await Designation.create(body);
 
-    return NextResponse.json(roles);
+    return NextResponse.json(designations);
   } catch (error) {
-    console.error("Roles POST ERROR:", error);
+    console.error("Designations POST ERROR:", error);
 
     return NextResponse.json(
       {
-        error: "Failed to create role",
+        error: "Failed to create designation",
         details: error instanceof Error ? error.message : error,
       },
       { status: 500 },

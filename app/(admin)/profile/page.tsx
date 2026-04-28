@@ -3,7 +3,7 @@ import React from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import { format } from "date-fns";
 import Button from "@/components/UI/Button";
-import { LogOut, User, Mail, Phone, Calendar } from "lucide-react";
+import { LogOut, User, Mail, Phone, Calendar, EditIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -34,14 +34,9 @@ export default function Profile() {
   };
 
   return (
-    <div className=" rounded-2xl">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-800">Employee Profile</h2>
-          <p className="text-sm text-gray-500">
-            View and manage your account details
-          </p>
-        </div>
+    <div>
+      <div className="flex flex-row justify-between py-2 my-2 items-center">
+        <h1 className="text-sm md:text-2xl font-bold">Employee Profile</h1>
         <Button
           label="Logout"
           variant="danger"
@@ -122,6 +117,14 @@ export default function Profile() {
           </tbody>
         </table>
       </div>
+      <Button
+        label="Change Password"
+        variant="success"
+        icon={EditIcon}
+        onClick={() => {
+          router.push("profile/changePassword");
+        }}
+      />
     </div>
   );
 }

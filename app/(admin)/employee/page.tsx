@@ -21,18 +21,12 @@ export default function Employee() {
     },
     {
       name: "Department",
-      // Accessing the name property from the populated object
-      selector: (row: any) =>
-        typeof row.department === "string"
-          ? row.department
-          : row.department?.name,
+      selector: (row: any) => row.departmentId.name,
       sortable: true,
     },
     {
       name: "Role",
-      // Accessing the name property from the populated object
-      selector: (row: any) =>
-        typeof row.role === "string" ? row.role : row.role?.name,
+      selector: (row: any) => row.designationId.name,
       sortable: true,
     },
     {

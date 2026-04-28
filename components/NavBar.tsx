@@ -36,7 +36,7 @@ const navItems: NavItem[] = [
   { label: "Employees", path: "/employee", icon: UsersIcon },
   { label: "Access Control", path: "/access", icon: DoorOpenIcon },
   { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
-  { label: "Settings", path: "/settings", icon: SettingsIcon },
+  { label: "Configurations", path: "/config", icon: SettingsIcon },
 ];
 
 interface NavBarProps {
@@ -120,7 +120,7 @@ export default function NavBar({ children }: NavBarProps) {
         {/* User / sign out — shrink-0 so it never compresses */}
         <button
           onClick={() => {
-            router.push("profile");
+            router.push("/profile");
           }}
           className="flex items-center gap-2 shrink-0 hover:opacity-75 transition-opacity"
         >
@@ -130,7 +130,7 @@ export default function NavBar({ children }: NavBarProps) {
             ) : (
               <>
                 <p className="text-sm font-semibold text-foreground leading-none">
-                  {session?.user.username ?? "Admin"}
+                  {session?.user.username}
                 </p>
               </>
             )}

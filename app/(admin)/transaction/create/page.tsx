@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import SearchSelect, { SearchSelectOption } from "@/components/UI/SelectField";
-import { createTransactionAction } from "@/actions/createTransactionAction";
+import { createTransaction } from "@/actions/transactionActions";
 import InputField from "@/components/UI/InputField";
 import { toast } from "sonner";
 
@@ -22,7 +22,7 @@ export default function CreateTransaction() {
         const mapped = json.map((emp: any) => ({
           value: emp._id,
           label: `${emp.firstName} ${emp.lastName}`,
-          description: emp.role,
+          description: emp.designation,
         }));
         setOptions(mapped);
       } catch (error) {
@@ -44,8 +44,7 @@ export default function CreateTransaction() {
     try {
       setPending(true);
 
-      // ✅ Call the Server Action instead of doing DB logic here
-      await createTransactionAction({
+      await createTransaction({
         userId: selected,
         amount: parseFloat(amount),
         description,

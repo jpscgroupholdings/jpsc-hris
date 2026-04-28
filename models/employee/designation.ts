@@ -1,6 +1,14 @@
 import mongoose, { models, Schema } from "mongoose";
-
-const RoleSchema = new Schema({
+import type { Department } from "./department";
+export interface Designation {
+  _id: string;
+  code: string;
+  name: string;
+  shortName: string;
+  departmentId: Department;
+  status: boolean;
+}
+const DesignationSchema = new Schema<Designation>({
   code: {
     type: String,
     required: true,
@@ -26,4 +34,5 @@ const RoleSchema = new Schema({
   },
 });
 
-export const Role = models.Role || mongoose.model("Role", RoleSchema);
+export const Designation =
+  models.Designation || mongoose.model("Designation", DesignationSchema);

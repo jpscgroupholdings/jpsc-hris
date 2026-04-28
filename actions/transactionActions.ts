@@ -4,7 +4,18 @@ import dbConnect from "@/lib/database/dbConnect";
 import { DigitalWallet } from "@/models/employee/digitalWallet";
 import { Txn } from "@/models/transaction/txn";
 
-export async function createTransactionAction(data: {
+export async function getAllTransaction() {
+  try {
+    await dbConnect;
+    const departments = await Txn.find({}).lean();
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    throw new Error("Fetching Transactions Failed");
+  }
+}
+
+export async function createTransaction(data: {
   userId: string;
   amount: number;
   description: string;

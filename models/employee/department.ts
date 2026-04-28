@@ -1,6 +1,14 @@
 import mongoose, { models, Schema } from "mongoose";
 
-const DepartmentSchema = new Schema({
+export interface Department {
+  _id: string;
+  code: string;
+  name: string;
+  shortName: string;
+  status: boolean;
+}
+
+const DepartmentSchema = new Schema<Department>({
   code: {
     type: String,
     required: true,

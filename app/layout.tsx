@@ -20,16 +20,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Suspense fallback={<Loading />}>
-      <html
-        lang="en"
-        className={`${roboto.variable} ${merriwather.variable} h-full antialiased`}
-      >
-        <body className="min-h-full flex flex-col">
+    <html
+      lang="en"
+      className={`${roboto.variable} ${merriwather.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <Suspense fallback={<Loading />}>
           <Toaster position="top-center" richColors={true} />
           {children}
-        </body>
-      </html>
-    </Suspense>
+        </Suspense>
+      </body>
+    </html>
   );
 }

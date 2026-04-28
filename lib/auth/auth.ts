@@ -23,7 +23,7 @@ export const auth = betterAuth({
       mobileNumber: { type: "string", input: true, required: true },
       birthDate: { type: "date", input: true, required: false },
       departmentId: { type: "string", input: true, required: true },
-      roleId: { type: "string", input: true, required: true },
+      designationId: { type: "string", input: true, required: true },
     },
   },
 });
