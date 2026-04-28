@@ -44,7 +44,7 @@ const UserSchema = new Schema<User>(
     },
   },
   {
-    collection: "user", // ← make sure this is there and is "user" not "users"
+    collection: "user",
     strict: false,
     timestamps: true,
   },

@@ -95,8 +95,10 @@ export default function NavBar({ children }: NavBarProps) {
           <Image
             src="/images/jpsc_logo.png"
             alt="JPSC Logo"
-            width={100}
-            height={32}
+            width={225}
+            height={225}
+            quality={100}
+            priority
             className="object-contain hidden lg:block"
           />
           <div className="lg:hidden leading-tight">
