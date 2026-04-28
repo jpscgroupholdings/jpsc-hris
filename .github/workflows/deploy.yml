@@ -19,4 +19,6 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          MONGODB_URI: ${{SECRETS.MONGODB_URI}}
+          MONGODB_URI: ${{secrets.MONGODB_URI}}
+          BETTER_AUTH_SECRET: ${{secrets.BETTER_AUTH_SECRET}}
+          BETTER_AUTH_URL: ${{secrets.BETTER_AUTH_URL}}
