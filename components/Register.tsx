@@ -17,7 +17,7 @@ import {
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { DigitalWallet } from "@/models/digitalWallet";
 import { generatePassword } from "@/actions/generatePassword";
 
 export default function Register() {

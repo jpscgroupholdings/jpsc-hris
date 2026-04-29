@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { User } from "@/models/employee/user";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
-import "@/models/employee/department";
-import "@/models/employee/designation";
+import { User } from "@/models/user";
+import { DigitalWallet } from "@/models/digitalWallet";
+import "@/models/department";
+import "@/models/designation";
 import dbConnect from "@/lib/database/dbConnect";
 
 export async function GET() {

@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/database/dbConnect";
-import { Txn } from "@/models/transaction/txn";
+import { Txn } from "@/models/txn";
 import { NextResponse } from "next/server";
 
 export async function GET() {

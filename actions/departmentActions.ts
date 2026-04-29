@@ -1,6 +1,6 @@
 "use server";
 import dbConnect from "@/lib/database/dbConnect";
-import { Department } from "@/models/employee/department";
+import { Department } from "@/models/department";
 
 export async function getAllDepartment() {
   try {

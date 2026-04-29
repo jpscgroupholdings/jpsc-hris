@@ -1,6 +1,6 @@
 "use server";
 import dbConnect from "@/lib/database/dbConnect";
-import { Designation } from "@/models/employee/designation";
+import { Designation } from "@/models/designation";
 
 export async function getAllDesignation() {
   try {

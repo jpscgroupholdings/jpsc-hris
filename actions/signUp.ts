@@ -1,9 +1,9 @@
 "use server";
 
 import { auth } from "@/lib/auth/auth";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { DigitalWallet } from "@/models/digitalWallet";
 import { Double } from "mongodb";
-import { User } from "@/models/employee/user";
+import { User } from "@/models/user";
 import { UserRoundIcon } from "lucide-react";
 import dbConnect from "@/lib/database/dbConnect";
 
