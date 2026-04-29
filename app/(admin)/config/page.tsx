@@ -37,7 +37,7 @@ export default function ConfigPage() {
         <Button
           label="Edit"
           icon={EditIcon}
-          variant="success"
+          variant="info"
           className="scale-75"
           onClick={() => router.push(`/department/edit/${row._id}`)}
         />
@@ -64,7 +64,7 @@ export default function ConfigPage() {
         <Button
           label="Edit"
           icon={EditIcon}
-          variant="success"
+          variant="info"
           className="scale-75"
           onClick={() => router.push(`/designation/edit/${row._id}`)}
         />
