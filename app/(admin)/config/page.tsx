@@ -28,7 +28,15 @@ export default function ConfigPage() {
     },
     {
       name: "Status",
-      selector: (row: Department) => (row.status ? "Active" : "Inactive"),
+      cell: (row: Department) => (
+        <span
+          className={`px-3 py-1 rounded-full   text-xs font-medium ${
+            row.status ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
+          {row.status ? "Active" : "Inactive"}
+        </span>
+      ),
       sortable: true,
     },
     {
@@ -50,13 +58,20 @@ export default function ConfigPage() {
     { name: "Name", selector: (row: Designation) => row.name, sortable: true },
     {
       name: "Department",
-      selector: (row: Designation) => row.departmentId?.shortName || "N/A",
+      selector: (row: Designation) => row.departmentId?.shortName,
       sortable: true,
     },
     {
       name: "Status",
-      selector: (row: Designation) => (row.status ? "Active" : "Inactive"),
-      sortable: true,
+      cell: (row: Department) => (
+        <span
+          className={`px-3 py-1 rounded-full   text-xs font-medium ${
+            row.status ? "bg-green-500" : "bg-red-500"
+          }`}
+        >
+          {row.status ? "Active" : "Inactive"}
+        </span>
+      ),
     },
     {
       name: "Actions",
