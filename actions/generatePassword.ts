@@ -21,4 +21,3 @@ export const generatePassword = (length: number): string => {
 
 // Usage
 const newPassword = generatePassword(8);
-console.log(`Generated Password: ${newPassword}`);
