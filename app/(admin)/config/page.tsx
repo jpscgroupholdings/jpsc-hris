@@ -37,7 +37,7 @@ export default function ConfigPage() {
         <Button
           label="Edit"
           icon={EditIcon}
-          variant="info"
+          variant="success"
           className="scale-75"
           onClick={() => router.push(`/department/edit/${row._id}`)}
         />
@@ -64,7 +64,7 @@ export default function ConfigPage() {
         <Button
           label="Edit"
           icon={EditIcon}
-          variant="info"
+          variant="success"
           className="scale-75"
           onClick={() => router.push(`/designation/edit/${row._id}`)}
         />
@@ -95,9 +95,9 @@ export default function ConfigPage() {
   }, []);
 
   return (
-    <section>
+    <div className="p-4 space-y-8">
       {/* Departments Section */}
-      <div>
+      <section>
         <div className="flex flex-row justify-between py-2 items-center">
           <h1 className="text-xl md:text-2xl font-bold">Departments</h1>
           <Button
@@ -118,10 +118,10 @@ export default function ConfigPage() {
             pointerOnHover
           />
         </div>
-      </div>
+      </section>
 
       {/* Designations Section */}
-      <div>
+      <section>
         <div className="flex flex-row justify-between py-2 items-center">
           <h1 className="text-xl md:text-2xl font-bold">Designations</h1>
           <Button
@@ -142,7 +142,7 @@ export default function ConfigPage() {
             pointerOnHover
           />
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

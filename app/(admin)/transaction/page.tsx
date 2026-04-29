@@ -57,7 +57,7 @@ export default function Transaction() {
   }, []);
 
   return (
-    <section>
+    <div>
       <div className="flex flex-row justify-between py-2 my-2 items-center">
         <h1 className="text-sm md:text-2xl font-bold">Transactions</h1>
         <Button
@@ -81,6 +81,6 @@ export default function Transaction() {
           pointerOnHover
         />
       </div>
-    </section>
+    </div>
   );
 }

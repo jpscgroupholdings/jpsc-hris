@@ -48,16 +48,13 @@ export default function Wallet() {
   // const cardString =
 
   return (
-    <section>
-      <div className="flex flex-row justify-between py-2 items-center">
-        <h1 className="text-xl md:text-2xl font-bold">Digital Wallet</h1>
-      </div>
+    <div>
       <DigitalWallet
         cardNumber={data?.cardNumber}
         firstName={firstName}
         lastName={lastName}
-        birthdayString={birthDateString}
+        birthdayString={birthDateString} // Changed prop name to match component
       />
-    </section>
+    </div>
   );
 }

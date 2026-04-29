@@ -39,7 +39,7 @@ export default function DesignationForm({
   useEffect(() => {
     const fetchDeps = async () => {
       const res = await getAllDepartment();
-      if (res.success) setDepartments(res.data || []);
+      if (res.success) setDepartments(res.data);
     };
     fetchDeps();
   }, []);
@@ -80,7 +80,7 @@ export default function DesignationForm({
       toast.success(`Designation ${isEditMode ? "updated" : "created"}`);
       onSuccess();
     } catch (err: any) {
-      toast.error(err);
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -91,20 +91,6 @@ export default function DesignationForm({
       <h2 className="text-2xl font-bold text-gray-800 border-b pb-2">
         {isEditMode ? "Edit Designation" : "Add New Designation"}
       </h2>
-
-      <SearchSelect
-        label="Department"
-        options={departments.map((dep) => ({
-          value: dep._id,
-          label: `${dep.code} - ${dep.shortName}`,
-          description: dep.name,
-        }))}
-        value={formData.departmentId}
-        onChange={(val) =>
-          setFormData({ ...formData, departmentId: val || "" })
-        }
-        placeholder="Select Department"
-      />
 
       <InputField
         label="Designation Code"
@@ -118,6 +104,20 @@ export default function DesignationForm({
         type="text"
         value={formData.name}
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+      />
+
+      <SearchSelect
+        label="Department"
+        options={departments.map((dep) => ({
+          value: dep._id,
+          label: dep.name,
+          description: dep.code,
+        }))}
+        value={formData.departmentId}
+        onChange={(val) =>
+          setFormData({ ...formData, departmentId: val || "" })
+        }
+        placeholder="Select Department"
       />
 
       <InputField

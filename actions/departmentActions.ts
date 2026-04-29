@@ -5,16 +5,13 @@ import { Department } from "@/models/department";
 export async function getAllDepartment() {
   try {
     await dbConnect();
-    const departments = await Department.find({ status: true })
-      .sort({ code: 1 })
-      .lean();
+    const departments = await Department.find({}).lean();
     const serialized = departments.map((dept) => ({
       ...dept,
       _id: dept._id.toString(),
     }));
     return { success: true, data: serialized };
   } catch (error) {
-    return { success: false, message: "Fetching Departments Failed" };
     console.error(error);
     throw new Error("Fetching Departments Failed");
   }
