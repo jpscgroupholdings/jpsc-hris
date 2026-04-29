@@ -65,9 +65,9 @@ export default function Employee() {
   }, []);
 
   return (
-    <div>
-      <div className="flex flex-row justify-between py-2 my-2 items-center">
-        <h1 className="text-sm md:text-2xl font-bold">Employees</h1>
+    <section>
+      <div className="flex flex-row justify-between py-2 items-center">
+        <h1 className="text-xl md:text-2xl font-bold">Digital Wallet</h1>
         <Button
           className="text-xs md:text-lg"
           label="Add Employee"
@@ -80,7 +80,7 @@ export default function Employee() {
 
       <div className="rounded-xl shadow-xl">
         <DataTable
-          className="font-sans"
+          className="font-sans "
           columns={columns}
           data={data}
           pagination
@@ -91,6 +91,6 @@ export default function Employee() {
           pointerOnHover
         />
       </div>
-    </div>
+    </section>
   );
 }

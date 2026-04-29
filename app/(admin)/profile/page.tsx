@@ -34,7 +34,7 @@ export default function Profile() {
   };
 
   return (
-    <div>
+    <section>
       <div className="flex flex-row justify-between py-2 my-2 items-center">
         <h1 className="text-sm md:text-2xl font-bold">Employee Profile</h1>
         <Button
@@ -125,6 +125,6 @@ export default function Profile() {
           router.push("profile/changePassword");
         }}
       />
-    </div>
+    </section>
   );
 }
