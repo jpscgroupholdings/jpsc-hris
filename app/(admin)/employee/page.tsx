@@ -1,42 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import DataTable from "react-data-table-component";
 import Button from "@/components/UI/Button";
 import { PlusCircleIcon } from "lucide-react";
 import Loading from "@/components/Loading";
 import { format } from "date-fns";
+import FilterTable from "@/components/UI/FilterTable";
+import { User } from "@/models/user";
+import { DigitalWallet } from "@/models/digitalWallet";
 
 export default function Employee() {
   const router = useRouter();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<User[]>([]);
   const [pending, setPending] = useState(true);
+  const [userFilterText, setUserFilterText] = useState("");
 
   const columns = [
     {
       name: "First Name",
-      selector: (row: any) => row.firstName + " " + row.lastName,
+      selector: (row: User) => row.name,
       sortable: true,
     },
     {
       name: "Department",
-      selector: (row: any) => row.departmentId.name,
+      selector: (row: User) => row.departmentId.name,
       sortable: true,
     },
     {
       name: "Role",
-      selector: (row: any) => row.designationId.name,
+      selector: (row: User) => row.designationId.name,
       sortable: true,
     },
     {
       name: "Username",
-      selector: (row: any) => row.username,
+      selector: (row: User) => row.username,
       sortable: true,
     },
     {
       name: "Mobile Number",
-      selector: (row: any) => row.mobileNumber,
+      selector: (row: User) => row.mobileNumber,
       sortable: true,
     },
     {
@@ -45,10 +49,25 @@ export default function Employee() {
         row.birthDate ? format(new Date(row.birthDate), "MMM/dd/yyyy") : "N/A",
       sortable: true,
     },
-    { name: "Balance", selector: (row: any) => row.balance },
-    { name: "Card Number", selector: (row: any) => row.cardNumber },
+    { name: "Balance", selector: (row: User) => row.balance },
+    { name: "Card Number", selector: (row: User) => row.cardNumber },
   ];
 
+  // _id: string;
+  // email: string;
+  // emailVerified: boolean;
+  // image?: string;
+  // createdAt: string;
+  // updatedAt: string;
+  // firstName: string;
+  // middleName?: string;
+  // lastName: string;
+  // name: string;
+  // birthDate: Date;
+  // mobileNumber: string;
+  // username: string;
+  // departmentId: Department;
+  // designationId: Designation;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,12 +83,25 @@ export default function Employee() {
     fetchData();
   }, []);
 
+  // --- Filter Logic ---
+  const filteredUsers = useMemo(() => {
+    const lowerText = userFilterText.toLowerCase();
+    return data.filter(
+      (item) =>
+        item.name.toLowerCase().includes(lowerText) ||
+        item.username.toLowerCase().includes(lowerText) ||
+        item.designationId.name.toLowerCase().includes(lowerText) ||
+        item.departmentId.name.toLowerCase().includes(lowerText) ||
+        item.cardNumber.toLowerCase().includes(lowerText) ||
+        item.balance.toString().includes(lowerText),
+    );
+  }, [data, userFilterText]);
+
   return (
     <div>
-      <div className="flex flex-row justify-between py-2 my-2 items-center">
-        <h1 className="text-sm md:text-2xl font-bold">Employees</h1>
+      <div className="flex flex-row justify-end py-2 my-2 items-center">
         <Button
-          className="text-xs md:text-lg"
+          className="text-xs md:text-lg "
           label="Add Employee"
           icon={PlusCircleIcon}
           iconSize={28}
@@ -78,17 +110,33 @@ export default function Employee() {
         />
       </div>
 
-      <div className="rounded-xl shadow-xl">
+      <div className="rounded-xl shadow-lg border overflow-hidden">
         <DataTable
           className="font-sans"
           columns={columns}
-          data={data}
+          data={filteredUsers}
           pagination
-          fixedHeader
+          fixedHeaderScrollHeight="600px"
           progressPending={pending}
           progressComponent={<Loading />}
           highlightOnHover
           pointerOnHover
+          fixedHeader
+          subHeader
+          subHeaderWrap
+          subHeaderComponent={
+            <div className="flex items-center justify-between w-full py-2">
+              <h1 className="text-md md:text-2xl font-sans font-bold">
+                Employees
+              </h1>
+              <FilterTable
+                onFilter={(e) => setUserFilterText(e.target.value)}
+                onClear={() => setUserFilterText("")}
+                filterText={userFilterText}
+                placeholder="Search Transactions.."
+              />
+            </div>
+          }
         />
       </div>
     </div>

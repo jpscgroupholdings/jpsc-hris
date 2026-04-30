@@ -1,6 +1,6 @@
 "use client";
 import DataTable from "react-data-table-component";
-import React from "react";
+import Loading from "@/components/Loading";
 
 export default function Attendance() {
   const columns = [
@@ -13,8 +13,21 @@ export default function Attendance() {
   const data = [{}];
   return (
     <div>
-      <h1>Attendance</h1>
-      <DataTable columns={columns} data={data} pagination />
+      {/* <h1>Attendance</h1> */}
+      <div className="rounded-xl shadow-lg border overflow-hidden">
+        <DataTable
+          title="Employeess"
+          className="font-sans"
+          columns={columns}
+          data={data}
+          pagination
+          fixedHeader
+          // progressPending={pending}
+          progressComponent={<Loading />}
+          highlightOnHover
+          pointerOnHover
+        />
+      </div>
     </div>
   );
 }

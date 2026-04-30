@@ -1,4 +1,3 @@
-import { Double } from "mongodb";
 import mongoose, { models, Schema } from "mongoose";
 import type { User } from "./user";
 

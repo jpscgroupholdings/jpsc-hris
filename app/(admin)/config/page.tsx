@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getAllDepartment } from "@/actions/departmentActions";
 import { getAllDesignation } from "@/actions/designationActions";
 import type { Department } from "@/models/department";
@@ -10,6 +10,7 @@ import Button from "@/components/UI/Button";
 import { PlusCircleIcon, EditIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import FilterTable from "@/components/UI/FilterTable";
 
 export default function ConfigPage() {
   const router = useRouter();
@@ -30,9 +31,9 @@ export default function ConfigPage() {
       name: "Status",
       cell: (row: Department) => (
         <span
-          className={`px-3 py-1 rounded-full   text-xs font-medium ${
-            row.status ? "bg-green-500" : "bg-red-500"
-          }`}
+          className={`px-3 py-1 rounded-full   text-xs font-medium 
+            ${row.status ? "bg-green-500 text-white" : "bg-red-500"}
+          `}
         >
           {row.status ? "Active" : "Inactive"}
         </span>
@@ -66,7 +67,7 @@ export default function ConfigPage() {
       cell: (row: Department) => (
         <span
           className={`px-3 py-1 rounded-full   text-xs font-medium ${
-            row.status ? "bg-green-500" : "bg-red-500"
+            row.status ? "bg-green-500 text-white" : "bg-red-500"
           }`}
         >
           {row.status ? "Active" : "Inactive"}
@@ -109,12 +110,33 @@ export default function ConfigPage() {
     fetchData();
   }, []);
 
+  // --- Filter States ---
+  const [depFilterText, setDepFilterText] = useState("");
+  const [desFilterText, setDesFilterText] = useState("");
+
+  // --- Filter Logic for Departments ---
+  const filteredDepartments = useMemo(() => {
+    return departmentRows.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(depFilterText.toLowerCase()) ||
+        item.shortName?.toLowerCase().includes(depFilterText.toLowerCase()) ||
+        item.code?.includes(depFilterText.toLowerCase()),
+    );
+  }, [departmentRows, depFilterText]);
+
+  // --- Filter Logic for Designations ---
+  const filteredDesignations = useMemo(() => {
+    return designationRows.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(desFilterText.toLowerCase()) ||
+        item.code?.includes(desFilterText.toLowerCase()),
+    );
+  }, [designationRows, desFilterText]);
+
   return (
     <div className="p-4 space-y-8">
-      {/* Departments Section */}
       <section>
-        <div className="flex flex-row justify-between py-2 items-center">
-          <h1 className="text-xl md:text-2xl font-bold">Departments</h1>
+        <div className="flex flex-row justify-end py-2 items-center">
           <Button
             label="Add Department"
             icon={PlusCircleIcon}
@@ -125,12 +147,28 @@ export default function ConfigPage() {
         <div className="rounded-xl shadow-lg border overflow-hidden">
           <DataTable
             columns={departmentColumns}
-            data={departmentRows}
+            data={filteredDepartments}
+            className="font-sans"
             pagination
             progressPending={loading}
             progressComponent={<Loading />}
             highlightOnHover
             pointerOnHover
+            fixedHeader
+            fixedHeaderScrollHeight="600px"
+            subHeader
+            subHeaderWrap
+            subHeaderComponent={
+              <div className="flex items-center justify-between w-full py-2">
+                <h1 className="text-md md:text-2xl font-sans">Departments</h1>
+                <FilterTable
+                  onFilter={(e) => setDepFilterText(e.target.value)}
+                  onClear={() => setDepFilterText("")}
+                  filterText={depFilterText}
+                  placeholder="Filter Departments"
+                />
+              </div>
+            }
           />
         </div>
       </section>
@@ -138,7 +176,7 @@ export default function ConfigPage() {
       {/* Designations Section */}
       <section>
         <div className="flex flex-row justify-between py-2 items-center">
-          <h1 className="text-xl md:text-2xl font-bold">Designations</h1>
+          {/*    */}
           <Button
             label="Add Designation"
             icon={PlusCircleIcon}
@@ -148,13 +186,30 @@ export default function ConfigPage() {
         </div>
         <div className="rounded-xl shadow-lg border overflow-hidden">
           <DataTable
+            // title="Designations"
             columns={designationColumns}
-            data={designationRows}
+            data={filteredDesignations}
+            className="font-sans"
             pagination
             progressPending={loading}
             progressComponent={<Loading />}
             highlightOnHover
             pointerOnHover
+            fixedHeader
+            fixedHeaderScrollHeight="600px"
+            subHeader
+            subHeaderWrap
+            subHeaderComponent={
+              <div className="flex items-center justify-between w-full py-2">
+                <h1 className="text-md md:text-2xl font-sans">Designations</h1>
+                <FilterTable
+                  onFilter={(e) => setDesFilterText(e.target.value)}
+                  onClear={() => setDesFilterText("")}
+                  filterText={desFilterText}
+                  placeholder="Search Departments..."
+                />
+              </div>
+            }
           />
         </div>
       </section>

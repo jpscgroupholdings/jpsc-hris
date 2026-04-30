@@ -1,11 +1,10 @@
 import mongoose, { models, Schema } from "mongoose";
-import { Double } from "mongodb";
 import { User } from "@/models/user";
 
 export interface Txn {
   _id: string;
   userId: User;
-  amount: Number;
+  amount: number;
   txnDate: Date;
   description: string;
 }
@@ -17,7 +16,7 @@ const TxnSchema = new Schema<Txn>({
     required: true,
   },
   amount: {
-    type: Double,
+    type: Number,
     required: true,
   },
   txnDate: {

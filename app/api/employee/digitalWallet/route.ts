@@ -2,7 +2,7 @@ import dbConnect from "@/lib/database/dbConnect";
 import { DigitalWallet } from "@/models/digitalWallet";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     await dbConnect();
 

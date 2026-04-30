@@ -1,6 +1,7 @@
 import mongoose, { models, Schema } from "mongoose";
 import type { Department } from "./department";
 import type { Designation } from "./designation";
+import { DigitalWallet } from "./digitalWallet";
 
 export interface User {
   _id: string;
@@ -18,6 +19,8 @@ export interface User {
   username: string;
   departmentId: Department;
   designationId: Designation;
+  balance: number;
+  cardNumber: string;
 }
 
 const UserSchema = new Schema<User>(

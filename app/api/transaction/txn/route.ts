@@ -1,38 +1,30 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { Txn } from "@/models/txn";
+import type { User } from "@/models/user";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
     await dbConnect();
-    const transaction = await Txn.aggregate([
-      {
-        $addFields: {
-          userId: {
-            $toObjectId: { $ifNull: ["$userId", null] },
-          },
-        },
+
+    const transactions = await Txn.find()
+      .populate("userId", "name username email")
+      .lean();
+
+    const formatted = transactions.map((txn) => ({
+      id: txn._id,
+      amount: txn.amount,
+      txnDate: txn.txnDate,
+      description: txn.description,
+      userId: {
+        id: txn.userId._id,
+        name: txn.userId.name,
+        username: txn.userId.username,
+        email: txn.userId.email,
       },
-      {
-        $lookup: {
-          from: "user",
-          localField: "userId",
-          foreignField: "_id",
-          as: "user_doc",
-        },
-      },
-      { $unwind: { path: "$user_doc", preserveNullAndEmptyArrays: true } },
-      {
-        $project: {
-          user: "$user_doc.name",
-          amount: 1,
-          date: 1,
-          description: 1,
-          // Extract the names into the keys the frontend expects
-        },
-      },
-    ]);
-    return NextResponse.json(transaction);
+    }));
+
+    return NextResponse.json(formatted);
   } catch (e) {
     console.error(e);
   }
