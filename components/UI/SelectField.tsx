@@ -6,12 +6,12 @@ import { SearchIcon, ChevronDownIcon, XIcon, CheckIcon } from "lucide-react";
 export type SearchSelectOption = {
   value: string;
   label: string;
-  description?: string; // optional sublabel
+  description?: string;
 };
 
 interface SearchSelectProps {
   options: SearchSelectOption[];
-  value?: string; // controlled selected value
+  value?: string;
   onChange?: (value: string | null) => void;
   placeholder?: string;
   searchPlaceholder?: string;
@@ -48,7 +48,6 @@ export default function SearchSelect({
       )
     : options;
 
-  // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (
@@ -63,12 +62,10 @@ export default function SearchSelect({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Focus search input when dropdown opens
   useEffect(() => {
     if (isOpen) searchRef.current?.focus();
   }, [isOpen]);
 
-  // Keyboard: close on Escape
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
       setIsOpen(false);
@@ -96,20 +93,19 @@ export default function SearchSelect({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full ${className}`}
+      className={`relative w-full font-sans ${className}`}
       onKeyDown={handleKeyDown}
     >
-      {/* Label */}
+      {/* Label - Muted Gray */}
       {label && (
         <label
           htmlFor={id}
-          className="block text-xs font-semibold text-foreground/70 uppercase tracking-wider mb-1.5"
+          className="block text-[11px] font-bold text-jpsc-950 uppercase tracking-widest mb-2 ml-1"
         >
           {label}
         </label>
       )}
 
-      {/* Trigger button */}
       <button
         id={id}
         type="button"
@@ -118,65 +114,60 @@ export default function SearchSelect({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         className={`
-          w-full flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm text-left
-          bg-jpsc-50 border transition-all duration-150 outline-none
+          w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-left font-sans
+          bg-white border transition-all duration-300 outline-none
           ${
             disabled
-              ? "opacity-50 cursor-not-allowed border-jpsc-200"
-              : "cursor-pointer border-jpsc-300 hover:border-jpsc-500 focus:border-jpsc-500 focus:ring-2 focus:ring-jpsc-500/20"
+              ? "opacity-40 cursor-not-allowed border-zinc-200 bg-zinc-50"
+              : "cursor-pointer border-zinc-200 hover:border-jpsc-500 hover:shadow-[0_0_12px_rgba(var(--jpsc-500-rgb),0.15)]"
           }
-          ${isOpen ? "border-jpsc-500 ring-2 ring-jpsc-500/20" : ""}
+          ${isOpen ? "border-jpsc-500 ring-4 ring-jpsc-500/10 shadow-[0_0_15px_rgba(var(--jpsc-500-rgb),0.2)]" : "focus:ring-4 focus:ring-jpsc-500/10 focus:border-jpsc-500"}
         `}
       >
-        {/* Selected label or placeholder */}
-        <span
-          className={`flex-1 truncate ${selected ? "text-foreground font-medium" : "text-foreground/40"}`}
-        >
+        <span className="flex-1 truncate font-sans text-black">
           {selected ? selected.label : placeholder}
         </span>
 
-        {/* Clear button */}
         {clearable && selected && !disabled && (
           <span
             role="button"
             onClick={handleClear}
-            className="shrink-0 p-0.5 rounded-full text-foreground/40 hover:text-foreground hover:bg-jpsc-200 transition-colors"
+            className="shrink-0 p-1 rounded-full text-zinc-400 hover:text-jpsc-500 hover:bg-jpsc-50 transition-all"
           >
             <XIcon size={14} />
           </span>
         )}
 
-        {/* Chevron */}
         <ChevronDownIcon
           size={16}
-          className={`shrink-0 text-foreground/40 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-jpsc-500" : "text-zinc-400"}`}
         />
       </button>
 
-      {/* Dropdown */}
+      {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute z-50 mt-1.5 w-full rounded-lg border border-jpsc-300 bg-background shadow-lg shadow-jpsc-900/10 overflow-hidden">
-          {/* Search input */}
-          <div className="p-2 border-b border-jpsc-200">
+        <div className="absolute z-50 mt-2 w-full rounded-2xl border border-zinc-100 bg-white shadow-[0_12px_40px_rgba(0,0,0,0.08)] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 font-sans">
+          {/* Search Box */}
+          <div className="p-3 bg-zinc-50/50">
             <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-jpsc-400 pointer-events-none" />
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <input
                 ref={searchRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
-                className="w-full bg-jpsc-50 border border-jpsc-200 rounded-md pl-9 pr-3 py-2 text-sm
-                  focus:outline-none focus:border-jpsc-500 focus:ring-2 focus:ring-jpsc-500/20 transition-all"
+                className="w-full bg-white border border-zinc-200 rounded-xl pl-10 pr-4 py-2.5 text-sm font-sans
+                  focus:outline-none focus:border-jpsc-500 focus:ring-2 focus:ring-jpsc-500/10 transition-all placeholder:text-zinc-400 placeholder:font-sans"
               />
             </div>
           </div>
 
-          {/* Options list */}
-          <ul role="listbox" className="max-h-56 overflow-y-auto py-1">
+          {/* Options List */}
+          <ul role="listbox" className="max-h-72 overflow-y-auto p-2 font-sans">
             {filtered.length === 0 ? (
-              <li className="px-4 py-6 text-center text-sm text-foreground/40">
-                No results for &ldquo;{query}&rdquo;
+              <li className="px-4 py-10 text-center text-sm text-zinc-400 italic font-sans">
+                No results for "{query}"
               </li>
             ) : (
               filtered.map((option) => {
@@ -188,27 +179,29 @@ export default function SearchSelect({
                     aria-selected={isSelected}
                     onClick={() => handleSelect(option)}
                     className={`
-                      flex items-center gap-3 px-4 py-2.5 cursor-pointer text-sm transition-colors
+                      flex items-center gap-3 px-4 py-3 cursor-pointer text-sm rounded-xl transition-all mb-1 last:mb-0 font-sans
                       ${
                         isSelected
-                          ? "bg-jpsc-500 text-white"
-                          : "text-foreground hover:bg-jpsc-100"
+                          ? "bg-jpsc-500 text-white shadow-lg shadow-jpsc-500/20"
+                          : "text-zinc-600 hover:bg-jpsc-50 hover:text-jpsc-600 hover:pl-5"
                       }
                     `}
                   >
-                    <span className="flex-1 min-w-0">
-                      <span className="block truncate font-medium">
+                    <div className="flex-1 min-w-0 font-sans">
+                      <span className="font-sans block truncate font-medium">
                         {option.label}
                       </span>
                       {option.description && (
                         <span
-                          className={`block truncate text-xs mt-0.5 ${isSelected ? "text-white/70" : "text-foreground/50"}`}
+                          className={`font-sans block truncate text-[11px] mt-0.5 ${isSelected ? "text-white/80" : "text-zinc-400"}`}
                         >
                           {option.description}
                         </span>
                       )}
-                    </span>
-                    {isSelected && <CheckIcon size={16} className="shrink-0" />}
+                    </div>
+                    {isSelected && (
+                      <CheckIcon size={18} className="shrink-0 text-white" />
+                    )}
                   </li>
                 );
               })
