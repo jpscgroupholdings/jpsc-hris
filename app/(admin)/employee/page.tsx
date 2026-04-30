@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import DataTable from "react-data-table-component";
 import Button from "@/components/UI/Button";
-import { PlusCircleIcon } from "lucide-react";
+import { Edit2Icon, EditIcon, PlusCircleIcon } from "lucide-react";
 import Loading from "@/components/Loading";
 import { format } from "date-fns";
 import FilterTable from "@/components/UI/FilterTable";
@@ -51,23 +51,20 @@ export default function Employee() {
     },
     { name: "Balance", selector: (row: User) => row.balance },
     { name: "Card Number", selector: (row: User) => row.cardNumber },
+    {
+      name: "Actions",
+      cell: (row: User) => (
+        <Button
+          label="Edit"
+          icon={EditIcon}
+          variant="info"
+          className="scale-75"
+          onClick={() => router.push(`/employee/edit/${row._id}`)}
+        />
+      ),
+    },
   ];
 
-  // _id: string;
-  // email: string;
-  // emailVerified: boolean;
-  // image?: string;
-  // createdAt: string;
-  // updatedAt: string;
-  // firstName: string;
-  // middleName?: string;
-  // lastName: string;
-  // name: string;
-  // birthDate: Date;
-  // mobileNumber: string;
-  // username: string;
-  // departmentId: Department;
-  // designationId: Designation;
   useEffect(() => {
     const fetchData = async () => {
       try {

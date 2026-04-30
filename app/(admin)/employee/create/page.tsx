@@ -1,10 +1,10 @@
 import React from "react";
-import Register from "@/components/Register";
+import RegisterForm from "@/app/(admin)/employee/_form";
 
 export default function CreateEmployee() {
   return (
     <div>
-      <Register />
+      <RegisterForm />
     </div>
   );
 }
