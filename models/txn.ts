@@ -1,7 +1,16 @@
 import mongoose, { models, Schema } from "mongoose";
 import { Double } from "mongodb";
+import { User } from "@/models/user";
 
-const TxnSchema = new Schema({
+export interface Txn {
+  _id: string;
+  userId: User;
+  amount: Number;
+  txnDate: Date;
+  description: string;
+}
+
+const TxnSchema = new Schema<Txn>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -11,7 +20,7 @@ const TxnSchema = new Schema({
     type: Double,
     required: true,
   },
-  date: {
+  txnDate: {
     type: Date,
     required: true,
   },
