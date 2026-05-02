@@ -1,5 +1,5 @@
 import React from "react";
-import RegisterForm from "@/app/(nav)/employee/_form";
+import RegisterForm from "@/app/(nav)/user/_form";
 
 export default function CreateEmployee() {
   return (
