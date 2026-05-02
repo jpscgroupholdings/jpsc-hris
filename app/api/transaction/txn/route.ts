@@ -1,6 +1,5 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { Txn } from "@/models/txn";
-import type { User } from "@/models/user";
 import { NextResponse } from "next/server";
 
 export async function GET() {
