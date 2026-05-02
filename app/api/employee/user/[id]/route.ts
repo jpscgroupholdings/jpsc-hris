@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/database/dbConnect";
 import { User } from "@/models/user";
-import { DigitalWallet } from "@/models/digitalWallet";
 
 export async function GET(
   request: Request,
@@ -12,8 +11,6 @@ export async function GET(
 
     // 2. YOU MUST AWAIT THIS LINE
     const { id } = await params;
-
-    console.log("Searching for ID:", id);
 
     const employee = await User.findById(id)
       .populate("departmentId")

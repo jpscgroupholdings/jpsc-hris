@@ -1,45 +1,74 @@
 import dbConnect from "@/lib/database/dbConnect";
-import { Txn } from "@/models/txn";
 import { NextResponse } from "next/server";
+
+// ✅ IMPORTANT: force model registration (side-effect imports)
+import "@/models/user";
+import { Txn } from "@/models/txn";
 
 export async function GET() {
   try {
     await dbConnect();
 
-    const transactions = await Txn.find()
-      .populate("userId", "name username email")
-      .lean();
+    const transactions = await Txn.find().populate("userId").lean();
 
-    const formatted = transactions.map((txn) => ({
-      id: txn._id,
-      amount: txn.amount,
-      txnDate: txn.txnDate,
-      description: txn.description,
-      userId: {
-        id: txn.userId._id,
-        name: txn.userId.name,
-        username: txn.userId.username,
-        email: txn.userId.email,
-      },
-    }));
+    if (!transactions || transactions.length === 0) {
+      return NextResponse.json([]);
+    }
+
+    const formatted = transactions.map((txn: any) => {
+      const user =
+        txn.userId && typeof txn.userId === "object" ? txn.userId : null;
+
+      return {
+        id: txn._id,
+        amount: txn.amount,
+        txnDate: txn.txnDate,
+        description: txn.description,
+        userId: {
+          id: user?._id?.toString() || "unknown",
+          name: user?.name || "Unknown User",
+        },
+      };
+    });
 
     return NextResponse.json(formatted);
   } catch (e) {
-    console.error(e);
+    console.error("GET TXN ERROR:", e);
+
+    return NextResponse.json(
+      {
+        error: "Internal Server Error",
+        details: e instanceof Error ? e.message : "Unknown error",
+      },
+      { status: 500 },
+    );
   }
 }
 
 export async function POST(req: Request) {
   try {
     await dbConnect();
+
     const body = await req.json();
-    console.log("BODY:", body);
 
-    const txn = await Txn.create(body);
+    // Optional: basic validation
+    if (!body.userId || !body.amount || !body.txnDate) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
+    }
 
-    return NextResponse.json(txn);
+    const txn = await Txn.create({
+      userId: body.userId,
+      amount: body.amount,
+      txnDate: body.txnDate,
+      description: body.description,
+    });
+
+    return NextResponse.json(txn, { status: 201 });
   } catch (error) {
-    console.error("Roles POST ERROR:", error);
+    console.error("POST TXN ERROR:", error);
 
     return NextResponse.json(
       {

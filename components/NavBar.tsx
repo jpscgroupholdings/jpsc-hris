@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
   { label: "Attendance", path: "/attendance", icon: ClockIcon },
   { label: "My Digital Wallet", path: "/digitalWallet", icon: WalletIcon },
   { label: "Transactions", path: "/transaction", icon: HandCoinsIcon },
-  { label: "Employees", path: "/employee", icon: UsersIcon },
+  { label: "Employees", path: "/user", icon: UsersIcon },
   { label: "Access Control", path: "/access", icon: DoorOpenIcon },
   { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
   { label: "Configurations", path: "/config", icon: SettingsIcon },
@@ -122,7 +122,7 @@ export default function NavBar({ children }: NavBarProps) {
         {/* User / sign out — shrink-0 so it never compresses */}
         <button
           onClick={() => {
-            router.push("/profile");
+            router.push(`/user/view/${session?.user.id}`);
           }}
           className="flex items-center gap-2 shrink-0 hover:opacity-75 transition-opacity"
         >

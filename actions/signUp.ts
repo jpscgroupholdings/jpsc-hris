@@ -6,6 +6,7 @@ import { Double } from "mongodb";
 import { User } from "@/models/user";
 import { UserRoundIcon } from "lucide-react";
 import dbConnect from "@/lib/database/dbConnect";
+import { Txn } from "@/models/txn";
 
 export async function signUp(
   firstName: string,
@@ -45,6 +46,13 @@ export async function signUp(
       cardNumber: cardNumber,
       balance: balance,
       status: true,
+    });
+
+    await Txn.create({
+      userId: response.user.id,
+      amount: balance,
+      txnDate: new Date(),
+      description: "Initial Cash In",
     });
   }
   return response;
