@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { getAllDepartment } from "@/actions/departmentActions";
 import { getAllDesignation } from "@/actions/designationActions";
-import type { Department } from "@/models/department";
-import type { Designation } from "@/models/designation";
+import type { Department } from "@/models/employee/department";
+import type { Designation } from "@/models/employee/designation";
 import DataTable from "react-data-table-component";
 import Button from "@/components/UI/Button";
 import { PlusCircleIcon, EditIcon } from "lucide-react";

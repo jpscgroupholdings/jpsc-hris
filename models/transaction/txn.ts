@@ -1,5 +1,5 @@
 import mongoose, { models, Schema } from "mongoose";
-import type { User } from "@/models/user";
+import type { User } from "@/models/employee/user";
 
 export interface Txn {
   _id: string;

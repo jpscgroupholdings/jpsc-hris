@@ -8,8 +8,8 @@ import { Edit2Icon, EditIcon, PlusCircleIcon } from "lucide-react";
 import Loading from "@/components/Loading";
 import { format } from "date-fns";
 import FilterTable from "@/components/UI/FilterTable";
-import { User } from "@/models/user";
-import { DigitalWallet } from "@/models/digitalWallet";
+import { User } from "@/models/employee/user";
+import { DigitalWallet } from "@/models/employee/digitalWallet";
 
 export default function Employee() {
   const router = useRouter();

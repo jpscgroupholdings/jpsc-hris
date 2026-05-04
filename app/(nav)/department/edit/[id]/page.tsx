@@ -6,7 +6,7 @@ import { getDepartmentById } from "@/actions/departmentActions";
 import DepartmentForm from "../../_form"; // Adjust this path to where your _form is
 import Loading from "@/components/Loading";
 import { toast } from "sonner";
-import type { Department } from "@/models/department";
+import type { Department } from "@/models/employee/department";
 
 export default function EditDepartmentPage() {
   const { id } = useParams();
