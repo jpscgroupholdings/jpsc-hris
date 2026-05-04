@@ -35,5 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/app/lib/get-connection.js
+lib/get-connection.js
 # \lib\get-connection.js
