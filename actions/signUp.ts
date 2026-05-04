@@ -1,12 +1,9 @@
 "use server";
 
 import { auth } from "@/lib/auth/auth";
-import { DigitalWallet } from "@/models/digitalWallet";
-import { Double } from "mongodb";
-import { User } from "@/models/user";
-import { UserRoundIcon } from "lucide-react";
+import { DigitalWallet } from "@/models/employee/digitalWallet";
 import dbConnect from "@/lib/database/dbConnect";
-import { Txn } from "@/models/txn";
+import { Txn } from "@/models/transaction/txn";
 
 export async function signUp(
   firstName: string,

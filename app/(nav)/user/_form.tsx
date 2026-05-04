@@ -5,8 +5,8 @@ import { signUp } from "@/actions/signUp";
 import InputField from "@/components/UI/InputField";
 import Button from "@/components/UI/Button";
 import { useRouter } from "next/navigation";
-import { Department } from "@/models/department";
-import { Designation } from "@/models/designation";
+import { Department } from "@/models/employee/department";
+import { Designation } from "@/models/employee/designation";
 import {
   MailIcon,
   LockIcon,

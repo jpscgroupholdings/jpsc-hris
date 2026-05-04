@@ -8,7 +8,7 @@ import Button from "@/components/UI/Button";
 import { BanknoteArrowUpIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import FilterTable from "@/components/UI/FilterTable";
-import { Txn } from "@/models/txn";
+import { Txn } from "@/models/transaction/txn";
 
 export default function Transaction() {
   const router = useRouter();

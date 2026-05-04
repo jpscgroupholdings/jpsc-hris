@@ -1,9 +1,9 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { NextResponse } from "next/server";
 
-// ✅ IMPORTANT: force model registration (side-effect imports)
-import "@/models/user";
-import { Txn } from "@/models/txn";
+// import { User } from "@/models/employee/user";p
+import { Txn } from "@/models/transaction/txn";
+import { DigitalWallet } from "@/models/employee/digitalWallet";
 
 export async function GET() {
   try {
@@ -65,6 +65,11 @@ export async function POST(req: Request) {
       txnDate: body.txnDate,
       description: body.description,
     });
+
+    const wallet = await DigitalWallet.updateOne(
+      { userId: body.userId },
+      { $inc: { balance: body.amount } },
+    );
 
     return NextResponse.json(txn, { status: 201 });
   } catch (error) {

@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/database/dbConnect";
-import { DigitalWallet } from "@/models/digitalWallet";
+import { DigitalWallet } from "@/models/employee/digitalWallet";
 import { NextResponse } from "next/server";
 
 export async function GET() {
