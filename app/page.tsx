@@ -32,7 +32,7 @@ export default function Home() {
       {/* Content Container: Column on mobile, Row on Desktop */}
       <div className="z-10 flex w-full max-w-6xl flex-col gap-8 p-6 md:flex-row md:items-center md:p-12">
         {/* Text Section with Blur Effect */}
-        <div className="flex-1 space-y-6 rounded-2xl bg-grey-500/50 p-8 text-white backdrop-blur-md border border-slate-700/50 shadow-2xl">
+        <div className="relative flex-1 space-y-6 rounded-2xl bg-grey-500/50 p-8 text-white backdrop-blur-md border border-slate-700/50 shadow-2xl">
           <Image
             src="/images/jpsc_logo.png"
             alt="jpsc_logo"

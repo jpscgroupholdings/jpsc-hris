@@ -89,7 +89,7 @@ export default function NavBar({ children }: NavBarProps) {
 
         {/* Logo / brand — shrink-0 so it never compresses */}
         <div
-          className="flex items-center cursor-pointer shrink-0"
+          className="flex items-center cursor-pointer shrink-0 relative"
           onClick={() => router.push("/dashboard")}
         >
           <Image
