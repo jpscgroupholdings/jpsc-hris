@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Department } from "@/models/department";
+import { Department } from "@/models/employee/department";
 import dbConnect from "@/lib/database/dbConnect";
 
 export async function PUT(
