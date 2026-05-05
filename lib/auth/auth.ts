@@ -2,6 +2,7 @@ import { betterAuth, date } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { username } from "better-auth/plugins";
+import { admin } from "better-auth/plugins";
 import clientPromise from "@/lib/database/database";
 
 const client = await clientPromise;
@@ -13,7 +14,11 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
-  plugins: [username({ maxUsernameLength: 100 }), nextCookies()],
+  plugins: [
+    admin({ defaultRole: "user" }),
+    username({ maxUsernameLength: 100 }),
+    nextCookies(),
+  ],
   user: {
     additionalFields: {
       username: { type: "string", input: true, required: true },
@@ -24,6 +29,7 @@ export const auth = betterAuth({
       birthDate: { type: "date", input: true, required: false },
       departmentId: { type: "string", input: true, required: true },
       designationId: { type: "string", input: true, required: true },
+      roleId: { type: "string", required: false },
     },
   },
 });

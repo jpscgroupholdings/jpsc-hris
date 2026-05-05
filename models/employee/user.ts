@@ -1,8 +1,7 @@
 import mongoose, { models, Schema } from "mongoose";
 import type { Department } from "./department";
 import type { Designation } from "./designation";
-import { DigitalWallet } from "./digitalWallet";
-
+import type { Role } from "./role";
 export interface User {
   _id: string;
   email: string;
@@ -21,30 +20,32 @@ export interface User {
   designationId: Designation;
   balance: number;
   cardNumber: string;
+  roleId: Role;
 }
 
 const UserSchema = new Schema<User>(
   {
-    email: { type: String, required: true, trim: true, unique: true },
+    email: { type: String, required: false, trim: true, unique: true },
     emailVerified: { type: Boolean, default: false },
     image: { type: String },
-    firstName: { type: String, required: true, trim: true },
+    firstName: { type: String, required: false, trim: true },
     middleName: { type: String, trim: true },
-    lastName: { type: String, required: true, trim: true },
-    name: { type: String, required: true, trim: true },
-    birthDate: { type: Date, required: true },
-    mobileNumber: { type: String, required: true, trim: true },
-    username: { type: String, required: true, trim: true, unique: true },
+    lastName: { type: String, required: false, trim: true },
+    name: { type: String, required: false, trim: true },
+    birthDate: { type: Date, required: false },
+    mobileNumber: { type: String, required: false, trim: true },
+    username: { type: String, required: false, trim: true, unique: true },
     departmentId: {
       type: Schema.Types.ObjectId,
       ref: "Department",
-      required: true,
+      required: false,
     },
     designationId: {
       type: Schema.Types.ObjectId,
       ref: "Designation",
-      required: true,
+      required: false,
     },
+    roleId: { type: Schema.Types.ObjectId, ref: "Role", required: false },
   },
   {
     collection: "user",

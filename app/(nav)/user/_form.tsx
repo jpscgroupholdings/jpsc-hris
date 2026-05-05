@@ -5,8 +5,9 @@ import { signUp } from "@/actions/signUp";
 import InputField from "@/components/UI/InputField";
 import Button from "@/components/UI/Button";
 import { useRouter } from "next/navigation";
-import { Department } from "@/models/employee/department";
-import { Designation } from "@/models/employee/designation";
+import type { Department } from "@/models/employee/department";
+import type { Designation } from "@/models/employee/designation";
+import { Role } from "@/models/employee/role";
 import {
   MailIcon,
   LockIcon,
@@ -20,7 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { generatePassword } from "@/actions/generatePassword";
-import SearchSelect, { SearchSelectOption } from "@/components/UI/SelectField";
+import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
 
 // Added initialData prop
 interface RegisterFormProps {
@@ -47,33 +48,15 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
   const [departmentsList, setDepartmentsList] = useState<Department[]>([]);
   const [designation, setDesignation] = useState<string | null>(null);
   const [designationsList, setDesignationsList] = useState<Designation[]>([]);
+  const [role, setRole] = useState("");
 
   // Status State
   const [loading, setLoading] = useState(false);
   const [loadingDepts, setLoadingDepts] = useState(false);
   const [loadingDesignations, setLoadingDesignations] = useState(false);
   const [copied, setCopied] = useState(false);
-
-  // NEW: Sync initialData when component mounts or initialData changes
-  useEffect(() => {
-    if (initialData) {
-      setEmail(initialData.email || "");
-      setFirstName(initialData.firstName || "");
-      setMiddleName(initialData.middleName || "");
-      setLastName(initialData.lastName || "");
-      // Formats date to YYYY-MM-DD for the input type="date"
-      if (initialData.birthdate) {
-        setBirthdate(
-          new Date(initialData.birthdate).toISOString().split("T")[0],
-        );
-      }
-      setMobileNumber(initialData.mobileNumber || "");
-      SetcardNumber(initialData.cardNumber || "");
-      setBalance(initialData.balance || 0);
-      setDepartment(initialData.departmentId._id);
-      setDesignation(initialData.designationId._id);
-    }
-  }, [initialData]);
+  const [rolesList, setRolesList] = useState<Role[]>([]);
+  const [roleId, setRoleId] = useState<string | null>(null);
 
   // Map to SearchSelect Options
   const deptOptions: SearchSelectOption[] = departmentsList.map((d) => ({
@@ -87,6 +70,11 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
       label: d.name,
     }),
   );
+
+  const roleOptions = rolesList.map((r) => ({
+    value: r._id,
+    label: r.name,
+  }));
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -133,6 +121,15 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
     fetchDesignations();
   }, [department, initialData]);
 
+  useEffect(() => {
+    const fetchRoles = async () => {
+      const response = await fetch("/api/employee/role");
+      const data = await response.json();
+      setRolesList(data);
+    };
+    fetchRoles();
+  }, []);
+
   const handleCopy = async () => {
     if (!password) return;
     await navigator.clipboard.writeText(password);
@@ -172,6 +169,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
             designation,
             cardNumber,
             balance,
+            role,
           }),
         });
         if (!res.ok) throw new Error("Update failed");
@@ -192,6 +190,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           designation,
           cardNumber,
           balance,
+          role,
         );
         toast.success(`Employee Created successfully for user ${username}`);
       }
@@ -285,6 +284,14 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           placeholder={
             !department ? "Select Department first..." : "Select a Designation"
           }
+        />
+
+        <SearchSelect
+          label="System Role"
+          options={roleOptions}
+          value={roleId ?? undefined}
+          onChange={(val) => setRoleId(val)}
+          placeholder="Select Role"
         />
 
         {!isEditMode && (

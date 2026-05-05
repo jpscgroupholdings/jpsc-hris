@@ -21,7 +21,7 @@ interface SearchSelectProps {
   className?: string;
 }
 
-export default function SearchSelect({
+export function SearchSelect({
   options,
   value,
   onChange,

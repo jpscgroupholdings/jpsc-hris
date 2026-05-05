@@ -25,12 +25,12 @@ export default function Employee() {
     },
     {
       name: "Department",
-      selector: (row: User) => row.departmentId.name,
+      selector: (row: User) => row.departmentId?.name,
       sortable: true,
     },
     {
       name: "Role",
-      selector: (row: User) => row.designationId.name,
+      selector: (row: User) => row.designationId?.name,
       sortable: true,
     },
     {
@@ -55,11 +55,11 @@ export default function Employee() {
       name: "Actions",
       cell: (row: User) => (
         <Button
-          label="Edit"
+          label="View"
           icon={EditIcon}
           variant="info"
-          className="scale-75"
-          onClick={() => router.push(`/user/edit/${row._id}`)}
+          className="scale-75 text-lg"
+          onClick={() => router.push(`/user/view/${row._id}`)}
         />
       ),
     },

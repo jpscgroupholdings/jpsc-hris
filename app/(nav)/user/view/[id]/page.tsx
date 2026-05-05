@@ -156,6 +156,10 @@ export default function Profile() {
                 {userData?.designationId?.name}
               </td>
             </tr>
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Role</td>
+              <td className="px-4 py-3 text-sm">{userData?.role}</td>
+            </tr>
 
             <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
               <td className="px-4 py-3 text-sm font-semibold">Hire Date</td>
