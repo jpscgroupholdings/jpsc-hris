@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import { format } from "date-fns";
 import Button from "@/components/UI/Button";
-import { LogOut, User, Mail, Phone, Calendar, EditIcon } from "lucide-react";
+import { LogOut, EditIcon, MailIcon, UserIcon } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 
 export default function Profile() {
   const params = useParams();
-  const id = params.id; // Correctly grabs ID from /user/view/[id]
+  const id = params.id;
 
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<any>(null);
@@ -17,13 +17,10 @@ export default function Profile() {
 
   const fetchEmployee = async () => {
     if (!id) return;
-
     try {
       setLoading(true);
       const res = await fetch(`/api/employee/user/${id}`);
-
       if (!res.ok) throw new Error("Employee not found");
-
       const data = await res.json();
       setUserData(data);
     } catch (err: any) {
@@ -37,25 +34,14 @@ export default function Profile() {
     fetchEmployee();
   }, [id]);
 
-  // Format birthDate only if data exists
+  // Format dates safely
   const birthDate = userData?.birthDate
-    ? format(new Date(userData.birthDate), "MMM. dd, yyyy")
+    ? format(new Date(userData?.birthDate), "MMM. dd, yyyy")
     : "N/A";
 
-  if (loading) {
-    return (
-      <div className="p-8 text-center text-gray-500">Loading profile...</div>
-    );
-  }
-
-  // Final safety check: if not loading but no data yet
-  if (!userData) {
-    return (
-      <div className="p-8 text-center text-gray-500">
-        No profile data found.
-      </div>
-    );
-  }
+  const hireDate = userData?.createdAt
+    ? format(new Date(userData?.createdAt), "MMM. dd, yyyy")
+    : "N/A";
 
   const handleSignOut = async () => {
     await authClient.signOut({
@@ -82,87 +68,112 @@ export default function Profile() {
         />
       </div>
 
-      <div className="overflow-hidden border border-gray-200 rounded-xl">
-        <table className="w-full text-left border-collapse">
-          <tbody className="divide-y divide-gray-200">
-            {/* First Name */}
-            <tr className="bg-gray-50/50">
-              <td className="px-4 py-3 text-sm font-semibold text-gray-600 w-1/3">
+      <div className="overflow-hidden border border-jpsc-950 rounded-xl">
+        <table className="w-full text-left font-sans border-collapse">
+          <tbody className="divide-y divide-jpsc-650">
+            {/* PERSONAL INFORMATION HEADER */}
+            <tr className="bg-jpsc-100">
+              <td colSpan={2} className="px-4 py-3 text-sm font-semibold">
                 <div className="flex items-center gap-2">
-                  <User size={16} className="text-gray-400" /> First Name
+                  <UserIcon size={16} />
+                  Personal Information
                 </div>
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-800">
-                {userData.firstName}
               </td>
             </tr>
 
-            {/* Middle Name */}
-            {userData.middleName && (
-              <tr>
-                <td className="px-4 py-3 text-sm font-semibold text-gray-600">
-                  Middle Name
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-800">
-                  {userData.middleName}
-                </td>
+            {/* DATA ROWS */}
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">First Name</td>
+              <td className="px-4 py-3 text-sm">{userData?.firstName}</td>
+            </tr>
+
+            {/* Always show Middle Name row if loading, or if data exists */}
+            {(loading || userData?.middleName) && (
+              <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+                <td className="px-4 py-3 text-sm font-semibold">Middle Name</td>
+                <td className="px-4 py-3 text-sm">{userData?.middleName}</td>
               </tr>
             )}
 
-            {/* Last Name */}
-            <tr className="bg-gray-50/50">
-              <td className="px-4 py-3 text-sm font-semibold text-gray-600">
-                Last Name
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-800">
-                {userData.lastName}
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Last Name</td>
+              <td className="px-4 py-3 text-sm">{userData?.lastName}</td>
+            </tr>
+
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Birthday</td>
+              <td className="px-4 py-3 text-sm">{birthDate}</td>
+            </tr>
+
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td colSpan={2} className="px-4 py-3 text-sm font-semibold w-1/3">
+                <div className="flex items-center gap-2">
+                  <MailIcon size={16} />
+                  Contact Information
+                </div>
               </td>
             </tr>
 
-            {/* Mobile Number */}
-            <tr>
-              <td className="px-4 py-3 text-sm font-semibold text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Phone size={16} className="text-gray-400" /> Mobile Number
-                </div>
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-800 font-mono">
-                {userData.mobileNumber || "Not set"}
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Mobile Number</td>
+              <td
+                className="px-4 py-3 text-sm underline text-blue-500 cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(userData?.mobileNumber);
+                  toast.success("Mobile Number Copied to Clipboard");
+                }}
+              >
+                {userData?.mobileNumber}
               </td>
             </tr>
 
-            {/* Birthdate */}
-            <tr className="bg-gray-50/50">
-              <td className="px-4 py-3 text-sm font-semibold text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Calendar size={16} className="text-gray-400" /> Birthday
-                </div>
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Email Address</td>
+              <td className="px-4 py-3 text-sm text-blue-500 cursor-pointer">
+                {userData?.email}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-800">{birthDate}</td>
             </tr>
 
-            {/* Email */}
-            <tr>
-              <td className="px-4 py-3 text-sm font-semibold text-gray-600">
+            <tr className="bg-jpsc-100">
+              <td colSpan={2} className="px-4 py-3 text-sm font-semibold w-1/3">
                 <div className="flex items-center gap-2">
-                  <Mail size={16} className="text-gray-400" /> Email Address
+                  <MailIcon size={16} />
+                  Company Profile
                 </div>
               </td>
-              <td className="px-4 py-3 text-sm text-blue-600">
-                {userData.email}
+            </tr>
+
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Department</td>
+              <td className="px-4 py-3 text-sm">
+                {userData?.departmentId?.name}
               </td>
+            </tr>
+
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Designation</td>
+              <td className="px-4 py-3 text-sm">
+                {userData?.designationId?.name}
+              </td>
+            </tr>
+
+            <tr className="odd:bg-jpsc-100 even:bg-jpsc-200">
+              <td className="px-4 py-3 text-sm font-semibold">Hire Date</td>
+              <td className="px-4 py-3 text-sm">{hireDate}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div className="mt-4">
-        <Button
-          label="Change Password"
-          variant="success"
-          icon={EditIcon}
-          onClick={() => router.push("/profile/changePassword")}
-        />
+        {!loading && (
+          <Button
+            label="Change Password"
+            variant="success"
+            icon={EditIcon}
+            onClick={() => router.push("/profile/changePassword")}
+          />
+        )}
       </div>
     </div>
   );
