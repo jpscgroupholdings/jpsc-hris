@@ -3,8 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { getAllDepartment } from "@/actions/departmentActions";
 import { getAllDesignation } from "@/actions/designationActions";
+import { getAllRole } from "@/actions/roleActions";
 import type { Department } from "@/models/employee/department";
 import type { Designation } from "@/models/employee/designation";
+import type { Role } from "@/models/employee/role"; // Ensure this import exists
 import DataTable from "react-data-table-component";
 import Button from "@/components/UI/Button";
 import { PlusCircleIcon, EditIcon } from "lucide-react";
@@ -16,9 +18,10 @@ export default function ConfigPage() {
   const router = useRouter();
   const [departmentRows, setDepartmentRows] = useState<Department[]>([]);
   const [designationRows, setDesignationRows] = useState<Designation[]>([]);
+  const [roleRows, setRoleRows] = useState<Role[]>([]); // Fixed type to Role[]
   const [loading, setLoading] = useState(true);
 
-  // --- Column Definitions with Edit Buttons ---
+  // --- Column Definitions ---
   const departmentColumns = [
     { name: "Code", selector: (row: Department) => row.code, sortable: true },
     { name: "Name", selector: (row: Department) => row.name, sortable: true },
@@ -31,9 +34,7 @@ export default function ConfigPage() {
       name: "Status",
       cell: (row: Department) => (
         <span
-          className={`px-3 py-1 rounded-full   text-xs font-medium 
-            ${row.status ? "bg-green-500 text-white" : "bg-red-500"}
-          `}
+          className={`px-3 py-1 rounded-full text-xs font-medium ${row.status ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
         >
           {row.status ? "Active" : "Inactive"}
         </span>
@@ -64,11 +65,9 @@ export default function ConfigPage() {
     },
     {
       name: "Status",
-      cell: (row: Department) => (
+      cell: (row: Designation) => (
         <span
-          className={`px-3 py-1 rounded-full   text-xs font-medium ${
-            row.status ? "bg-green-500 text-white" : "bg-red-500"
-          }`}
+          className={`px-3 py-1 rounded-full text-xs font-medium ${row.status ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
         >
           {row.status ? "Active" : "Inactive"}
         </span>
@@ -88,55 +87,98 @@ export default function ConfigPage() {
     },
   ];
 
+  const roleColumns = [
+    { name: "Code", selector: (row: Role) => row.code, sortable: true },
+    { name: "Name", selector: (row: Role) => row.name, sortable: true },
+    {
+      name: "Short Name",
+      selector: (row: Role) => row.shortName,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      cell: (row: Role) => (
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-medium ${row.status ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
+        >
+          {row.status ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
+    {
+      name: "Actions",
+      cell: (row: Role) => (
+        <Button
+          label="Edit"
+          icon={EditIcon}
+          variant="info"
+          className="scale-75"
+          onClick={() => router.push(`/role/edit/${row._id}`)}
+        />
+      ),
+    },
+  ];
+
   // --- Fetch Logic ---
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [depRes, desRes] = await Promise.all([
+        const [depRes, desRes, roleRes] = await Promise.all([
           getAllDepartment(),
           getAllDesignation(),
+          getAllRole(),
         ]);
 
         if (depRes.success) setDepartmentRows(depRes.data || []);
         if (desRes.success) setDesignationRows(desRes.data || []);
+        if (roleRes.success) setRoleRows(roleRes.data || []); // FIXED: Was setting to DesignationRows
       } catch (error) {
         console.error("Failed to fetch data", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   // --- Filter States ---
   const [depFilterText, setDepFilterText] = useState("");
   const [desFilterText, setDesFilterText] = useState("");
+  const [roleFilterText, setRoleFilterText] = useState("");
 
-  // --- Filter Logic for Departments ---
+  // --- Filter Logics ---
   const filteredDepartments = useMemo(() => {
     return departmentRows.filter(
       (item) =>
         item.name?.toLowerCase().includes(depFilterText.toLowerCase()) ||
         item.shortName?.toLowerCase().includes(depFilterText.toLowerCase()) ||
-        item.code?.includes(depFilterText.toLowerCase()),
+        item.code?.toLowerCase().includes(depFilterText.toLowerCase()),
     );
   }, [departmentRows, depFilterText]);
 
-  // --- Filter Logic for Designations ---
   const filteredDesignations = useMemo(() => {
     return designationRows.filter(
       (item) =>
         item.name?.toLowerCase().includes(desFilterText.toLowerCase()) ||
-        item.code?.includes(desFilterText.toLowerCase()),
+        item.code?.toLowerCase().includes(desFilterText.toLowerCase()),
     );
   }, [designationRows, desFilterText]);
 
+  const filteredRoles = useMemo(() => {
+    return roleRows.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(roleFilterText.toLowerCase()) ||
+        item.shortName?.toLowerCase().includes(roleFilterText.toLowerCase()) ||
+        item.code?.toLowerCase().includes(roleFilterText.toLowerCase()),
+    );
+  }, [roleRows, roleFilterText]); // FIXED: Was using departmentRows/depFilterText dependencies
+
   return (
     <div className="p-4 space-y-8">
+      {/* Departments Section */}
       <section>
-        <div className="flex flex-row justify-end py-2 items-center">
+        <div className="flex flex-row justify-end py-2">
           <Button
             label="Add Department"
             icon={PlusCircleIcon}
@@ -148,19 +190,13 @@ export default function ConfigPage() {
           <DataTable
             columns={departmentColumns}
             data={filteredDepartments}
-            className="font-sans"
             pagination
             progressPending={loading}
             progressComponent={<Loading />}
-            highlightOnHover
-            pointerOnHover
-            fixedHeader
-            fixedHeaderScrollHeight="600px"
             subHeader
-            subHeaderWrap
             subHeaderComponent={
               <div className="flex items-center justify-between w-full py-2">
-                <h1 className="text-md md:text-2xl font-sans">Departments</h1>
+                <h1 className="text-xl font-bold">Departments</h1>
                 <FilterTable
                   onFilter={(e) => setDepFilterText(e.target.value)}
                   onClear={() => setDepFilterText("")}
@@ -175,8 +211,7 @@ export default function ConfigPage() {
 
       {/* Designations Section */}
       <section>
-        <div className="flex flex-row justify-between py-2 items-center">
-          {/*    */}
+        <div className="flex flex-row justify-end py-2">
           <Button
             label="Add Designation"
             icon={PlusCircleIcon}
@@ -186,27 +221,53 @@ export default function ConfigPage() {
         </div>
         <div className="rounded-xl shadow-lg border overflow-hidden">
           <DataTable
-            // title="Designations"
             columns={designationColumns}
             data={filteredDesignations}
-            className="font-sans"
             pagination
             progressPending={loading}
             progressComponent={<Loading />}
-            highlightOnHover
-            pointerOnHover
-            fixedHeader
-            fixedHeaderScrollHeight="600px"
             subHeader
-            subHeaderWrap
             subHeaderComponent={
               <div className="flex items-center justify-between w-full py-2">
-                <h1 className="text-md md:text-2xl font-sans">Designations</h1>
+                <h1 className="text-xl font-bold">Designations</h1>
                 <FilterTable
                   onFilter={(e) => setDesFilterText(e.target.value)}
                   onClear={() => setDesFilterText("")}
                   filterText={desFilterText}
-                  placeholder="Search Departments..."
+                  placeholder="Filter Designations"
+                />
+              </div>
+            }
+          />
+        </div>
+      </section>
+
+      {/* Roles Section */}
+      <section>
+        <div className="flex flex-row justify-end py-2">
+          <Button
+            label="Add Role"
+            icon={PlusCircleIcon}
+            variant="success"
+            onClick={() => router.push("/role/create")}
+          />
+        </div>
+        <div className="rounded-xl shadow-lg border overflow-hidden">
+          <DataTable
+            columns={roleColumns}
+            data={filteredRoles}
+            pagination
+            progressPending={loading}
+            progressComponent={<Loading />}
+            subHeader
+            subHeaderComponent={
+              <div className="flex items-center justify-between w-full py-2">
+                <h1 className="text-xl font-bold">Roles</h1>
+                <FilterTable
+                  onFilter={(e) => setRoleFilterText(e.target.value)}
+                  onClear={() => setRoleFilterText("")}
+                  filterText={roleFilterText}
+                  placeholder="Filter Roles"
                 />
               </div>
             }

@@ -20,7 +20,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
 
     return (
       <div className="flex flex-col gap-1 w-full py-2">
-        <label className="block text-[11px] font-bold text-jpsc-950 uppercase tracking-widest mb-2 ml-1">
+        <label className="block text-[11px] font-bold font-sans text-jpsc-950 uppercase tracking-widest mb-2 ml-1">
           {label}
         </label>
 
