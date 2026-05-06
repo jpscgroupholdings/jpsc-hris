@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import { format } from "date-fns";
 import Button from "@/components/UI/Button";
-import { LogOut, EditIcon, MailIcon, UserIcon } from "lucide-react";
+import { LogOut, EditIcon, MailIcon, UserIcon, LockIcon } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 
@@ -171,12 +171,21 @@ export default function Profile() {
 
       <div className="mt-4">
         {!loading && (
-          <Button
-            label="Change Password"
-            variant="success"
-            icon={EditIcon}
-            onClick={() => router.push("/profile/changePassword")}
-          />
+          <div>
+            <Button
+              label="Change Password"
+              variant="success"
+              icon={LockIcon}
+              onClick={() => router.push("/profile/changePassword")}
+            />
+
+            <Button
+              label="Edit Employee"
+              variant="info"
+              icon={EditIcon}
+              onClick={() => router.push(`/user/edit/${id}`)}
+            />
+          </div>
         )}
       </div>
     </div>

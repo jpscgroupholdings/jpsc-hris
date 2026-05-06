@@ -2,6 +2,7 @@ import mongoose, { models, Schema } from "mongoose";
 import type { Department } from "./department";
 import type { Designation } from "./designation";
 import type { Role } from "./role";
+
 export interface User {
   _id: string;
   email: string;

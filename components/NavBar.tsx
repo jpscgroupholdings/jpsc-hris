@@ -17,6 +17,7 @@ import {
   HandCoinsIcon,
   ChevronLeftIcon,
   ClipboardListIcon,
+  CheckCheckIcon,
 } from "lucide-react";
 import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
@@ -35,7 +36,11 @@ const navItems: NavItem[] = [
   { label: "My Digital Wallet", path: "/digitalWallet", icon: WalletIcon },
   { label: "Transactions", path: "/transaction", icon: HandCoinsIcon },
   { label: "Employees", path: "/user", icon: UsersIcon },
-  { label: "Evaluation", path: "#", icon: ClipboardListIcon },
+  {
+    label: "Employee's Performance",
+    path: "/performance",
+    icon: CheckCheckIcon,
+  },
   // { label: "Access Control", path: "/access", icon: DoorOpenIcon },
   { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
   { label: "Configurations", path: "/config", icon: SettingsIcon },
