@@ -7,7 +7,7 @@ import Button from "@/components/UI/Button";
 import { useRouter } from "next/navigation";
 import type { Department } from "@/models/employee/department";
 import type { Designation } from "@/models/employee/designation";
-import { Role } from "@/models/employee/role";
+import type { Role } from "@/models/employee/role";
 import {
   MailIcon,
   LockIcon,
@@ -23,7 +23,6 @@ import { toast } from "sonner";
 import { generatePassword } from "@/actions/generatePassword";
 import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
 
-// Added initialData prop
 interface RegisterFormProps {
   initialData?: any;
 }
@@ -48,17 +47,44 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
   const [departmentsList, setDepartmentsList] = useState<Department[]>([]);
   const [designation, setDesignation] = useState<string | null>(null);
   const [designationsList, setDesignationsList] = useState<Designation[]>([]);
-  const [role, setRole] = useState("");
+  // Added Role State
+  const [roleId, setRoleId] = useState<string | null>(null);
+  const [rolesList, setRolesList] = useState<Role[]>([]);
 
   // Status State
   const [loading, setLoading] = useState(false);
   const [loadingDepts, setLoadingDepts] = useState(false);
   const [loadingDesignations, setLoadingDesignations] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [rolesList, setRolesList] = useState<Role[]>([]);
-  const [roleId, setRoleId] = useState<string | null>(null);
 
-  // Map to SearchSelect Options
+  useEffect(() => {
+    if (initialData) {
+      setEmail(initialData.email || "");
+      setFirstName(initialData.firstName || "");
+      setMiddleName(initialData.middleName || "");
+      setLastName(initialData.lastName || "");
+      if (initialData.birthdate || initialData.birthDate) {
+        setBirthdate(
+          new Date(initialData.birthdate || initialData.birthDate)
+            .toISOString()
+            .split("T")[0],
+        );
+      }
+      setMobileNumber(initialData.mobileNumber || "");
+      SetcardNumber(initialData.cardNumber || "");
+      setBalance(initialData.balance || 0);
+
+      // Fixed mapping for IDs
+      setDepartment(
+        initialData.departmentId?._id || initialData.departmentId || null,
+      );
+      setDesignation(
+        initialData.designationId?._id || initialData.designationId || null,
+      );
+      setRoleId(initialData.roleId?._id || initialData.roleId || null);
+    }
+  }, [initialData]);
+
   const deptOptions: SearchSelectOption[] = departmentsList.map((d) => ({
     value: d._id,
     label: d.name,
@@ -71,35 +97,41 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
     }),
   );
 
-  const roleOptions = rolesList.map((r) => ({
+  // Map roles to options
+  const roleOptions: SearchSelectOption[] = rolesList.map((r) => ({
     value: r._id,
     label: r.name,
   }));
 
   useEffect(() => {
-    const fetchDepartments = async () => {
+    const fetchBaseData = async () => {
       setLoadingDepts(true);
       try {
-        const response = await fetch("/api/employee/department");
-        const data = await response.json();
-        setDepartmentsList(data);
+        const [deptRes, roleRes] = await Promise.all([
+          fetch("/api/employee/department"),
+          fetch("/api/employee/role"),
+        ]);
+        const depts = await deptRes.json();
+        const roles = await roleRes.json();
+        setDepartmentsList(depts);
+        setRolesList(roles);
       } catch (err) {
-        toast.error("Could not load departments");
+        toast.error("Could not load form data");
       } finally {
         setLoadingDepts(false);
       }
     };
-    fetchDepartments();
+    fetchBaseData();
   }, []);
 
   useEffect(() => {
     const fetchDesignations = async () => {
       if (!department) {
         setDesignationsList([]);
-        // Only reset designation if we aren't in the initial loading phase of Edit Mode
         if (
           !initialData ||
-          department !== (initialData.department?._id || initialData.department)
+          department !==
+            (initialData.departmentId?._id || initialData.departmentId)
         ) {
           setDesignation(null);
         }
@@ -121,15 +153,6 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
     fetchDesignations();
   }, [department, initialData]);
 
-  useEffect(() => {
-    const fetchRoles = async () => {
-      const response = await fetch("/api/employee/role");
-      const data = await response.json();
-      setRolesList(data);
-    };
-    fetchRoles();
-  }, []);
-
   const handleCopy = async () => {
     if (!password) return;
     await navigator.clipboard.writeText(password);
@@ -139,7 +162,14 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
   };
 
   async function handleRegister() {
-    if (!firstName || !lastName || !email || !designation || !department) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !designation ||
+      !department ||
+      !roleId
+    ) {
       return toast.error("Please fill in all required fields");
     }
 
@@ -153,7 +183,6 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
       setLoading(true);
 
       if (isEditMode) {
-        // Logic for Updating
         const res = await fetch(`/api/employee/user/${initialData._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -165,17 +194,16 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
             birthdate: birthDateObject,
             mobileNumber,
             email,
-            department,
-            designation,
+            departmentId: department,
+            designationId: designation,
+            roleId: roleId, // Added roleId
             cardNumber,
             balance,
-            role,
           }),
         });
         if (!res.ok) throw new Error("Update failed");
         toast.success("Employee updated successfully");
       } else {
-        // Logic for Creating
         await signUp(
           firstName,
           middleName,
@@ -190,7 +218,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           designation,
           cardNumber,
           balance,
-          role,
+          roleId, // Added roleId to signup action
         );
         toast.success(`Employee Created successfully for user ${username}`);
       }
@@ -286,12 +314,13 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           }
         />
 
+        {/* Added Role SearchSelect */}
         <SearchSelect
           label="System Role"
           options={roleOptions}
           value={roleId ?? undefined}
           onChange={(val) => setRoleId(val)}
-          placeholder="Select Role"
+          placeholder="Select a Role"
         />
 
         {!isEditMode && (

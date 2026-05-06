@@ -93,7 +93,7 @@ export default function DepartmentForm({
       <InputField
         type="text"
         label="Department Code"
-        placeholder="e.g. IT, HR, FIN"
+        placeholder="Department Code"
         value={formData.code}
         onChange={(e) => setFormData({ ...formData, code: e.target.value })}
       />
@@ -101,7 +101,7 @@ export default function DepartmentForm({
       <InputField
         label="Full Name"
         type="text"
-        placeholder="e.g. Information Technology"
+        placeholder="Department Name"
         value={formData.name}
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
       />
@@ -109,7 +109,7 @@ export default function DepartmentForm({
       <InputField
         label="Short Name"
         type="text"
-        placeholder="e.g. InfoTech"
+        placeholder="Department Short Name"
         value={formData.shortName}
         onChange={(e) =>
           setFormData({ ...formData, shortName: e.target.value })

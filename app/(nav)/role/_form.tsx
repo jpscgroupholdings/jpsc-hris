@@ -88,15 +88,15 @@ export default function RoleForm({ initialData, onSuccess }: RoleFormProps) {
       <InputField
         type="text"
         label="Role Code"
-        placeholder="e.g. IT, HR, FIN"
+        placeholder="Role Code"
         value={formData.code}
         onChange={(e) => setFormData({ ...formData, code: e.target.value })}
       />
 
       <InputField
-        label="Full Name"
+        label="Role Name"
         type="text"
-        placeholder="e.g. Information Technology"
+        placeholder="Role Name"
         value={formData.name}
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
       />
@@ -104,7 +104,7 @@ export default function RoleForm({ initialData, onSuccess }: RoleFormProps) {
       <InputField
         label="Short Name"
         type="text"
-        placeholder="e.g. InfoTech"
+        placeholder="Role Short Name"
         value={formData.shortName}
         onChange={(e) =>
           setFormData({ ...formData, shortName: e.target.value })

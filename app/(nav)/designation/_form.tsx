@@ -95,6 +95,7 @@ export default function DesignationForm({
       <InputField
         label="Designation Code"
         type="text"
+        placeholder="Designation Code"
         value={formData.code}
         onChange={(e) => setFormData({ ...formData, code: e.target.value })}
       />
@@ -102,6 +103,7 @@ export default function DesignationForm({
       <InputField
         label="Full Name"
         type="text"
+        placeholder="Designation Name"
         value={formData.name}
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
       />
@@ -123,6 +125,7 @@ export default function DesignationForm({
       <InputField
         label="Short Name"
         type="text"
+        placeholder="Designation Short Name"
         value={formData.shortName}
         onChange={(e) =>
           setFormData({ ...formData, shortName: e.target.value })
