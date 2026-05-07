@@ -173,14 +173,14 @@ export default function Profile() {
               label="Change Password"
               variant="success"
               icon={LockIcon}
-              onClick={() => router.push("/profile/changePassword")}
+              onClick={() => router.push("/employee/user/changePassword")}
             />
 
             <Button
               label="Edit Employee"
               variant="info"
               icon={EditIcon}
-              onClick={() => router.push(`/user/edit/${id}`)}
+              onClick={() => router.push(`/employee/user/edit/${id}`)}
             />
           </div>
         )}

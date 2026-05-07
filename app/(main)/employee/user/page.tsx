@@ -59,7 +59,7 @@ export default function Employee() {
           icon={EditIcon}
           variant="info"
           className="scale-75 text-lg"
-          onClick={() => router.push(`/user/view/${row._id}`)}
+          onClick={() => router.push(`user/view/${row._id}`)}
         />
       ),
     },

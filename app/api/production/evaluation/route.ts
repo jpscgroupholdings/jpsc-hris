@@ -14,7 +14,14 @@ export async function GET(req: NextRequest) {
     if (userId) filter.userId = userId;
 
     const evaluations = await Evaluation.find(filter)
-      .populate("userId", "firstName lastName")
+      .populate({
+        path: "userId",
+        select: "name firstName lastName email departmentId designationId",
+        populate: [
+          { path: "departmentId", select: "name" },
+          { path: "designationId", select: "name" },
+        ],
+      })
       .populate("evaluatedBy", "firstName lastName")
       .sort({ createdAt: -1 })
       .lean();
