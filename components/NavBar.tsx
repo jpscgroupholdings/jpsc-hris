@@ -32,15 +32,15 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboardIcon },
-  { label: "Attendance", path: "/attendance", icon: ClockIcon },
-  { label: "My Digital Wallet", path: "/digitalWallet", icon: WalletIcon },
-  { label: "Transactions", path: "/transaction", icon: HandCoinsIcon },
-  { label: "Employees", path: "/user", icon: UsersIcon },
+  { label: "Attendance", path: "/employee/attendance", icon: ClockIcon },
   {
-    label: "Employee's Performance",
-    path: "/performance",
-    icon: CheckCheckIcon,
+    label: "My Digital Wallet",
+    path: "/transaction/digitalWallet",
+    icon: WalletIcon,
   },
+  { label: "Transactions", path: "/transaction/txn", icon: HandCoinsIcon },
+  { label: "Employees", path: "/employee/user", icon: UsersIcon },
+  { label: "Production", path: "/production", icon: CheckCheckIcon },
   // { label: "Access Control", path: "/access", icon: DoorOpenIcon },
   { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
   { label: "Configurations", path: "/config", icon: SettingsIcon },
@@ -100,11 +100,11 @@ export default function NavBar({ children }: NavBarProps) {
           onClick={() => router.push("/dashboard")}
         >
           <Image
-            src="/images/jpsc_logo.png"
+            src={"/images/jpsc_logo.png"}
             alt="JPSC Logo"
             width={225}
             height={225}
-            quality={100}
+            quality={75}
             priority
             className="object-contain hidden lg:block"
           />
@@ -129,7 +129,7 @@ export default function NavBar({ children }: NavBarProps) {
         {/* User / sign out — shrink-0 so it never compresses */}
         <button
           onClick={() => {
-            router.push(`/user/view/${session?.user.id}`);
+            router.push(`/employee/user/view/${session?.user.id}`);
           }}
           className="flex items-center gap-2 shrink-0 hover:opacity-75 transition-opacity"
         >

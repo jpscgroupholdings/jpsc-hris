@@ -7,6 +7,7 @@ export type SearchSelectOption = {
   value: string;
   label: string;
   description?: string;
+  data?: any;
 };
 
 interface SearchSelectProps {
