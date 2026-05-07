@@ -32,4 +32,8 @@ export const auth = betterAuth({
       roleId: { type: "string", required: false },
     },
   },
+  session: {
+    expiresIn: 300, //5 minutes
+    updateAge: 60, //1minute
+  },
 });
