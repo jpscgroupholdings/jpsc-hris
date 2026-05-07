@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { NextResponse } from "next/server";
 
-// import { User } from "@/models/employee/user";p
+import "@/models/employee/user";
 import { Txn } from "@/models/transaction/txn";
 import { DigitalWallet } from "@/models/employee/digitalWallet";
 
