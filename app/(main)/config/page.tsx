@@ -175,7 +175,7 @@ export default function ConfigPage() {
   }, [roleRows, roleFilterText]); // FIXED: Was using departmentRows/depFilterText dependencies
 
   return (
-    <div className="p-4 space-y-8">
+    <div>
       {/* Departments Section */}
       <section>
         <div className="flex flex-row justify-end py-2">

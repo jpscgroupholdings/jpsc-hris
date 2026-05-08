@@ -22,6 +22,7 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
     const evaluation = await Evaluation.findById(id)
       .populate("userId", "firstName lastName designationId")
       .populate("evaluatedBy", "firstName lastName")
+      .populate("accomplishmentId")
       .lean();
 
     if (!evaluation) {

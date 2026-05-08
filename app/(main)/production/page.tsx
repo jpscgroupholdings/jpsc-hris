@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import DataTable from "react-data-table-component";
 import Button from "@/components/UI/Button";
-import { EditIcon, PlusCircleIcon, Trash2Icon } from "lucide-react";
+import { EditIcon, PlusCircleIcon, Trash2Icon, ViewIcon } from "lucide-react";
 import Loading from "@/components/Loading";
 import { format } from "date-fns";
 import FilterTable from "@/components/UI/FilterTable";
@@ -86,14 +86,25 @@ export default function CombinedMonitoringPage() {
     },
     {
       name: "Score",
-      selector: (row: any) =>
-        `${row.finalScore?.toFixed(2)} (${row.finalPercent}%)`,
+      cell: (row: any) => (
+        <span className={`${row.finalPercent} <=74 `}>
+          {row.finalScore?.toFixed(2)} ({row.finalPercent}%)
+        </span>
+      ),
       sortable: true,
     },
     {
       name: "Actions",
       cell: (row: any) => (
         <div className="flex gap-2 scale-75">
+          <Button
+            label="View"
+            icon={ViewIcon}
+            variant="success"
+            onClick={() =>
+              router.push(`/production/evaluation/view/${row._id}`)
+            }
+          />
           <Button
             label="Edit"
             icon={EditIcon}
@@ -102,12 +113,12 @@ export default function CombinedMonitoringPage() {
               router.push(`/production/evaluation/edit/${row._id}`)
             }
           />
-          <Button
+          {/* <Button
             label="Delete"
             icon={Trash2Icon}
             variant="danger"
             onClick={() => handleDeleteEval(row._id)}
-          />
+          /> */}
         </div>
       ),
     },
