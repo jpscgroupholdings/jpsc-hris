@@ -10,6 +10,7 @@ export interface Evaluation {
   _id: string;
   userId: User; //employee evaluated
   evaluatedBy: User; // manager
+  evaluationDate: Date;
   evaluationDateStart: Date;
   evaluationDateEnd: Date;
 
@@ -50,6 +51,7 @@ export interface Evaluation {
   dependabilityRemarks: string;
   communication: number;
   communicationRemarks: string;
+  optionalCompetencyDescription: string;
   optionalCompetency: number;
   optionalCompetencyRemarks: string;
 
@@ -89,6 +91,7 @@ export interface Evaluation {
 const EvaluationSchema = new Schema<Evaluation>({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   evaluatedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  evaluationDate: { type: Date, required: true },
   evaluationDateStart: { type: Date, required: true },
   evaluationDateEnd: { type: Date, required: true },
 
@@ -128,6 +131,7 @@ const EvaluationSchema = new Schema<Evaluation>({
   communication: { type: Number, required: true },
   communicationRemarks: { type: String, trim: true },
   optionalCompetency: { type: Number, required: true },
+  optionalCompetencyDescription: { type: String, trim: true },
   optionalCompetencyRemarks: { type: String, trim: true },
 
   leadership: { type: Number },

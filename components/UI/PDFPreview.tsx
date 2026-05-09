@@ -20,10 +20,10 @@ export function mapEvaluationData(raw: any) {
   const formatDate = (d: any) =>
     d
       ? new Date(d).toLocaleDateString("en-PH", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
       : "";
 
   // Section I — each KJF row has a "function" field and a "description/remarks" field

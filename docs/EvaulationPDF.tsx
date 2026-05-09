@@ -17,11 +17,20 @@ function getRatingLabel(percent: number): string {
 
 function getRatingColor(percent: number): string {
   if (!percent && percent !== 0) return "#1a1a2e";
-  if (percent >= 96) return "#15803d"; // ME  — deep green
-  if (percent >= 88) return "#22c55e"; // HC  — lighter green
-  if (percent >= 81) return "#84cc16"; // PC  — yellow-green
-  if (percent >= 75) return "#f97316"; // ND  — orange
-  return "#dc2626"; // U   — red
+  if (percent >= 96) return "#57bb8a";
+  if (percent >= 88) return "#a4c073";
+  if (percent >= 81) return "#f5ce62";
+  if (percent >= 75) return "#e6ad61";
+  return "#dd776e";
+}
+
+function getRatingInfo(score: number): { label: string; color: string } {
+  if (!score && score !== 0) return { label: "", color: "#1a1a2e" };
+  if (score >= 5) return { label: "Mastery & Excellence", color: "#57bb8a" };
+  if (score >= 4) return { label: "Highly Commendable", color: "#a4c073" };
+  if (score >= 3) return { label: "Proficient & Competent", color: "#f5ce62" };
+  if (score >= 2) return { label: "Needs Development", color: "#e6ad61" };
+  return { label: "Unsatisfactory", color: "#dd776e" };
 }
 
 function formatDate(d: any): string {
@@ -34,53 +43,47 @@ function formatDate(d: any): string {
 }
 
 // ─────────────────────────────────────────────
-// DATA MAPPER  (raw API response → flat PDF data)
+// DATA MAPPER
 // ─────────────────────────────────────────────
 
 export function mapEvaluationData(raw: any) {
-  const employeeName = raw?.userId
-    ? `${raw.userId.firstName ?? ""} ${raw.userId.lastName ?? ""}`.trim()
-    : "";
+  const firstName = raw?.userId?.firstName ?? "";
+  const lastName = raw?.userId?.lastName ?? "";
+  const employeeName =
+    (`${firstName} ${lastName}`.trim() || raw?.userId?.name) ?? "";
 
   const supervisorName = raw?.evaluatedBy
     ? `${raw.evaluatedBy.firstName ?? ""} ${raw.evaluatedBy.lastName ?? ""}`.trim()
     : "";
 
   return {
-    // Header
     employeeName,
     position: raw?.userId?.designationId?.name ?? "",
     department: raw?.userId?.departmentId?.name ?? "",
     supervisorName,
+    evaluationDate: formatDate(raw?.evaluationDate) ?? "",
     periodFrom: formatDate(raw?.evaluationDateStart),
     periodTo: formatDate(raw?.evaluationDateEnd),
 
-    // Section I — 6 KJF rows, each row has 2 job functions + 1 score
     kjf1a: raw?.jobFunction1 ?? "",
     kjf1b: raw?.jobFunction2 ?? "",
     kjf1Score: raw?.jobFunctionScore1 ?? "",
-
     kjf2a: raw?.jobFunction3 ?? "",
     kjf2b: raw?.jobFunction4 ?? "",
     kjf2Score: raw?.jobFunctionScore2 ?? "",
-
     kjf3a: raw?.jobFunction5 ?? "",
     kjf3b: raw?.jobFunction6 ?? "",
     kjf3Score: raw?.jobFunctionScore3 ?? "",
-
     kjf4a: raw?.jobFunction7 ?? "",
     kjf4b: raw?.jobFunction8 ?? "",
     kjf4Score: raw?.jobFunctionScore4 ?? "",
-
     kjf5a: raw?.jobFunction9 ?? "",
     kjf5b: raw?.jobFunction10 ?? "",
     kjf5Score: raw?.jobFunctionScore5 ?? "",
-
     kjf6a: raw?.jobFunction11 ?? "",
     kjf6b: raw?.jobFunction12 ?? "",
     kjf6Score: raw?.jobFunctionScore6 ?? "",
 
-    // Section II — Performance Competencies
     jobKnowledge: raw?.jobKnowledge ?? "",
     jobKnowledgeRemarks: raw?.jobKnowledgeRemarks ?? "",
     workQuality: raw?.workQuality ?? "",
@@ -98,37 +101,30 @@ export function mapEvaluationData(raw: any) {
     communication: raw?.communication ?? "",
     communicationRemarks: raw?.communicationRemarks ?? "",
     optionalCompetency: raw?.optionalCompetency ?? "",
+    optionalCompetencyDescription: raw?.optionalCompetencyDescription ?? "",
     optionalCompetencyRemarks: raw?.optionalCompetencyRemarks ?? "",
 
-    // Supervisory (optional)
     leadership: raw?.leadership ?? "",
     leadershipRemarks: raw?.leadershipRemarks ?? "",
     subordinatesDevelopment: raw?.subordinatesDevelopment ?? "",
     subordinatesDevelopmentRemarks: raw?.subordinatesDevelopmentRemarks ?? "",
 
-    // Section III — Accomplishments
-    // acc titles come from populated accomplishmentId; falls back gracefully if not populated
     acc1Title: raw?.accomplishmentId?.accomplishment1 ?? "Accomplishment 1",
     acc1Score: raw?.accomplishmentScore1 ?? "",
     acc1Remarks: raw?.accomplishmentRemarks1 ?? "",
-
     acc2Title: raw?.accomplishmentId?.accomplishment2 ?? "Accomplishment 2",
     acc2Score: raw?.accomplishmentScore2 ?? "",
     acc2Remarks: raw?.accomplishmentRemarks2 ?? "",
-
     acc3Title: raw?.accomplishmentId?.accomplishment3 ?? "Accomplishment 3",
     acc3Score: raw?.accomplishmentScore3 ?? "",
     acc3Remarks: raw?.accomplishmentRemarks3 ?? "",
-
     acc4Title: raw?.accomplishmentId?.accomplishment4 ?? "Accomplishment 4",
     acc4Score: raw?.accomplishmentScore4 ?? "",
     acc4Remarks: raw?.accomplishmentRemarks4 ?? "",
-
     acc5Title: raw?.accomplishmentId?.accomplishment5 ?? "Accomplishment 5",
     acc5Score: raw?.accomplishmentScore5 ?? "",
     acc5Remarks: raw?.accomplishmentRemarks5 ?? "",
 
-    // Section IV — Scores & Overall
     sectionScore1: raw?.sectionScore1 ?? "",
     sectionPercent1: raw?.sectionPercent1 ?? "",
     sectionScore2: raw?.sectionScore2 ?? "",
@@ -138,119 +134,126 @@ export function mapEvaluationData(raw: any) {
     finalScore: raw?.finalScore ?? "",
     finalPercent: raw?.finalPercent ?? "",
     finalRating: getRatingLabel(raw?.finalPercent),
+    fileName:
+      "Evaluation_Form_" +
+      employeeName.replaceAll(" ", "_") +
+      "(" +
+      formatDate(raw?.evaluationDateStart) +
+      "-" +
+      formatDate(raw?.evaluationDateEnd) +
+      ")",
   };
 }
 
 // ─────────────────────────────────────────────
-// STYLES
+// STYLES  (base font 11, headers scale up)
 // ─────────────────────────────────────────────
 
 const S = StyleSheet.create({
   page: {
-    fontSize: 8.5,
+    fontSize: 11,
     fontFamily: "Helvetica",
-    paddingHorizontal: 36,
-    paddingVertical: 30,
+    paddingHorizontal: 42,
+    paddingVertical: 32,
     color: "#111",
   },
 
-  // Header
-  headerWrap: { alignItems: "center", marginBottom: 6 },
-  companyName: {
-    fontSize: 12,
+  // ── Repeating page header ──
+  pageHeader: { alignItems: "center", marginBottom: 6 },
+  pageHeaderCompany: {
+    fontSize: 13,
     fontFamily: "Helvetica-Bold",
     textAlign: "center",
   },
-  subText: { fontSize: 7.5, textAlign: "center", color: "#555" },
-  formTitle: {
-    fontSize: 10,
+  pageHeaderSub: { fontSize: 9, textAlign: "center", color: "#555" },
+  pageHeaderTitle: {
+    fontSize: 11,
     fontFamily: "Helvetica-Bold",
     textAlign: "center",
-    marginTop: 5,
-    marginBottom: 8,
+    marginTop: 4,
+    marginBottom: 2,
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
   },
-  divider: { borderBottom: "1.5px solid #1a1a2e", marginBottom: 8 },
+  pageHeaderDivider: {
+    borderBottom: "1.5px solid #1a1a2e",
+    marginBottom: 8,
+    marginTop: 4,
+  },
 
-  // Info fields
-  infoRow: { flexDirection: "row", gap: 10, marginBottom: 4 },
+  // ── Employee info ──
+  infoRow: { flexDirection: "row", gap: 12, marginBottom: 5 },
   infoField: {
     flex: 1,
     flexDirection: "row",
     borderBottom: "0.75px solid #555",
-    paddingBottom: 2,
+    paddingBottom: 3,
   },
-  infoLabel: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 7.5,
-    marginRight: 4,
-  },
-  infoValue: { flex: 1, fontSize: 8, color: "#222" },
+  infoLabel: { fontFamily: "Helvetica-Bold", fontSize: 9.5, marginRight: 5 },
+  infoValue: { flex: 1, fontSize: 9.5, color: "#222" },
 
-  // Legend
+  // ── Legend ──
   legendWrap: {
     border: "0.75px solid #bbb",
-    padding: "5 8",
-    marginBottom: 8,
+    padding: "6 10",
+    marginBottom: 10,
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 3,
+    gap: 4,
     backgroundColor: "#f9f9f9",
   },
   legendTitle: {
     width: "100%",
     fontFamily: "Helvetica-Bold",
-    fontSize: 7.5,
-    marginBottom: 3,
+    fontSize: 9,
+    marginBottom: 4,
   },
-  legendItem: { width: "48%", fontSize: 7 },
+  legendItem: { width: "48%", fontSize: 8.5 },
   legendBold: { fontFamily: "Helvetica-Bold" },
-  legendSub: { width: "100%", fontSize: 7, marginTop: 3 },
+  legendSub: { width: "100%", fontSize: 8.5, marginTop: 4 },
 
-  // Section header
+  // ── Section header bar ──
   sectionHeader: {
     backgroundColor: "#1a1a2e",
     color: "white",
     fontFamily: "Helvetica-Bold",
-    fontSize: 8.5,
-    padding: "4 7",
+    fontSize: 10.5,
+    padding: "5 8",
     marginTop: 10,
-    marginBottom: 4,
-  },
-  instrText: {
-    fontSize: 7,
-    color: "#555",
     marginBottom: 5,
-    lineHeight: 1.45,
   },
+  instrText: { fontSize: 9, color: "#555", marginBottom: 6, lineHeight: 1.5 },
 
-  // KJF rows
+  // ── KJF rows ──
   kjfRow: {
     flexDirection: "row",
     borderBottom: "0.5px solid #ddd",
-    paddingVertical: 5,
+    paddingVertical: 6,
     gap: 6,
   },
-  kjfNum: { width: 14, fontFamily: "Helvetica-Bold", fontSize: 9 },
+  kjfNum: { width: 18, fontFamily: "Helvetica-Bold", fontSize: 11 },
   kjfBody: { flex: 1 },
-  kjfFuncText: { fontSize: 8, marginBottom: 1 },
-  kjfFuncBold: { fontFamily: "Helvetica-Bold", fontSize: 8 },
+  kjfFuncBold: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 10.5,
+    marginBottom: 2,
+  },
+  kjfFuncText: { fontSize: 10, marginBottom: 2 },
   importanceRow: {
     flexDirection: "row",
     gap: 4,
     marginTop: 2,
-    marginBottom: 3,
+    marginBottom: 4,
   },
-  importanceLabel: { fontFamily: "Helvetica-Bold", fontSize: 7 },
-  importanceValue: { fontSize: 7, color: "#333" },
+  importanceLabel: { fontFamily: "Helvetica-Bold", fontSize: 9 },
+  importanceValue: { fontSize: 9, color: "#333" },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 3 },
   chip: {
     border: "0.75px solid #999",
     borderRadius: 2,
-    paddingHorizontal: 5,
-    paddingVertical: 1.5,
-    fontSize: 6.5,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    fontSize: 8,
   },
   chipActive: {
     backgroundColor: "#1a1a2e",
@@ -260,179 +263,177 @@ const S = StyleSheet.create({
   scoreBox: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    marginTop: 3,
+    gap: 5,
+    marginTop: 4,
   },
-  scoreLabel: { fontFamily: "Helvetica-Bold", fontSize: 7 },
+  scoreLabel: { fontFamily: "Helvetica-Bold", fontSize: 9 },
   scoreValue: {
-    fontSize: 8,
+    fontSize: 10,
     fontFamily: "Helvetica-Bold",
     color: "#1a1a2e",
     border: "0.75px solid #1a1a2e",
-    paddingHorizontal: 6,
-    paddingVertical: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
     borderRadius: 2,
   },
 
-  // Competency rows
+  // ── Competency rows ──
   compRow: {
     flexDirection: "row",
     borderBottom: "0.5px solid #ddd",
-    paddingVertical: 4,
+    paddingVertical: 5,
     gap: 8,
   },
   compLeft: { flex: 2 },
   compRight: { flex: 1.2 },
-  compTitle: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: 8,
-    marginBottom: 2,
-  },
-  bulletRow: { flexDirection: "row", marginBottom: 1 },
-  bulletDot: { width: 9, fontSize: 7, color: "#555" },
-  bulletText: { flex: 1, fontSize: 7, color: "#444", lineHeight: 1.3 },
+  compTitle: { fontFamily: "Helvetica-Bold", fontSize: 10, marginBottom: 3 },
+  bulletRow: { flexDirection: "row", marginBottom: 2 },
+  bulletDot: { width: 10, fontSize: 9, color: "#555" },
+  bulletText: { flex: 1, fontSize: 9, color: "#444", lineHeight: 1.4 },
   remarksBox: {
     border: "0.5px solid #ccc",
-    minHeight: 40,
-    padding: "5 6",
-    marginTop: 4,
-    fontSize: 9,
+    minHeight: 48,
+    padding: "6 7",
+    marginTop: 5,
+    fontSize: 10.5,
     color: "#222",
     lineHeight: 1.5,
   },
 
-  // Computation box
+  // ── Computation box ──
   computeBox: {
     border: "0.75px solid #bbb",
-    padding: "5 8",
-    marginTop: 6,
+    padding: "6 10",
+    marginTop: 8,
     backgroundColor: "#f9f9f9",
   },
   computeTitle: {
     fontFamily: "Helvetica-Bold",
-    fontSize: 8,
-    marginBottom: 3,
+    fontSize: 9.5,
+    marginBottom: 4,
   },
-  computeRow: { flexDirection: "row", gap: 20, fontSize: 7.5 },
+  computeRow: { flexDirection: "row", gap: 16, fontSize: 9 },
   computeItem: { flex: 1 },
   computeBold: { fontFamily: "Helvetica-Bold" },
 
-  // Section III accomplishment rows
+  // ── Accomplishment rows ──
   accRow: {
     flexDirection: "row",
     borderBottom: "0.5px solid #ddd",
-    paddingVertical: 5,
+    paddingVertical: 6,
     gap: 6,
   },
-  accNum: { width: 14, fontFamily: "Helvetica-Bold", fontSize: 9 },
+  accNum: { width: 18, fontFamily: "Helvetica-Bold", fontSize: 11 },
   accBody: { flex: 1 },
-  accTitleText: { fontFamily: "Helvetica-Bold", fontSize: 8, marginBottom: 2 },
+  accTitleText: { fontFamily: "Helvetica-Bold", fontSize: 10, marginBottom: 3 },
   accRemarks: {
     border: "0.5px solid #ccc",
-    minHeight: 18,
-    padding: "2 4",
-    fontSize: 7.5,
+    minHeight: 20,
+    padding: "3 5",
+    fontSize: 9.5,
     color: "#222",
-    marginTop: 3,
+    marginTop: 4,
   },
 
-  // Section IV score table
-  scoreTable: { marginTop: 6, border: "0.75px solid #ccc" },
+  // ── Score table ──
+  scoreTable: { marginTop: 8, border: "0.75px solid #ccc" },
   scoreTableHeader: {
     flexDirection: "row",
     backgroundColor: "#1a1a2e",
     color: "white",
   },
-  scoreTableRow: {
-    flexDirection: "row",
-    borderBottom: "0.5px solid #ddd",
-  },
+  scoreTableRow: { flexDirection: "row", borderBottom: "0.5px solid #ddd" },
   stCol1: {
     flex: 3,
-    fontSize: 7.5,
-    padding: "3 6",
+    fontSize: 9.5,
+    padding: "4 7",
     borderRight: "0.5px solid #ddd",
   },
   stCol2: {
     flex: 1,
-    fontSize: 7.5,
-    padding: "3 6",
+    fontSize: 9.5,
+    padding: "4 7",
     textAlign: "center",
     borderRight: "0.5px solid #ddd",
   },
   stCol3: {
     flex: 1,
-    fontSize: 7.5,
-    padding: "3 6",
+    fontSize: 9.5,
+    padding: "4 7",
     textAlign: "center",
     borderRight: "0.5px solid #ddd",
   },
-  stCol4: {
-    flex: 1,
-    fontSize: 7.5,
-    padding: "3 6",
-    textAlign: "center",
-  },
+  stCol4: { flex: 1, fontSize: 9.5, padding: "4 7", textAlign: "center" },
   stBold: { fontFamily: "Helvetica-Bold" },
-  finalRow: { flexDirection: "row", backgroundColor: "#1a1a2e" },
+  finalRow: { flexDirection: "row" },
   finalLabel: {
     flex: 4,
-    fontSize: 8.5,
+    fontSize: 10,
     fontFamily: "Helvetica-Bold",
     color: "white",
-    padding: "4 6",
+    padding: "5 7",
     borderRight: "0.5px solid #444",
   },
   finalValue: {
     flex: 3,
-    fontSize: 9,
+    fontSize: 11,
     fontFamily: "Helvetica-Bold",
     color: "white",
-    padding: "4 6",
+    padding: "5 7",
   },
 
-  // Comments box
+  // ── Comments / signatures ──
   commentsBox: {
     border: "0.5px solid #ccc",
-    minHeight: 36,
-    padding: "4 6",
-    marginTop: 4,
-    fontSize: 7.5,
+    minHeight: 40,
+    padding: "5 7",
+    marginTop: 5,
+    fontSize: 9.5,
     color: "#222",
   },
-
-  // Signatures
-  sigSection: { marginTop: 10 },
-  sigRow: { flexDirection: "row", gap: 20, marginBottom: 10 },
+  sigSection: { marginTop: 12 },
+  sigRow: { flexDirection: "row", gap: 24, marginBottom: 12 },
   sigField: { flex: 1 },
-  sigLine: { borderBottom: "0.75px solid #333", marginBottom: 3 },
-  sigLabel: { fontFamily: "Helvetica-Bold", fontSize: 7.5 },
-  sigDate: { fontSize: 7, color: "#555", marginTop: 1 },
-
-  // Section VI objectives
-  objRow: {
-    flexDirection: "row",
-    borderBottom: "0.5px solid #eee",
-    paddingVertical: 3,
-    gap: 6,
-  },
-  objNum: { width: 14, fontFamily: "Helvetica-Bold", fontSize: 9 },
-  objBox: {
-    flex: 1,
-    minHeight: 24,
-    border: "0.5px solid #ccc",
-    padding: "2 4",
-    fontSize: 7.5,
-  },
+  sigLine: { borderBottom: "0.75px solid #333", marginBottom: 4 },
+  sigLabel: { fontFamily: "Helvetica-Bold", fontSize: 9.5 },
+  sigDate: { fontSize: 9, color: "#555", marginTop: 2 },
 
   confidential: {
-    fontSize: 6.5,
+    fontSize: 8,
     color: "#999",
     textAlign: "center",
-    marginTop: 10,
+    marginTop: 12,
     fontStyle: "italic",
   },
 });
+
+// ─────────────────────────────────────────────
+// REUSABLE PAGE HEADER
+// ─────────────────────────────────────────────
+
+const PageHeader = ({
+  data,
+}: {
+  data: ReturnType<typeof mapEvaluationData>;
+}) => (
+  <View>
+    <View style={S.pageHeader}>
+      <Text style={S.pageHeaderCompany}>JPSC GROUP HOLDINGS INC.</Text>
+      <Text style={S.pageHeaderSub}>
+        9G Century Spire Tower, General Luna Street, Barangay Poblacion, Makati
+        City
+      </Text>
+      <Text style={S.pageHeaderSub}>
+        Office No.: (02) 5310-5608 | Email: hr.jpsgroup2022@gmail.com
+      </Text>
+      <Text style={S.pageHeaderTitle}>
+        Monthly Employee Performance Evaluation
+      </Text>
+    </View>
+    <View style={S.pageHeaderDivider} />
+    {/* Employee info strip — repeated on every page */}
+  </View>
+);
 
 // ─────────────────────────────────────────────
 // SUB-COMPONENTS
@@ -574,12 +575,6 @@ const COMPETENCIES = [
       "Receptive to feedback.",
     ],
   },
-  {
-    title: "OPTIONAL COMPETENCY",
-    scoreKey: "optionalCompetency",
-    remarksKey: "optionalCompetencyRemarks",
-    bullets: [],
-  },
 ];
 
 const SUPERVISORY_COMPETENCIES = [
@@ -590,13 +585,12 @@ const SUPERVISORY_COMPETENCIES = [
     bullets: [
       "Sets realistic expectations/standards.",
       "Encourages and acknowledges productive performance.",
-      "Insures that assignments are completed in a timely and accurate manner.",
+      "Ensures assignments are completed in a timely and accurate manner.",
       "Is accessible/responsive to staff; communicates clearly and in a timely manner.",
       "Maintains a positive work environment.",
       "Resolves disputes. Facilitates change.",
       "Encourages teamwork/shared visions and goals.",
       "Applies policies/procedures equitably to all staff.",
-      "Makes efforts toward achieving a diverse workforce.",
     ],
   },
   {
@@ -629,51 +623,34 @@ const SECTION_III_IMPORTANCE = [
 export const EvaluationPDF = ({ data: raw }: { data: any }) => {
   const data = mapEvaluationData(raw);
   const isSupervisory = !!raw?.leadership;
+  const hasOptional = !!data.optionalCompetencyDescription?.trim();
 
   return (
-    <Document>
-      {/* ═══════════════════════════════════════
-          PAGE 1 — Header + Legend + Section I
-      ═══════════════════════════════════════ */}
+    <Document title={data.fileName}>
+      {/* ═══════════════ PAGE 1 — Header + Legend + Section I ═══════════════ */}
       <Page size="A4" style={S.page}>
-        {/* HEADER */}
-        <View style={S.headerWrap}>
-          <Text style={S.companyName}>JPSC GROUP HOLDINGS INC.</Text>
-          <Text style={S.subText}>
-            9G Century Spire Tower, General Luna Street, Barangay Poblacion,
-            Makati City
-          </Text>
-          <Text style={S.subText}>
-            Office No.: (02) 5310-5608 | Email: hr.jpsgroup2022@gmail.com
-          </Text>
-          <Text style={S.formTitle}>
-            Monthly Employee Performance Evaluation
-          </Text>
-        </View>
-        <View style={S.divider} />
+        <PageHeader data={data} />
 
-        {/* EMPLOYEE INFO */}
+        {/* LEGEND */}
         <View style={S.infoRow}>
           <View style={S.infoField}>
-            <Text style={S.infoLabel}>Employee's Name:</Text>
+            <Text style={S.infoLabel}>Employee:</Text>
             <Text style={S.infoValue}>{data.employeeName}</Text>
           </View>
           <View style={S.infoField}>
             <Text style={S.infoLabel}>Position:</Text>
             <Text style={S.infoValue}>{data.position}</Text>
           </View>
-        </View>
-        <View style={S.infoRow}>
           <View style={S.infoField}>
-            <Text style={S.infoLabel}>Supervisor's Name:</Text>
+            <Text style={S.infoLabel}>Supervisor:</Text>
             <Text style={S.infoValue}>{data.supervisorName}</Text>
           </View>
+        </View>
+        <View style={[S.infoRow, { marginBottom: 8 }]}>
           <View style={S.infoField}>
             <Text style={S.infoLabel}>Department:</Text>
             <Text style={S.infoValue}>{data.department}</Text>
           </View>
-        </View>
-        <View style={[S.infoRow, { marginBottom: 8 }]}>
           <View style={S.infoField}>
             <Text style={S.infoLabel}>Period From:</Text>
             <Text style={S.infoValue}>{data.periodFrom}</Text>
@@ -683,8 +660,6 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
             <Text style={S.infoValue}>{data.periodTo}</Text>
           </View>
         </View>
-
-        {/* LEGEND */}
         <View style={S.legendWrap}>
           <Text style={S.legendTitle}>
             Use the following codes to complete Sections I–III:
@@ -702,29 +677,28 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
               {range}
             </Text>
           ))}
+
           <Text style={S.legendSub}>
-            <Text style={S.legendBold}>IMPORTANCE RANKINGS: </Text>3 – Critical
-            | 2 – Very Important | 1 – Important
+            <Text style={S.legendBold}>IMPORTANCE: </Text>3 – Critical | 2 –
+            Very Important | 1 – Important
             {"     "}
-            <Text style={S.legendBold}>RATINGS: </Text>
-            ME=5 HC=4 PC=3 ND=2 U=1
+            <Text style={S.legendBold}>RATINGS: </Text>ME=5 HC=4 PC=3 ND=2 U=1
           </Text>
         </View>
 
         {/* SECTION I */}
         <Text style={S.sectionHeader}>I. KEY JOB FUNCTION EVALUATION</Text>
+
         <Text style={S.instrText}>
           Evaluate key job functions based on the employee's actual performance.
-          Assign an importance ranking (Critical=3, Very Important=2,
-          Important=1) and a rating (ME=5, HC=4, PC=3, ND=2, U=1). Each row
-          contains two related job functions sharing one score.
+          Each row contains two related job functions sharing one score. Assign
+          an importance ranking and rating using the codes above.
         </Text>
 
         {[1, 2, 3, 4, 5, 6].map((n) => {
           const fa = data[`kjf${n}a` as keyof typeof data] as string;
           const fb = data[`kjf${n}b` as keyof typeof data] as string;
           const score = data[`kjf${n}Score` as keyof typeof data];
-          const importance = KJF_IMPORTANCE[n - 1];
           return (
             <View key={n} style={S.kjfRow}>
               <Text style={S.kjfNum}>{n}.</Text>
@@ -733,30 +707,67 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
                 {fb ? <Text style={S.kjfFuncText}>{fb}</Text> : null}
                 <View style={S.importanceRow}>
                   <Text style={S.importanceLabel}>Importance: </Text>
-                  <Text style={S.importanceValue}>{importance}</Text>
+                  <Text style={S.importanceValue}>{KJF_IMPORTANCE[n - 1]}</Text>
                 </View>
-                <RatingChips selected={score} />
-                <View style={S.scoreBox}>
-                  <Text style={S.scoreLabel}>Score:</Text>
-                  <Text style={S.scoreValue}>{String(score)}</Text>
-                </View>
+                {(() => {
+                  const info = getRatingInfo(Number(score));
+                  return (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 8,
+                        marginTop: 4,
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: info.color,
+                          borderRadius: 3,
+                          paddingHorizontal: 10,
+                          paddingVertical: 3,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 11,
+                            fontFamily: "Helvetica-Bold",
+                            color: "white",
+                          }}
+                        >
+                          {String(score)}
+                        </Text>
+                      </View>
+                      {info.label ? (
+                        <Text
+                          style={{
+                            fontSize: 9.5,
+                            fontFamily: "Helvetica-Bold",
+                            color: info.color,
+                          }}
+                        >
+                          {info.label}
+                        </Text>
+                      ) : null}
+                    </View>
+                  );
+                })()}
               </View>
             </View>
           );
         })}
       </Page>
 
-      {/* ═══════════════════════════════════════
-          PAGE 2a — Section II: Competencies 1–4
-      ═══════════════════════════════════════ */}
+      {/* ═══════════════ PAGE 2a — Section II Competencies 1–4 ═══════════════ */}
       <Page size="A4" style={S.page}>
+        <PageHeader data={data} />
         <Text style={S.sectionHeader}>
           II. PERFORMANCE COMPETENCY EVALUATION (1 of 2)
         </Text>
         <Text style={S.instrText}>
           Evaluate performance competencies based on actual performance. Select
-          the appropriate rating (ME=5, HC=4, PC=3, ND=2, U=1). Provide comments
-          with specific examples. Write "N/A" if not applicable.
+          the appropriate rating and provide comments with specific examples.
+          Write "N/A" if not applicable.
         </Text>
 
         {COMPETENCIES.slice(0, 4).map((comp) => (
@@ -785,10 +796,9 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
         ))}
       </Page>
 
-      {/* ═══════════════════════════════════════
-          PAGE 2b — Section II: Competencies 5–9
-      ═══════════════════════════════════════ */}
+      {/* ═══════════════ PAGE 2b — Section II Competencies 5–8 + Optional ═══════════════ */}
       <Page size="A4" style={S.page}>
+        <PageHeader data={data} />
         <Text style={S.sectionHeader}>
           II. PERFORMANCE COMPETENCY EVALUATION (2 of 2)
         </Text>
@@ -821,13 +831,79 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
             </View>
           </View>
         ))}
+
+        {/* Optional Competency — only render description if filled */}
+        <View
+          style={[
+            S.compRow,
+            {
+              borderColor: hasOptional ? "#a3e4c1" : "#ddd",
+              borderWidth: hasOptional ? 0.75 : 0.5,
+              borderRadius: 2,
+              marginTop: 4,
+            },
+          ]}
+        >
+          <View style={S.compLeft}>
+            <Text style={S.compTitle}>OPTIONAL COMPETENCY</Text>
+            {hasOptional ? (
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: "#333",
+                  marginTop: 3,
+                  lineHeight: 1.4,
+                }}
+              >
+                {data.optionalCompetencyDescription}
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  fontSize: 9,
+                  color: "#aaa",
+                  fontStyle: "italic",
+                  marginTop: 3,
+                }}
+              >
+                Not used for this evaluation.
+              </Text>
+            )}
+          </View>
+          <View style={S.compRight}>
+            {hasOptional ? (
+              <>
+                <RatingChips selected={data.optionalCompetency as number} />
+                <View style={S.remarksBox}>
+                  <Text>{data.optionalCompetencyRemarks ?? ""}</Text>
+                </View>
+                <View style={S.scoreBox}>
+                  <Text style={S.scoreLabel}>Score:</Text>
+                  <Text style={S.scoreValue}>
+                    {String(data.optionalCompetency ?? "")}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <Text
+                style={{
+                  fontSize: 9,
+                  color: "#aaa",
+                  fontStyle: "italic",
+                  marginTop: 3,
+                }}
+              >
+                N/A
+              </Text>
+            )}
+          </View>
+        </View>
       </Page>
 
-      {/* ═══════════════════════════════════════
-          PAGE 3 — Supervisory + Section III
-      ═══════════════════════════════════════ */}
+      {/* ═══════════════ PAGE 3 — Supervisory + Section III ═══════════════ */}
       <Page size="A4" style={S.page}>
-        {/* SUPERVISORY — rendered regardless; scores show if filled */}
+        <PageHeader data={data} />
+
         <Text style={S.sectionHeader}>SUPERVISORY PERFORMANCE REVIEW</Text>
         <Text style={S.instrText}>
           Complete this section only for employees who supervise other staff. If
@@ -859,8 +935,7 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
           </View>
         ))}
 
-        {/* Supervisory computation */}
-        <View style={S.computeBox}>
+        {/* <View style={S.computeBox}>
           <Text style={S.computeTitle}>
             SUPERVISORY PERFORMANCE COMPUTATION
           </Text>
@@ -880,47 +955,42 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
             <Text style={S.computeItem}>
               <Text style={S.computeBold}>Supervisory Score (÷2): </Text>
               {isSupervisory
-                ? String(
-                    (
-                      ((Number(data.leadership) || 0) +
-                        (Number(data.subordinatesDevelopment) || 0)) /
-                      2
-                    ).toFixed(2),
-                  )
+                ? (
+                    ((Number(data.leadership) || 0) +
+                      (Number(data.subordinatesDevelopment) || 0)) /
+                    2
+                  ).toFixed(2)
                 : "N/A"}
             </Text>
             <Text style={S.computeItem}>
               <Text style={S.computeBold}>Supervisory %: </Text>
               {isSupervisory
-                ? String(
-                    (
-                      (((Number(data.leadership) || 0) +
-                        (Number(data.subordinatesDevelopment) || 0)) /
-                        2 /
-                        5) *
-                      100
-                    ).toFixed(1),
-                  ) + "%"
+                ? (
+                    (((Number(data.leadership) || 0) +
+                      (Number(data.subordinatesDevelopment) || 0)) /
+                      2 /
+                      5) *
+                    100
+                  ).toFixed(1) + "%"
                 : "N/A"}
             </Text>
           </View>
-        </View>
-
-        {/* SECTION III */}
-        <Text style={[S.sectionHeader, { marginTop: 10 }]}>
+        </View> */}
+      </Page>
+      <Page size="A4" style={S.page}>
+        <PageHeader data={data} />
+        <Text style={[S.sectionHeader, { marginTop: 12 }]}>
           III. EVALUATION OF PERFORMANCE AND ACCOMPLISHMENTS
         </Text>
         <Text style={S.instrText}>
           List key accomplishments achieved during the evaluation period. Assign
-          an importance ranking (Critical=3, Very Important=2, Important=1) and
-          evaluate the level of achievement (ME=5, HC=4, PC=3, ND=2, U=1).
+          an importance ranking and evaluate the level of achievement.
         </Text>
 
         {[1, 2, 3, 4, 5].map((n) => {
           const title = data[`acc${n}Title` as keyof typeof data] as string;
           const score = data[`acc${n}Score` as keyof typeof data];
           const remarks = data[`acc${n}Remarks` as keyof typeof data] as string;
-          const importance = SECTION_III_IMPORTANCE[n - 1];
           return (
             <View key={n} style={S.accRow}>
               <Text style={S.accNum}>{n}.</Text>
@@ -928,7 +998,9 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
                 <Text style={S.accTitleText}>{title}</Text>
                 <View style={S.importanceRow}>
                   <Text style={S.importanceLabel}>Importance: </Text>
-                  <Text style={S.importanceValue}>{importance}</Text>
+                  <Text style={S.importanceValue}>
+                    {SECTION_III_IMPORTANCE[n - 1]}
+                  </Text>
                 </View>
                 <RatingChips selected={score} />
                 <View style={S.accRemarks}>
@@ -944,55 +1016,36 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
         })}
       </Page>
 
-      {/* ═══════════════════════════════════════
-          PAGE 4 — Section IV + V + VI
-      ═══════════════════════════════════════ */}
+      {/* ═══════════════ PAGE 4 — Section IV + V + VI ═══════════════ */}
       <Page size="A4" style={S.page}>
-        {/* SECTION IV */}
+        <PageHeader data={data} />
+
         <Text style={S.sectionHeader}>IV. OVERALL RATING</Text>
         <Text style={S.instrText}>
           Overall rating is based on Section I (30%), Section II (35%), and
-          Section III (35%) using prescribed weights per JPSC Group Holdings
-          Inc. evaluation procedures.
+          Section III (35%) using prescribed weights.
         </Text>
 
         <View style={S.scoreTable}>
-          {/* Table header */}
           <View style={S.scoreTableHeader}>
-            <Text
-              style={[
-                S.stCol1,
-                { color: "white", fontFamily: "Helvetica-Bold" },
-              ]}
-            >
-              Section
-            </Text>
-            <Text
-              style={[
-                S.stCol2,
-                { color: "white", fontFamily: "Helvetica-Bold" },
-              ]}
-            >
-              Weight
-            </Text>
-            <Text
-              style={[
-                S.stCol3,
-                { color: "white", fontFamily: "Helvetica-Bold" },
-              ]}
-            >
-              Score
-            </Text>
-            <Text
-              style={[
-                S.stCol4,
-                { color: "white", fontFamily: "Helvetica-Bold" },
-              ]}
-            >
-              Percentage
-            </Text>
+            {["Section", "Weight", "Score", "Percentage"].map((h) => (
+              <Text
+                key={h}
+                style={[
+                  h === "Section"
+                    ? S.stCol1
+                    : h === "Weight"
+                      ? S.stCol2
+                      : h === "Score"
+                        ? S.stCol3
+                        : S.stCol4,
+                  { color: "white", fontFamily: "Helvetica-Bold" },
+                ]}
+              >
+                {h}
+              </Text>
+            ))}
           </View>
-          {/* Rows */}
           {[
             {
               label: "I – Key Job Functions",
@@ -1018,28 +1071,22 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
               <Text style={S.stCol2}>{row.weight}</Text>
               <Text style={S.stCol3}>{String(row.score ?? "")}</Text>
               <Text style={S.stCol4}>
-                {row.pct !== "" && row.pct !== undefined && row.pct !== null
-                  ? `${row.pct}%`
-                  : ""}
+                {row.pct != null && row.pct !== "" ? `${row.pct}%` : ""}
               </Text>
             </View>
           ))}
-          {/* Overall */}
           <View style={[S.scoreTableRow, { backgroundColor: "#e8e8e8" }]}>
             <Text style={[S.stCol1, S.stBold]}>Overall Score</Text>
-            <Text style={S.stCol2}></Text>
+            <Text style={S.stCol2} />
             <Text style={[S.stCol3, S.stBold]}>
               {String(data.finalScore ?? "")}
             </Text>
             <Text style={[S.stCol4, S.stBold]}>
-              {data.finalPercent !== "" &&
-              data.finalPercent !== undefined &&
-              data.finalPercent !== null
+              {data.finalPercent != null && data.finalPercent !== ""
                 ? `${data.finalPercent}%`
                 : ""}
             </Text>
           </View>
-          {/* Final Rating */}
           <View
             style={[
               S.finalRow,
@@ -1047,127 +1094,83 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
             ]}
           >
             <Text style={S.finalLabel}>Final Performance Rating</Text>
-            <Text style={[S.finalValue, { fontSize: 10 }]}>
+            <Text style={[S.finalValue, { fontSize: 11 }]}>
               {data.finalRating}
             </Text>
           </View>
         </View>
 
-        <Text style={[S.instrText, { marginTop: 6 }]}>
-          Performance problems or concerns should be discussed with your Staff
-          Human Resources Partner PRIOR to meeting with the employee.
-        </Text>
         <View style={S.commentsBox}>
-          <Text style={{ fontSize: 6.5, color: "#aaa" }}>
+          <Text style={{ fontSize: 8, color: "#aaa" }}>
             Additional comments supporting the overall rating (optional):
           </Text>
         </View>
 
-        {/* SECTION V — SIGNATURES */}
-        <Text style={[S.sectionHeader, { marginTop: 10 }]}>
+        {/* SECTION V */}
+        <Text style={[S.sectionHeader, { marginTop: 12 }]}>
           V. REQUIRED SIGNATURES
-        </Text>
-        <Text style={S.instrText}>
-          Print this form and submit with original signatures to Staff Human
-          Resources.
         </Text>
         <View style={S.sigSection}>
           <View style={S.sigRow}>
             <View style={S.sigField}>
-              <View style={S.sigLine} />
-              <Text style={S.sigLabel}>SIGNATURE OF IMMEDIATE SUPERVISOR</Text>
-              <Text style={S.sigDate}>Date: _______________</Text>
+              <Text>{data.supervisorName}</Text>
+              <Text style={S.sigLabel}>NAME OF IMMEDIATE SUPERVISOR</Text>
+              <Text style={S.sigDate}>Date: {data.evaluationDate}</Text>
             </View>
             <View style={S.sigField}>
-              <View style={S.sigLine} />
-              <Text style={S.sigLabel}>SIGNATURE OF HR DIRECTOR</Text>
-              <Text style={S.sigDate}>Date: _______________</Text>
+              <Text>Jonillo Enero</Text>
+              <Text style={S.sigLabel}>NAME OF HR DIRECTOR</Text>
+              <Text style={S.sigDate}>Date: {data.evaluationDate}</Text>
             </View>
           </View>
           <View style={{ width: "48%" }}>
-            <View style={S.sigLine} />
-            <Text style={S.sigLabel}>EMPLOYEE SIGNATURE</Text>
-            <Text style={S.sigDate}>Date: _______________</Text>
+            <Text>{data.employeeName}</Text>
+            <Text style={S.sigLabel}>NAME OF EMPLOYEE</Text>
+            <Text style={S.sigDate}>Date: {data.evaluationDate}</Text>
           </View>
-          <Text style={[S.instrText, { marginTop: 5 }]}>
-            Your signature indicates neither agreement nor disagreement with
-            this evaluation, but confirms that you have read it and it has been
-            discussed with you. You may attach comments if you wish.
+          <Text style={[S.instrText, { marginTop: 6 }]}>
+            *This document is computer-generated and does not require the
+            Company’s stamp or an authorized signatory's signature in order to
+            be considered valid and binding. It has been produced by the system
+            in the ordinary course of business.*
           </Text>
         </View>
 
-        {/* SECTION VI — ACCOMPLISHMENT SCORES & REMARKS */}
-        <Text style={[S.sectionHeader, { marginTop: 10 }]}>
-          VI. PERFORMANCE GOALS AND OBJECTIVES FOR NEXT MONTH
+        {/* SECTION VI */}
+        <Text style={[S.sectionHeader, { marginTop: 12 }]}>
+          VI. ACCOMPLISHMENT SCORES & REMARKS
         </Text>
         <Text style={S.instrText}>
           Summary of accomplishment scores and evaluation remarks for the
           current review period.
         </Text>
 
-        {/* Table header */}
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: "#1a1a2e",
-            marginBottom: 0,
-          }}
-        >
-          <Text
-            style={{
-              flex: 0.4,
-              fontSize: 7.5,
-              fontFamily: "Helvetica-Bold",
-              color: "white",
-              padding: "3 6",
-              borderRight: "0.5px solid #444",
-            }}
-          >
-            #
-          </Text>
-          <Text
-            style={{
-              flex: 3,
-              fontSize: 7.5,
-              fontFamily: "Helvetica-Bold",
-              color: "white",
-              padding: "3 6",
-              borderRight: "0.5px solid #444",
-            }}
-          >
-            Accomplishment Title
-          </Text>
-          <Text
-            style={{
-              flex: 1,
-              fontSize: 7.5,
-              fontFamily: "Helvetica-Bold",
-              color: "white",
-              padding: "3 6",
-              borderRight: "0.5px solid #444",
-              textAlign: "center",
-            }}
-          >
-            Score
-          </Text>
-          <Text
-            style={{
-              flex: 2.5,
-              fontSize: 7.5,
-              fontFamily: "Helvetica-Bold",
-              color: "white",
-              padding: "3 6",
-            }}
-          >
-            Remarks
-          </Text>
+        <View style={{ flexDirection: "row", backgroundColor: "#1a1a2e" }}>
+          {[
+            ["#", 0.4],
+            ["Accomplishment Title", 3],
+            ["Score", 1],
+            ["Remarks", 2.5],
+          ].map(([label, flex]) => (
+            <Text
+              key={label as string}
+              style={{
+                flex: flex as number,
+                fontSize: 9,
+                fontFamily: "Helvetica-Bold",
+                color: "white",
+                padding: "4 6",
+                borderRight: "0.5px solid #444",
+              }}
+            >
+              {label as string}
+            </Text>
+          ))}
         </View>
-
         {[1, 2, 3, 4, 5].map((n) => {
           const title = data[`acc${n}Title` as keyof typeof data] as string;
           const score = data[`acc${n}Score` as keyof typeof data];
           const remarks = data[`acc${n}Remarks` as keyof typeof data] as string;
-          const isEven = n % 2 === 0;
           return (
             <View
               key={n}
@@ -1176,16 +1179,16 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
                 borderBottom: "0.5px solid #ddd",
                 borderLeft: "0.75px solid #ccc",
                 borderRight: "0.75px solid #ccc",
-                backgroundColor: isEven ? "#f9f9f9" : "white",
-                minHeight: 28,
+                backgroundColor: n % 2 === 0 ? "#f9f9f9" : "white",
+                minHeight: 30,
               }}
             >
               <Text
                 style={{
                   flex: 0.4,
-                  fontSize: 8,
+                  fontSize: 10,
                   fontFamily: "Helvetica-Bold",
-                  padding: "4 6",
+                  padding: "5 6",
                   borderRight: "0.5px solid #ddd",
                   color: "#1a1a2e",
                 }}
@@ -1195,8 +1198,8 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
               <Text
                 style={{
                   flex: 3,
-                  fontSize: 8,
-                  padding: "4 6",
+                  fontSize: 10,
+                  padding: "5 6",
                   borderRight: "0.5px solid #ddd",
                 }}
               >
@@ -1205,7 +1208,7 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
               <View
                 style={{
                   flex: 1,
-                  padding: "4 6",
+                  padding: "5 6",
                   borderRight: "0.5px solid #ddd",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1213,11 +1216,11 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
               >
                 <Text
                   style={{
-                    fontSize: 9,
+                    fontSize: 11,
                     fontFamily: "Helvetica-Bold",
                     color: "white",
                     backgroundColor: "#1a1a2e",
-                    paddingHorizontal: 7,
+                    paddingHorizontal: 8,
                     paddingVertical: 2,
                     borderRadius: 3,
                     textAlign: "center",
@@ -1229,8 +1232,8 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
               <Text
                 style={{
                   flex: 2.5,
-                  fontSize: 8,
-                  padding: "4 6",
+                  fontSize: 10,
+                  padding: "5 6",
                   color: "#333",
                 }}
               >
@@ -1239,8 +1242,6 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
             </View>
           );
         })}
-
-        {/* Bottom border */}
         <View
           style={{
             borderBottom: "0.75px solid #ccc",
@@ -1250,15 +1251,14 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
           }}
         />
 
-        {/* CONCURRENCE */}
-        <View style={[S.sigRow, { marginTop: 10 }]}>
+        <View style={[S.sigRow, { marginTop: 12 }]}>
           <View style={S.sigField}>
             <View style={S.sigLine} />
-            <Text style={S.sigLabel}>EMPLOYEE'S NAME</Text>
+            <Text style={S.sigLabel}>EMPLOYEE'S NAME & SIGNATURE</Text>
           </View>
           <View style={S.sigField}>
             <View style={S.sigLine} />
-            <Text style={S.sigLabel}>SUPERVISOR NAME</Text>
+            <Text style={S.sigLabel}>SUPERVISOR'S NAME & SIGNATURE</Text>
           </View>
         </View>
 

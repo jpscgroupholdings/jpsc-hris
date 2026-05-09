@@ -4,8 +4,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
-  Save,
-  ArrowLeft,
   Target,
   User as UserIcon,
   ClipboardCheck,
@@ -14,7 +12,6 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-import Button from "@/components/UI/Button";
 import { SearchSelectOption } from "@/components/UI/SelectField";
 import { Evaluation } from "@/models/production/evaluation";
 
@@ -33,11 +30,15 @@ const STEPS = [
   { id: 4, label: "Summary", icon: Calculator, color: "indigo" },
 ];
 
+const LAST_INPUT_STEP = 3; // Step 3 has the submit button; Step 4 is read-only summary
+
 export default function EvaluationForm({ initialData }: { initialData?: any }) {
-  console.log("initialdata", initialData);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+
+  // savedData is populated after a successful submit — passed to SummaryStep
+  const [savedData, setSavedData] = useState<any>(initialData ?? null);
 
   const [userOptions, setUserOptions] = useState<SearchSelectOption[]>([]);
   const [accomplishmentOptions, setAccomplishmentOptions] = useState<
@@ -87,6 +88,8 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     communication: initialData?.communication || 0,
     communicationRemarks: initialData?.communicationRemarks || "",
     optionalCompetency: initialData?.optionalCompetency || 0,
+    optionalCompetencyDescription:
+      initialData?.optionalCompetencyDescription || "",
     optionalCompetencyRemarks: initialData?.optionalCompetencyRemarks || "",
     leadership: initialData?.leadership || 0,
     leadershipRemarks: initialData?.leadershipRemarks || "",
@@ -106,23 +109,19 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     accomplishmentRemarks5: initialData?.accomplishmentRemarks5 || "",
   });
 
+  // Sync initialData into form (edit mode)
   useEffect(() => {
     if (initialData) {
       setForm({
-        // Extracting IDs from objects for the dropdowns
         userId: initialData.userId?._id || initialData.userId || "",
         evaluatedBy:
           initialData.evaluatedBy?._id || initialData.evaluatedBy || "",
-
-        // Formatting dates to YYYY-MM-DD for HTML date inputs
         evaluationDateStart: initialData.evaluationDateStart
           ? initialData.evaluationDateStart.split("T")[0]
           : "",
         evaluationDateEnd: initialData.evaluationDateEnd
           ? initialData.evaluationDateEnd.split("T")[0]
           : "",
-
-        // Section 1
         jobFunction1: initialData.jobFunction1 || "",
         jobFunction2: initialData.jobFunction2 || "",
         jobFunctionScore1: initialData.jobFunctionScore1 || 0,
@@ -141,8 +140,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         jobFunction11: initialData.jobFunction11 || "",
         jobFunction12: initialData.jobFunction12 || "",
         jobFunctionScore6: initialData.jobFunctionScore6 || 0,
-
-        // Section 2
         jobKnowledge: initialData.jobKnowledge || 0,
         jobKnowledgeRemarks: initialData.jobKnowledgeRemarks || "",
         workQuality: initialData.workQuality || 0,
@@ -160,16 +157,14 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         communication: initialData.communication || 0,
         communicationRemarks: initialData.communicationRemarks || "",
         optionalCompetency: initialData.optionalCompetency || 0,
+        optionalCompetencyDescription:
+          initialData.optionalCompetencyDescription || "",
         optionalCompetencyRemarks: initialData.optionalCompetencyRemarks || "",
-
-        // Managerial
         leadership: initialData.leadership || 0,
         leadershipRemarks: initialData.leadershipRemarks || "",
         subordinatesDevelopment: initialData.subordinatesDevelopment || 0,
         subordinatesDevelopmentRemarks:
           initialData.subordinatesDevelopmentRemarks || "",
-
-        // Section 3
         accomplishmentId: initialData.accomplishmentId || "",
         accomplishmentScore1: initialData.accomplishmentScore1 || 0,
         accomplishmentRemarks1: initialData.accomplishmentRemarks1 || "",
@@ -184,6 +179,8 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
       });
     }
   }, [initialData]);
+
+  // Fetch dropdown data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -217,8 +214,8 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     fetchData();
   }, []);
 
+  // Score calculations (live, used for section score badges while filling form)
   const calculations = useMemo(() => {
-    // Section 1: weighted scores — pairs (1&2)*3, (3&4)*2, (5&6)*1 → divide by 12
     const s1Weighted =
       form.jobFunctionScore1! * 3 +
       form.jobFunctionScore2! * 3 +
@@ -229,8 +226,8 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     const s1Score = s1Weighted / 12;
     const s1Percent = (s1Score / 5) * 100;
 
-    // Section 2: sum all 8 competency scores ÷ 8 ÷ 5
-    // Note: leadership & subordinatesDevelopment are managerial extras, not in the /8 base
+    // If optionalCompetencyDescription is filled, include optionalCompetency in divisor (/9 instead of /8)
+    const hasOptionalCompetency = !!form.optionalCompetencyDescription?.trim();
     const s2Sum =
       form.jobKnowledge! +
       form.workQuality! +
@@ -239,11 +236,12 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
       form.initiative! +
       form.cooperation! +
       form.dependability! +
-      form.communication!;
-    const s2Score = s2Sum / 8 / 5;
+      form.communication! +
+      (hasOptionalCompetency ? form.optionalCompetency! : 0);
+    const s2Divisor = hasOptionalCompetency ? 9 : 8;
+    const s2Score = s2Sum / s2Divisor;
     const s2Percent = (s2Score / 5) * 100;
 
-    // Section 3: weighted scores — (1&2)*3, (3&4)*2, 5*1 → divide by 11
     const s3Weighted =
       form.accomplishmentScore1! * 3 +
       form.accomplishmentScore2! * 3 +
@@ -253,7 +251,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     const s3Score = s3Weighted / 11;
     const s3Percent = (s3Score / 5) * 100;
 
-    // Overall: Section 1 = 30%, Section 2 = 35%, Section 3 = 35%
     const finalScore = s1Score * 0.3 + s2Score * 0.35 + s3Score * 0.35;
     const finalPercent = (finalScore / 5) * 100;
 
@@ -269,7 +266,9 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     };
   }, [form]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value, type } = e.target;
     setForm((prev: any) => ({
       ...prev,
@@ -292,11 +291,14 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     }
   };
 
+  // Submit → save to DB → advance to Summary (step 4)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     const payload = {
       ...form,
+      evaluationDate: new Date().toISOString(), // auto today
       sectionScore1: parseFloat(calculations.s1Score),
       sectionPercent1: parseFloat(calculations.s1Percent),
       sectionScore2: parseFloat(calculations.s2Score),
@@ -306,6 +308,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
       finalScore: parseFloat(calculations.finalScore),
       finalPercent: parseFloat(calculations.finalPercent),
     };
+
     try {
       const res = await fetch(
         isEditMode
@@ -317,9 +320,19 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
           body: JSON.stringify(payload),
         },
       );
+
       if (!res.ok) throw new Error("Failed to save");
-      toast.success("Saved Successfully");
-      router.push("/production/evaluation");
+
+      const json = await res.json();
+      // Store the response from DB so SummaryStep shows confirmed saved data
+      setSavedData(json.data ?? payload);
+
+      toast.success(
+        isEditMode ? "Updated successfully!" : "Evaluation submitted!",
+      );
+
+      // Advance to Summary step
+      setCurrentStep(4);
     } catch {
       toast.error("Error saving evaluation");
     } finally {
@@ -332,54 +345,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-6xl mx-auto pb-32 px-4">
-      {/* STICKY HEADER */}
-      <div className="flex items-center justify-between bg-white/80 backdrop-blur-md p-4 rounded-2xl border sticky top-4 z-40 shadow-xl mb-8">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="flex items-center gap-2 text-gray-500 hover:text-black font-medium transition-all"
-        >
-          <ArrowLeft size={20} /> Return
-        </button>
-        <div className="flex items-center gap-6">
-          <div className="hidden lg:flex gap-4">
-            <div className="px-4 py-2 bg-blue-50 rounded-lg border border-blue-100 text-center">
-              <p className="text-[10px] uppercase font-bold text-blue-400 leading-none">
-                Final Score
-              </p>
-              <p className="text-lg font-black text-blue-700 leading-none mt-1">
-                {calculations.finalScore}
-              </p>
-            </div>
-            <div className="px-4 py-2 bg-emerald-50 rounded-lg border border-emerald-100 text-center">
-              <p className="text-[10px] uppercase font-bold text-emerald-400 leading-none">
-                Rating
-              </p>
-              <p className="text-lg font-black text-emerald-700 leading-none mt-1">
-                {calculations.finalPercent}%
-              </p>
-            </div>
-          </div>
-          {currentStep === STEPS.length - 1 ? (
-            <Button
-              variant="success"
-              type="submit"
-              label={loading ? "Saving..." : "Submit Evaluation"}
-              icon={Save}
-              disabled={loading}
-            />
-          ) : (
-            <button
-              type="button"
-              onClick={goNext}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-black text-white font-semibold px-4 py-2 rounded-xl transition-all"
-            >
-              Next <ChevronRight size={16} />
-            </button>
-          )}
-        </div>
-      </div>
-
       {/* STEP PROGRESS BAR */}
       <StepProgressBar
         steps={STEPS}
@@ -417,27 +382,34 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
           accomplishmentOptions={accomplishmentOptions}
           handleAccomplishmentChange={handleAccomplishmentChange}
           s3Percent={calculations.s3Percent}
+          loading={loading}
+          isEditMode={isEditMode}
         />
       )}
       {currentStep === 4 && (
         <SummaryStep
-          form={form}
+          form={savedData}
           calculations={calculations}
           userOptions={userOptions}
         />
       )}
 
-      {/* BOTTOM NAV */}
+      {/* BOTTOM NAV — no submit button here, it lives inside AccomplishmentsStep */}
       <div className="flex justify-between mt-8">
-        <button
-          type="button"
-          onClick={goPrev}
-          disabled={currentStep === 0}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl border font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-        >
-          <ChevronLeft size={16} /> Previous
-        </button>
-        {currentStep < STEPS.length - 1 ? (
+        {/* Hide Previous on Summary step — evaluation already saved */}
+        {currentStep < 4 && (
+          <button
+            type="button"
+            onClick={goPrev}
+            disabled={currentStep === 0}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          >
+            <ChevronLeft size={16} /> Previous
+          </button>
+        )}
+
+        {/* Next button only for steps 0–2; step 3 has its own submit, step 4 is summary */}
+        {currentStep < LAST_INPUT_STEP && (
           <button
             type="button"
             onClick={goNext}
@@ -445,14 +417,17 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
           >
             Next <ChevronRight size={16} />
           </button>
-        ) : (
-          <Button
-            variant="success"
-            type="submit"
-            label={loading ? "Saving..." : "Submit Evaluation"}
-            icon={Save}
-            disabled={loading}
-          />
+        )}
+
+        {/* On Summary step, offer a "Back to list" escape */}
+        {currentStep === 4 && (
+          <button
+            type="button"
+            onClick={() => router.push("/production/evaluation")}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all ml-auto"
+          >
+            Done — Back to List <ChevronRight size={16} />
+          </button>
         )}
       </div>
     </form>

@@ -223,8 +223,6 @@ export default function CombinedMonitoringPage() {
         </div>
       </section>
 
-      <hr className="border-gray-200" />
-
       {/* SECTION 2: EVALUATIONS */}
       <section>
         <div className="flex justify-between items-center mb-4">

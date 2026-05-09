@@ -20,8 +20,15 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
     }
 
     const evaluation = await Evaluation.findById(id)
-      .populate("userId", "firstName lastName designationId")
-      .populate("evaluatedBy", "firstName lastName")
+      .populate({
+        path: "userId",
+        select: "name firstName lastName email departmentId designationId",
+        populate: [
+          { path: "departmentId", select: "name shortName" },
+          { path: "designationId", select: "name" },
+        ],
+      })
+      .populate("evaluatedBy", "name firstName lastName")
       .populate("accomplishmentId")
       .lean();
 

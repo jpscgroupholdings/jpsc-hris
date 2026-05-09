@@ -33,7 +33,7 @@ export const auth = betterAuth({
     },
   },
   session: {
-    expiresIn: 300, //5 minutes
-    updateAge: 60, //1minute
+    // expiresIn: 300, //5 minutes
+    // updateAge: 60, //1minute
   },
 });
