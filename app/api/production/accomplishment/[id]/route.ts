@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/database/dbConnect";
 import { Accomplishment } from "@/models/production/accomplishment";
 import "@/models/employee/user";
-import "@/models/employee/department";
-import "@/models/employee/designation";
+import "@/models/admin/department";
+import "@/models/admin/designation";
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }, // This matches the [id] folder

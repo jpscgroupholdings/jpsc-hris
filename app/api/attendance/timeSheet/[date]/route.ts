@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/database/dbConnect";
 import { User } from "@/models/employee/user"; // Start with User
 import "@/models/attendance/timeSheet";
-import "@/models/employee/department";
+import "@/models/admin/department";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(

@@ -1,8 +1,8 @@
 import mongoose, { models, Schema } from "mongoose";
 import { User } from "@/models/employee/user";
 import { Accomplishment } from "@/models/production/accomplishment";
-import "@/models/employee/department";
-import "@/models/employee/designation";
+import "@/models/admin/department";
+import "@/models/admin/designation";
 import "@/models/employee/user";
 
 export interface Evaluation {

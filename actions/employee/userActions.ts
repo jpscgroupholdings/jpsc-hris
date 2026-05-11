@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dbConnect from "@/lib/database/dbConnect";
 import { User } from "@/models/employee/user";
 import { DigitalWallet } from "@/models/transaction/digitalWallet";
-import { Department } from "@/models/employee/department";
+import { Department } from "@/models/admin/department";
 import { toast } from "sonner";
 
 export async function getAllUser() {

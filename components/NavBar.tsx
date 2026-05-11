@@ -43,7 +43,7 @@ const navItems: NavItem[] = [
   { label: "Production", path: "/production", icon: CheckCheckIcon },
   // { label: "Access Control", path: "/access", icon: DoorOpenIcon },
   { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
-  { label: "Configurations", path: "/config", icon: SettingsIcon },
+  { label: "Configurations", path: "/admin", icon: SettingsIcon },
 ];
 
 interface NavBarProps {

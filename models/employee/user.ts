@@ -1,10 +1,10 @@
 import mongoose, { models, Schema } from "mongoose";
-import "@/models/employee/department";
-import "@/models/employee/designation";
-import "@/models/employee/role";
-import { Designation } from "./designation";
-import { Role } from "./role";
-import { Department } from "@/models/employee/department";
+import "@/models/admin/department";
+import "@/models/admin/designation";
+import "@/models/admin/role";
+import { Designation } from "../admin/designation";
+import { Role } from "../admin/role";
+import { Department } from "@/models/admin/department";
 
 export interface User {
   _id: string;

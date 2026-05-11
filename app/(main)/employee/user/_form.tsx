@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { signUp } from "@/actions/signUp";
+import { signUp } from "@/actions/admin/signUp";
 import InputField from "@/components/UI/InputField";
 import Button from "@/components/UI/Button";
 import { useRouter } from "next/navigation";
-import type { Department } from "@/models/employee/department";
-import type { Designation } from "@/models/employee/designation";
-import type { Role } from "@/models/employee/role";
+import type { Department } from "@/models/admin/department";
+import type { Designation } from "@/models/admin/designation";
+import type { Role } from "@/models/admin/role";
 import {
   MailIcon,
   LockIcon,
@@ -20,7 +20,7 @@ import {
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
-import { generatePassword } from "@/actions/generatePassword";
+import { generatePassword } from "@/actions/admin/generatePassword";
 import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
 
 interface RegisterFormProps {
@@ -108,8 +108,8 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
       setLoadingDepts(true);
       try {
         const [deptRes, roleRes] = await Promise.all([
-          fetch("/api/employee/department"),
-          fetch("/api/employee/role"),
+          fetch("/api/admin/department"),
+          fetch("/api/admin/role"),
         ]);
         const depts = await deptRes.json();
         const roles = await roleRes.json();
@@ -140,7 +140,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
       setLoadingDesignations(true);
       try {
         const response = await fetch(
-          `/api/employee/designation?departmentId=${department}`,
+          `/api/admin/designation?departmentId=${department}`,
         );
         const data = await response.json();
         setDesignationsList(data);

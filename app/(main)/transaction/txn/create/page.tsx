@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
-import { createTransaction } from "@/actions/txnActions";
+import { createTransaction } from "@/actions/transaction/txnActions";
 import InputField from "@/components/UI/InputField";
 import { toast } from "sonner";
 

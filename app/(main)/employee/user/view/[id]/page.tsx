@@ -6,7 +6,7 @@ import Button from "@/components/UI/Button";
 import { LogOut, EditIcon, MailIcon, UserIcon, LockIcon } from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
-import { signOut } from "@/actions/signOut";
+import { signOut } from "@/actions/admin/signOut";
 import { getUserById } from "@/actions/employee/userActions";
 
 export default function Profile() {
