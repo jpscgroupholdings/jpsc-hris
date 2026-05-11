@@ -11,17 +11,29 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --color-jpsc-50: #fff9e5;
-  --color-jpsc-100: #fff2cc;
-  --color-jpsc-200: #ffe599;
-  --color-jpsc-300: #ffd966;
-  --color-jpsc-400: #ffcc33;
-  --color-jpsc-500: #ffbf00;
-  --color-jpsc-600: #cc9900;
-  --color-jpsc-700: #997300;
-  --color-jpsc-800: #664c00;
-  --color-jpsc-900: #332600;
-  --color-jpsc-950: #1a1300;
+  --color-gold-50: #fff9e5;
+  --color-gold-100: #fff2cc;
+  --color-gold-200: #ffe599;
+  --color-gold-300: #ffd966;
+  --color-gold-400: #ffcc33;
+  --color-gold-500: #ffbf00;
+  --color-gold-600: #cc9900;
+  --color-gold-700: #997300;
+  --color-gold-800: #664c00;
+  --color-gold-900: #332600;
+  --color-azure-950: #1a1300;
+
+  --color-azure-50: #e5ecff;
+  --color-azure-100: #ccd9ff;
+  --color-azure-200: #99b3ff;
+  --color-azure-300: #668cff;
+  --color-azure-400: #3366ff;
+  --color-azure-500: #0040ff;
+  --color-azure-600: #0033cc;
+  --color-azure-700: #002699;
+  --color-azure-800: #001966;
+  --color-azure-900: #000d33;
+  --color-azure-950: #000924;
 }
 /* 
 @media (prefers-color-scheme: dark) {

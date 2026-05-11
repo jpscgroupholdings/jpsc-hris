@@ -1,6 +1,7 @@
 "use server";
 import dbConnect from "@/lib/database/dbConnect";
 import { Designation } from "@/models/employee/designation";
+import "@/models/employee/department";
 
 export async function getAllDesignation() {
   try {
@@ -9,12 +10,12 @@ export async function getAllDesignation() {
       .populate("departmentId", "name shortName") // ← fetches only name & shortName from Department
       .lean();
 
-    const serialized = designations.map((designation) => ({
-      ...designation,
-      _id: designation._id.toString(),
+    const serialized = designations.map((des) => ({
+      ...des,
+      _id: des._id.toString(),
       departmentId: {
-        ...(designation.departmentId as any),
-        _id: (designation.departmentId as any)._id.toString(), // ← now an object, not a string
+        ...(des.departmentId as any),
+        _id: (des.departmentId as any)._id.toString(), // ← now an object, not a string
       },
     }));
 

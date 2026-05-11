@@ -9,7 +9,8 @@ import Loading from "@/components/Loading";
 import { format } from "date-fns";
 import FilterTable from "@/components/UI/FilterTable";
 import { User } from "@/models/employee/user";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { getAllUser } from "@/actions/employee/userActions";
+import Link from "next/link";
 
 export default function Employee() {
   const router = useRouter();
@@ -20,7 +21,10 @@ export default function Employee() {
   const columns = [
     {
       name: "First Name",
-      selector: (row: User) => row.name,
+      // selector: (row: User) => row.name,
+      cell: (row: User) => (
+        <Link href={`user/view/${row._id}`}>{row.name}</Link>
+      ),
       sortable: true,
     },
     {
@@ -51,26 +55,13 @@ export default function Employee() {
     },
     { name: "Balance", selector: (row: User) => row.balance },
     { name: "Card Number", selector: (row: User) => row.cardNumber },
-    {
-      name: "Actions",
-      cell: (row: User) => (
-        <Button
-          label="View"
-          icon={EditIcon}
-          variant="info"
-          className="scale-75 text-lg"
-          onClick={() => router.push(`user/view/${row._id}`)}
-        />
-      ),
-    },
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/employee/user");
-        const json = await res.json();
-        setData(json);
+        const res = await getAllUser();
+        setData(res);
         setPending(false);
       } catch (err) {
         console.error(err);
@@ -89,8 +80,7 @@ export default function Employee() {
         item.username.toLowerCase().includes(lowerText) ||
         item.designationId.name.toLowerCase().includes(lowerText) ||
         item.departmentId.name.toLowerCase().includes(lowerText) ||
-        item.cardNumber.toLowerCase().includes(lowerText) ||
-        item.balance.toString().includes(lowerText),
+        item.cardNumber.toLowerCase().includes(lowerText),
     );
   }, [data, userFilterText]);
 

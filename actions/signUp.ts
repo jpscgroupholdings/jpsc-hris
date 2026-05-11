@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth/auth";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { DigitalWallet } from "@/models/transaction/digitalWallet";
 import dbConnect from "@/lib/database/dbConnect";
 import { Txn } from "@/models/transaction/txn";
 

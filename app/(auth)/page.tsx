@@ -40,7 +40,7 @@ export default function Home() {
             height={500}
             className="justify-self-center"
           />
-          <h1 className="text-2xl font-bold md:text-4xl text-jpsc-500 text-center underline font-sans">
+          <h1 className="text-2xl font-bold md:text-4xl text-gold-500 text-center underline font-sans">
             JPSC Group Holdings Inc.
           </h1>
 

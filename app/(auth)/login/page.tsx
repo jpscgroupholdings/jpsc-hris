@@ -45,7 +45,7 @@ export default function Login() {
           loading="eager"
         />
         {/* Dark Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-jpsc-950/50 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-azure-950/50 backdrop-blur-[2px]" />
       </div>
 
       {/* Form Section */}
@@ -90,7 +90,7 @@ export default function Login() {
           <button
             onClick={handleLogin}
             disabled={loading}
-            className="w-full flex justify-center items-center gap-2 p-3 rounded-xl transition-all bg-jpsc-500 text-white hover:bg-jpsc-400 active:scale-[0.98] disabled:opacity-50 shadow-lg font-semibold"
+            className="w-full flex justify-center items-center gap-2 p-3 rounded-xl transition-all bg-gold-500 text-white hover:bg-gold-400 active:scale-[0.98] disabled:opacity-50 shadow-lg font-semibold"
           >
             {loading ? (
               <LoaderIcon className="animate-spin" size={20} />
@@ -104,14 +104,14 @@ export default function Login() {
       {/* Info Section */}
       <div className="relative z-10 flex-1 flex flex-col justify-center p-8 md:p-16 text-white bg-transparent md:bg-white/5">
         <div className="max-w-lg mx-auto md:mx-0 space-y-4">
-          <div className="h-1 w-12 bg-jpsc-400 rounded-full mb-4" />
+          <div className="h-1 w-12 bg-gold-400 rounded-full mb-4" />
           <h2 className="text-4xl font-bold leading-tight">
             Seamless <br />
             Corporate Access
           </h2>
           <p className="leading-relaxed text-lg text-gray-200">
             The{" "}
-            <span className="font-bold text-jpsc-200 underline">
+            <span className="font-bold text-gold-200 underline">
               Smart Access System
             </span>{" "}
             is an integrated, company-wide platform that unifies three core

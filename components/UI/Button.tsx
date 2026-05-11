@@ -20,7 +20,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={`flex items-center gap-2 px-4 py-2 rounded-xl ${variantStyles[variant]} ${className}`}
+        className={`flex items-center gap-2 px-4 py-2 rounded-xl ${variantStyles[variant]} ${className} `}
         {...props}
       >
         <Icon className={`${className}`} />

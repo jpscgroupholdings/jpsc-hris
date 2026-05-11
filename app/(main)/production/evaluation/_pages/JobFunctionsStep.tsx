@@ -62,7 +62,7 @@ export default function JobFunctionsStep({
           return (
             <div
               key={i}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center bg-gray-50/50 p-4 rounded-2xl border border-jpsc-950"
+              className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center bg-gray-50/50 p-4 rounded-2xl border border-azure-950"
             >
               {/* Priority Label */}
               <div className="lg:col-span-12">

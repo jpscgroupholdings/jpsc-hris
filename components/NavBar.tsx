@@ -85,10 +85,10 @@ export default function NavBar({ children }: NavBarProps) {
       {/* ══════════════════════════════════════
           TOPBAR — spans full width
       ══════════════════════════════════════ */}
-      <header className="w-full h-20 shrink-0 z-40 flex items-center px-3 gap-2 bg-background border-b border-jpsc-800">
+      <header className="w-full h-20 shrink-0 z-40 flex items-center px-3 gap-2 bg-background border-b border-gold-800">
         {/* Mobile hamburger */}
         <button
-          className="lg:hidden p-2 rounded-md text-foreground hover:bg-jpsc-800/50 transition-colors shrink-0"
+          className="lg:hidden p-2 rounded-md text-foreground hover:bg-gold-800/50 transition-colors shrink-0"
           onClick={() => setIsMobileOpen(true)}
         >
           <MenuIcon size={22} />
@@ -110,19 +110,19 @@ export default function NavBar({ children }: NavBarProps) {
           />
           <div className="lg:hidden leading-tight">
             <p className="text-foreground font-bold text-sm">SmartAccess</p>
-            <p className="text-jpsc-400 text-[10px]">Admin Console</p>
+            <p className="text-gold-400 text-[10px]">Admin Console</p>
           </div>
         </div>
 
         {/* Search — takes all remaining space between brand and avatar */}
         <div className="flex-1 relative mx-2">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-jpsc-400 pointer-events-none" />
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gold-400 pointer-events-none" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search..."
-            className="w-full bg-jpsc-900/50 border border-jpsc-800 rounded-full pl-9 pr-4 py-2 text-sm
-        focus:ring-2 focus:ring-jpsc-500/30 focus:border-jpsc-500/50 outline-none transition-all"
+            className="w-full bg-gold-900/50 border border-gold-800 rounded-full pl-9 pr-4 py-2 text-sm
+        focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50 outline-none transition-all"
           />
         </div>
 
@@ -135,7 +135,7 @@ export default function NavBar({ children }: NavBarProps) {
         >
           <div className="text-right hidden md:block">
             {isPending ? (
-              <LoaderIcon className="w-4 h-4 animate-spin text-jpsc-400" />
+              <LoaderIcon className="w-4 h-4 animate-spin text-gold-400" />
             ) : (
               <>
                 <p className="text-sm font-semibold text-foreground leading-none">
@@ -145,7 +145,7 @@ export default function NavBar({ children }: NavBarProps) {
             )}
           </div>
           <div className="relative shrink-0">
-            <div className="w-9 h-9 rounded-full bg-jpsc-800 border border-jpsc-700 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-gold-800 border border-gold-700 flex items-center justify-center">
               <UserIcon size={18} className="text-white" />
             </div>
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-background rounded-full" />
@@ -170,12 +170,12 @@ export default function NavBar({ children }: NavBarProps) {
             Desktop: normal flow element that fills the body row height. */}
         <aside
           className={`
-            flex flex-col shrink-0 bg-background border-r border-jpsc-800
+            flex flex-col shrink-0 bg-background border-r border-gold-800
             transition-all duration-300 ease-in-out z-50
             fixed top-0 bottom-0 left-0 w-64
             ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
             lg:relative lg:top-auto lg:bottom-auto lg:translate-x-0
-            ${isCollapsed ? "lg:w-18" : "lg:w-60"}
+            ${isCollapsed ? "lg:w-18" : "lg:w-50"}
           `}
         >
           {/* Nav */}
@@ -192,8 +192,8 @@ export default function NavBar({ children }: NavBarProps) {
                     transition-colors duration-150
                     ${
                       isActive
-                        ? "bg-jpsc-500 text-white"
-                        : "text-muted-foreground hover:bg-jpsc-500/10 hover:text-foreground"
+                        ? "bg-gold-500 text-white"
+                        : "text-muted-foreground hover:bg-gold-500/10 hover:text-foreground"
                     }
                     ${isCollapsed ? "lg:justify-center lg:px-2" : "justify-start"}
                   `}
@@ -210,12 +210,12 @@ export default function NavBar({ children }: NavBarProps) {
           </nav>
 
           {/* Collapse toggle (desktop only) */}
-          <div className="hidden lg:flex border-t border-jpsc-800 px-2 py-3 shrink-0">
+          <div className="hidden lg:flex border-t border-gold-800 px-2 py-3 shrink-0">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
               className={`
                 w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm
-                text-muted-foreground hover:bg-jpsc-800/50 hover:text-foreground
+                text-muted-foreground hover:bg-gold-800/50 hover:text-foreground
                 transition-colors duration-150
                 ${isCollapsed ? "justify-center" : "justify-start"}
               `}

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import "@/models/employee/user";
 import { Txn } from "@/models/transaction/txn";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { DigitalWallet } from "@/models/transaction/digitalWallet";
 
 export async function GET() {
   try {

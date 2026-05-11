@@ -1,7 +1,7 @@
 "use server";
 
 import dbConnect from "@/lib/database/dbConnect";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { DigitalWallet } from "@/models/transaction/digitalWallet";
 import { Txn } from "@/models/transaction/txn";
 
 export async function getAllTransaction() {

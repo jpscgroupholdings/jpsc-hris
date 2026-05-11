@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
-import { createTransaction } from "@/actions/transactionActions";
+import { createTransaction } from "@/actions/txnActions";
 import InputField from "@/components/UI/InputField";
 import { toast } from "sonner";
 
@@ -91,8 +91,8 @@ export default function CreateTransaction() {
       <button
         onClick={handleSubmit}
         disabled={pending}
-        className="mt-4 px-6 py-2.5 rounded-lg bg-jpsc-500 text-white text-sm font-semibold
-    hover:bg-jpsc-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="mt-4 px-6 py-2.5 rounded-lg bg-gold-500 text-white text-sm font-semibold
+    hover:bg-gold-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {pending ? "Saving..." : "Create Transaction"}
       </button>

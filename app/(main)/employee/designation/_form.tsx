@@ -140,7 +140,7 @@ export default function DesignationForm({
           onChange={(e) =>
             setFormData({ ...formData, status: e.target.checked })
           }
-          className="w-4 h-4 rounded border-gray-300 text-jpsc-500 focus:ring-jpsc-500"
+          className="w-4 h-4 rounded border-gray-300 text-gold-500 focus:ring-gold-500"
         />
         <label htmlFor="status" className="text-sm font-medium text-gray-700">
           Active Status

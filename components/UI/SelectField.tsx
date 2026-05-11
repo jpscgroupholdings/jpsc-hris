@@ -101,7 +101,7 @@ export function SearchSelect({
       {label && (
         <label
           htmlFor={id}
-          className="block text-[11px] font-bold text-jpsc-950 uppercase tracking-widest mb-2 ml-1"
+          className="block text-[11px] font-bold text-azure-950 uppercase tracking-widest mb-2 ml-1"
         >
           {label}
         </label>
@@ -120,9 +120,9 @@ export function SearchSelect({
           ${
             disabled
               ? "opacity-40 cursor-not-allowed border-zinc-200 bg-zinc-50"
-              : "cursor-pointer border-zinc-200 hover:border-jpsc-500 hover:shadow-[0_0_12px_rgba(var(--jpsc-500-rgb),0.15)]"
+              : "cursor-pointer border-zinc-200 hover:border-gold-500 hover:shadow-[0_0_12px_rgba(var(--gold-500-rgb),0.15)]"
           }
-          ${isOpen ? "border-jpsc-500 ring-4 ring-jpsc-500/10 shadow-[0_0_15px_rgba(var(--jpsc-500-rgb),0.2)]" : "focus:ring-4 focus:ring-jpsc-500/10 focus:border-jpsc-500"}
+          ${isOpen ? "border-gold-500 ring-4 ring-gold-500/10 shadow-[0_0_15px_rgba(var(--gold-500-rgb),0.2)]" : "focus:ring-4 focus:ring-gold-500/10 focus:border-gold-500"}
         `}
       >
         <span className="flex-1 truncate font-sans text-black">
@@ -133,7 +133,7 @@ export function SearchSelect({
           <span
             role="button"
             onClick={handleClear}
-            className="shrink-0 p-1 rounded-full text-zinc-400 hover:text-jpsc-500 hover:bg-jpsc-50 transition-all"
+            className="shrink-0 p-1 rounded-full text-zinc-400 hover:text-gold-500 hover:bg-gold-50 transition-all"
           >
             <XIcon size={14} />
           </span>
@@ -141,7 +141,7 @@ export function SearchSelect({
 
         <ChevronDownIcon
           size={16}
-          className={`shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-jpsc-500" : "text-zinc-400"}`}
+          className={`shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180 text-gold-500" : "text-zinc-400"}`}
         />
       </button>
 
@@ -159,7 +159,7 @@ export function SearchSelect({
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchPlaceholder}
                 className="w-full bg-white border border-zinc-200 rounded-xl pl-10 pr-4 py-2.5 text-sm font-sans
-                  focus:outline-none focus:border-jpsc-500 focus:ring-2 focus:ring-jpsc-500/10 transition-all placeholder:text-zinc-400 placeholder:font-sans"
+                  focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/10 transition-all placeholder:text-zinc-400 placeholder:font-sans"
               />
             </div>
           </div>
@@ -183,8 +183,8 @@ export function SearchSelect({
                       flex items-center gap-3 px-4 py-3 cursor-pointer text-sm rounded-xl transition-all mb-1 last:mb-0 font-sans
                       ${
                         isSelected
-                          ? "bg-jpsc-500 text-white shadow-lg shadow-jpsc-500/20"
-                          : "text-zinc-600 hover:bg-jpsc-50 hover:text-jpsc-600 hover:pl-5"
+                          ? "bg-gold-500 text-white shadow-lg shadow-gold-500/20"
+                          : "text-zinc-600 hover:bg-gold-50 hover:text-gold-600 hover:pl-5"
                       }
                     `}
                   >

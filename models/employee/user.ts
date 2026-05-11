@@ -1,7 +1,10 @@
 import mongoose, { models, Schema } from "mongoose";
-import type { Department } from "./department";
-import type { Designation } from "./designation";
-import type { Role } from "./role";
+import "@/models/employee/department";
+import "@/models/employee/designation";
+import "@/models/employee/role";
+import { Designation } from "./designation";
+import { Role } from "./role";
+import { Department } from "@/models/employee/department";
 
 export interface User {
   _id: string;

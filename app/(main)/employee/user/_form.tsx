@@ -223,7 +223,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
         toast.success(`Employee Created successfully for user ${username}`);
       }
 
-      router.replace("/employee");
+      router.push("/employee/user");
       router.refresh();
     } catch (err) {
       toast.error(String(err));
@@ -359,7 +359,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
                   handleCopy();
                 }}
                 disabled={!password}
-                className="p-2 text-gray-400 hover:text-jpsc-500 transition-colors disabled:opacity-0"
+                className="p-2 text-gray-400 hover:text-gold-500 transition-colors disabled:opacity-0"
               >
                 {copied ? (
                   <Check className="w-5 h-5 text-green-500" />
@@ -374,7 +374,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
         <button
           onClick={handleRegister}
           disabled={loading}
-          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-jpsc-500 hover:bg-jpsc-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-jpsc-500 transition-all disabled:opacity-50"
+          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gold-500 hover:bg-gold-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-500 transition-all disabled:opacity-50"
         >
           {loading
             ? "Processing..."

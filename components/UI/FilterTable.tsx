@@ -18,7 +18,7 @@ const FilterTable = ({
 }: FilterProps) => (
   <div
     className="flex items-center gap-1.5 w-full md:w-64 border rounded-xl px-1.5 py-1.5 transition-all 
-    duration-200 bg-white font-sans focus-within:ring-2 focus-within:ring-jpsc-200 focus-within:border-jpsc-500"
+    duration-200 bg-white font-sans focus-within:ring-2 focus-within:ring-gold-200 focus-within:border-gold-500"
   >
     <input
       type="text"

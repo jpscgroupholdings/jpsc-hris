@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { User } from "@/models/employee/user";
-import { DigitalWallet } from "@/models/employee/digitalWallet";
+import { DigitalWallet } from "@/models/transaction/digitalWallet";
 import { Txn } from "@/models/transaction/txn";
 import "@/models/employee/department";
 import "@/models/employee/designation";
