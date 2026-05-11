@@ -3,7 +3,7 @@
 import { useState } from "react";
 import InputField from "@/components/UI/InputField";
 import { LockIcon, MailIcon, LoaderIcon } from "lucide-react";
-import { signIn } from "@/actions/admin/signIn";
+import { signIn } from "@/actions/auth/authActions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Image from "next/image";

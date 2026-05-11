@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { signUp } from "@/actions/admin/signUp";
+import { signUp } from "@/actions/auth/authActions";
 import InputField from "@/components/UI/InputField";
 import Button from "@/components/UI/Button";
 import { useRouter } from "next/navigation";

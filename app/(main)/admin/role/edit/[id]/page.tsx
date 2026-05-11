@@ -1,0 +1,53 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { getRoleById } from "@/actions/admin/roleActions";
+import RoleForm from "../../_form"; // Adjust this path to where your _form is
+import Loading from "@/components/Loading";
+import { toast } from "sonner";
+import type { Role } from "@/models/admin/role";
+
+export default function EditRolePage() {
+  const { id } = useParams();
+  const router = useRouter();
+  const [initialData, setInitialData] = useState<Role | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // If no ID is present, we can't edit anything
+    if (!id) return;
+
+    const fetchRole = async () => {
+      try {
+        setLoading(true);
+        const res = await getRoleById(id as string);
+
+        if (res.success) {
+          setInitialData(res.data);
+        } else {
+          toast.error(res.message || "Role not found");
+          router.push("/admin"); // Send them back if the ID is bunk
+        }
+      } catch (err) {
+        toast.error("An error occurred while fetching data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRole();
+  }, [id, router]);
+
+  if (loading) return <Loading />;
+
+  return (
+    <div className="p-8">
+      <RoleForm
+        initialData={initialData}
+        onSuccess={() => router.push("/admin")}
+      />
+    </div>
+  );
+}
