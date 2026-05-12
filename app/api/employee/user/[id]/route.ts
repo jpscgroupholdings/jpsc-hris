@@ -17,6 +17,7 @@ export async function GET(
     const employee = await User.findById(id)
       .populate("departmentId")
       .populate("designationId")
+      .populate("roleId")
       .lean();
 
     if (!employee) {
@@ -50,12 +51,15 @@ export async function PUT(
       {
         firstName: body.firstName,
         middleName: body.middleName,
+        name: `${body.firstName} ${body.lastName} `,
+        // const name = `${firstName} ${middleName.charAt(0).toUpperCase()} . ${lastName}`;
         lastName: body.lastName,
         email: body.email,
         mobileNumber: body.mobileNumber,
         birthDate: body.birthdate,
-        departmentId: body.department,
-        designationId: body.designation,
+        departmentId: body.departmentId,
+        designationId: body.designationId,
+        roleId: body.roleId,
       },
       { new: true },
     );

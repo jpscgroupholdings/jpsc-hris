@@ -37,7 +37,7 @@ export default function Transaction() {
       name: "Date",
       selector: (row: any) => row.txnDate,
       format: (row: any) =>
-        row.txnDate ? format(new Date(row.txnDate), "MMM. dd, yyyy") : "N/A",
+        row.txnDate ? format(new Date(row.txnDate), "MMM dd, yyyy") : "N/A",
       sortable: true,
     },
   ];
@@ -66,7 +66,7 @@ export default function Transaction() {
       (item) =>
         item.description?.toLowerCase().includes(lowerText) ||
         item.userId.name.toLowerCase().includes(lowerText) ||
-        format(new Date(item.txnDate), "MMM. dd, yyyy")
+        format(new Date(item.txnDate), "MMM dd, yyyy")
           .toLowerCase()
           .includes(lowerText),
     );

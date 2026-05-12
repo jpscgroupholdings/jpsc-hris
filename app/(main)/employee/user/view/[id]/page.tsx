@@ -40,11 +40,11 @@ export default function Profile() {
 
   // Format dates safely
   const birthDate = userData?.birthDate
-    ? format(new Date(userData?.birthDate), "MMM. dd, yyyy")
+    ? format(new Date(userData?.birthDate), "MMM dd, yyyy")
     : "N/A";
 
   const hireDate = userData?.createdAt
-    ? format(new Date(userData?.createdAt), "MMM. dd, yyyy")
+    ? format(new Date(userData?.createdAt), "MMM dd, yyyy")
     : "N/A";
 
   const ownSession = userData?._id === session?.user.id;

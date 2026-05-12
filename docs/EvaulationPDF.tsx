@@ -449,14 +449,27 @@ const RATING_OPTIONS = [
 
 const RatingChips = ({ selected }: { selected?: number | string }) => (
   <View style={S.chipRow}>
-    {RATING_OPTIONS.map((r) => (
-      <Text
-        key={r.value}
-        style={[S.chip, Number(selected) === r.value ? S.chipActive : {}]}
-      >
-        {r.label}
-      </Text>
-    ))}
+    {RATING_OPTIONS.map((r) => {
+      const isActive = Number(selected) === r.value;
+      const info = getRatingInfo(r.value);
+      return (
+        <Text
+          key={r.value}
+          style={[
+            S.chip,
+            isActive
+              ? {
+                  backgroundColor: info.color,
+                  borderColor: info.color,
+                  color: "white",
+                }
+              : {},
+          ]}
+        >
+          {r.label}
+        </Text>
+      );
+    })}
   </View>
 );
 

@@ -20,10 +20,15 @@ export default function Employee() {
 
   const columns = [
     {
-      name: "First Name",
+      name: "Name",
       // selector: (row: User) => row.name,
       cell: (row: User) => (
-        <Link href={`user/view/${row._id}`}>{row.name}</Link>
+        <Link
+          className="underline text-azure-500"
+          href={`user/view/${row._id}`}
+        >
+          {row.name}
+        </Link>
       ),
       sortable: true,
     },
@@ -50,7 +55,7 @@ export default function Employee() {
     {
       name: "Birthday",
       selector: (row: any) =>
-        row.birthDate ? format(new Date(row.birthDate), "MMM/dd/yyyy") : "N/A",
+        row.birthDate ? format(new Date(row.birthDate), "MMM dd yyyy") : "N/A",
       sortable: true,
     },
     { name: "Balance", selector: (row: User) => row.balance },

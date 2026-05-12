@@ -1,11 +1,13 @@
 import mongoose, { models, Schema } from "mongoose";
 import { User } from "@/models/employee/user";
+import { Designation } from "@/models/admin/designation";
 
 export interface Accomplishment {
   _id: string;
   userId: User;
   dateStart: Date;
   dateEnd: Date;
+  designationId: Designation;
   accomplishment1: string;
   accomplishment2: string;
   accomplishment3: string;
@@ -27,6 +29,11 @@ const AccomplishmentSchema = new Schema<Accomplishment>({
   },
   dateEnd: {
     type: Date,
+    required: true,
+  },
+  designationId: {
+    type: Schema.Types.ObjectId,
+    ref: "Designation",
     required: true,
   },
   accomplishment1: {

@@ -15,7 +15,7 @@ export default function Wallet() {
         setPending(true);
         // Corrected query param to use user.id
         const res = await fetch(
-          `/api/employee/digitalWallet?userId=${user?.id}`,
+          `/api/transaction/digitalWallet?userId=${user?.id}`,
         );
         const json = await res.json();
         setData(json);

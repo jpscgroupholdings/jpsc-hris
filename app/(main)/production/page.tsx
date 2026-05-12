@@ -13,34 +13,47 @@ import { toast } from "sonner";
 export default function CombinedMonitoringPage() {
   const router = useRouter();
 
-  // States for Accomplishments
   const [accData, setAccData] = useState<any[]>([]);
   const [accPending, setAccPending] = useState(true);
   const [accFilter, setAccFilter] = useState("");
 
-  // States for Evaluations
   const [evalData, setEvalData] = useState<any[]>([]);
   const [evalPending, setEvalPending] = useState(true);
   const [evalFilter, setEvalFilter] = useState("");
 
-  // --- Columns Definitions ---
+  // --- Helper ---
+  const getFullName = (user: any) => {
+    if (!user) return "N/A";
+    return (
+      user.name ||
+      `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() ||
+      "N/A"
+    );
+  };
+
+  const getScoreColor = (percent: number) => {
+    if (percent <= 74) return "text-red-500";
+    if (percent <= 84) return "text-yellow-500";
+    return "text-green-500";
+  };
+
+  // --- Columns ---
   const accColumns = [
     {
       name: "Employee",
-      selector: (row: any) =>
-        row.userId?.name || `${row.userId?.firstName} ${row.userId?.lastName}`,
+      selector: (row: any) => getFullName(row.userId),
       sortable: true,
     },
     {
       name: "Period Start",
       selector: (row: any) =>
-        row.dateStart ? format(new Date(row.dateStart), "MMM/dd/yyyy") : "N/A",
+        row.dateStart ? format(new Date(row.dateStart), "MMM dd, yyyy") : "N/A",
       sortable: true,
     },
     {
       name: "Period End",
       selector: (row: any) =>
-        row.dateEnd ? format(new Date(row.dateEnd), "MMM/dd/yyyy") : "N/A",
+        row.dateEnd ? format(new Date(row.dateEnd), "MMM dd, yyyy") : "N/A",
       sortable: true,
     },
     {
@@ -69,25 +82,36 @@ export default function CombinedMonitoringPage() {
   const evalColumns = [
     {
       name: "Employee",
-      selector: (row: any) =>
-        `${row.userId?.firstName} ${row.userId?.lastName}`,
+      selector: (row: any) => getFullName(row.userId),
       sortable: true,
     },
     {
       name: "Department",
-      selector: (row: any) => row.userId?.departmentId?.name || "N/A",
+      selector: (row: any) => row.userId?.departmentId?.name ?? "N/A",
       sortable: true,
     },
     {
       name: "Evaluated By",
-      selector: (row: any) =>
-        `${row.evaluatedBy?.firstName} ${row.evaluatedBy?.lastName}`,
+      selector: (row: any) => getFullName(row.evaluatedBy),
+      sortable: true,
+    },
+    {
+      name: "Period",
+      selector: (row: any) => {
+        const start = row.evaluationDateStart
+          ? format(new Date(row.evaluationDateStart), "MMM dd, yyyy")
+          : "N/A";
+        const end = row.evaluationDateEnd
+          ? format(new Date(row.evaluationDateEnd), "MMM dd, yyyy")
+          : "N/A";
+        return `${start} - ${end}`;
+      },
       sortable: true,
     },
     {
       name: "Score",
       cell: (row: any) => (
-        <span className={`${row.finalPercent} <=74 `}>
+        <span className={`font-semibold ${getScoreColor(row.finalPercent)}`}>
           {row.finalScore?.toFixed(2)} ({row.finalPercent}%)
         </span>
       ),
@@ -113,19 +137,15 @@ export default function CombinedMonitoringPage() {
               router.push(`/production/evaluation/edit/${row._id}`)
             }
           />
-          {/* <Button
-            label="Delete"
-            icon={Trash2Icon}
-            variant="danger"
-            onClick={() => handleDeleteEval(row._id)}
-          /> */}
         </div>
       ),
     },
   ];
 
-  // --- Fetching Logic ---
+  // --- Fetch ---
   const fetchAll = async () => {
+    setAccPending(true);
+    setEvalPending(true);
     try {
       const [accRes, evalRes] = await Promise.all([
         fetch("/api/production/accomplishment"),
@@ -134,8 +154,8 @@ export default function CombinedMonitoringPage() {
       const accJson = await accRes.json();
       const evalJson = await evalRes.json();
 
-      setAccData(accJson.data || []);
-      setEvalData(evalJson.data || []);
+      setAccData(accJson.data ?? []);
+      setEvalData(evalJson.data ?? []);
     } catch (err) {
       toast.error("Error fetching dashboard data");
     } finally {
@@ -148,7 +168,7 @@ export default function CombinedMonitoringPage() {
     fetchAll();
   }, []);
 
-  // --- Delete Handlers ---
+  // --- Delete ---
   const handleDeleteAcc = async (id: string) => {
     if (!confirm("Delete accomplishment?")) return;
     const res = await fetch(`/api/production/accomplishment/${id}`, {
@@ -157,6 +177,8 @@ export default function CombinedMonitoringPage() {
     if (res.ok) {
       toast.success("Accomplishment deleted");
       fetchAll();
+    } else {
+      toast.error("Failed to delete accomplishment");
     }
   };
 
@@ -168,24 +190,24 @@ export default function CombinedMonitoringPage() {
     if (res.ok) {
       toast.success("Evaluation deleted");
       fetchAll();
+    } else {
+      toast.error("Failed to delete evaluation");
     }
   };
 
-  // --- Filtered Data ---
+  // --- Filter ---
   const filteredAcc = useMemo(() => {
-    return accData.filter((i) =>
-      (i.userId?.firstName + i.userId?.lastName)
-        .toLowerCase()
-        .includes(accFilter.toLowerCase()),
-    );
+    return accData.filter((i) => {
+      const fullName = getFullName(i.userId).toLowerCase();
+      return fullName.includes(accFilter.toLowerCase());
+    });
   }, [accData, accFilter]);
 
   const filteredEval = useMemo(() => {
-    return evalData.filter((i) =>
-      (i.userId?.firstName + i.userId?.lastName)
-        .toLowerCase()
-        .includes(evalFilter.toLowerCase()),
-    );
+    return evalData.filter((i) => {
+      const fullName = getFullName(i.userId).toLowerCase();
+      return fullName.includes(evalFilter.toLowerCase());
+    });
   }, [evalData, evalFilter]);
 
   return (

@@ -1,9 +1,11 @@
-import { betterAuth, date } from "better-auth";
+import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { username } from "better-auth/plugins";
-import { admin } from "better-auth/plugins";
+import { username, admin } from "better-auth/plugins";
 import clientPromise from "@/lib/database/database";
+import { User as UserModel } from "@/models/employee/user";
+import { Role } from "@/models/admin/role";
+import type { Session, User } from "@/types/auth";
 
 const client = await clientPromise;
 const db = client.db();
@@ -14,14 +16,9 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
-  plugins: [
-    admin({ defaultRole: "user" }),
-    username({ maxUsernameLength: 100 }),
-    nextCookies(),
-  ],
+  plugins: [admin(), username({ maxUsernameLength: 100 }), nextCookies()],
   user: {
     additionalFields: {
-      username: { type: "string", input: true, required: true },
       firstName: { type: "string", input: true, required: true },
       middleName: { type: "string", input: true, required: false },
       lastName: { type: "string", input: true, required: true },
@@ -33,7 +30,23 @@ export const auth = betterAuth({
     },
   },
   session: {
-    // expiresIn: 300, //5 minutes
-    // updateAge: 60, //1minute
+    expiresIn: 300,
+    updateAge: 60,
+    additionalFields: {
+      roleCode: { type: "string" },
+      roleName: { type: "string" },
+    },
+  },
+  callbacks: {
+    async session({ session, user }: { session: Session; user: User }) {
+      const dbUser = await UserModel.findById(user.id).populate<{
+        roleId: Role;
+      }>("roleId");
+
+      session.session.roleCode = dbUser?.roleId?.code ?? "user"; // ✅ session.session
+      session.session.roleName = dbUser?.roleId?.name ?? "User"; // ✅ session.session
+
+      return session;
+    },
   },
 });
