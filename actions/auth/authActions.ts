@@ -4,6 +4,7 @@ import dbConnect from "@/lib/database/dbConnect";
 import { DigitalWallet } from "@/models/transaction/digitalWallet";
 import { Txn } from "@/models/transaction/txn";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function signUp(
   firstName: string,
@@ -72,4 +73,5 @@ export async function signOut() {
   await auth.api.signOut({
     headers: await headers(),
   });
+  redirect("/login");
 }
