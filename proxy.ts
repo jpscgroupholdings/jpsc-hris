@@ -26,7 +26,7 @@ export async function proxy(request: NextRequest) {
   // Role-based guard — only check if there's a session
   if (sessionCookie && !isLoginPage && !isPublicPage) {
     const session = await auth.api.getSession({ headers: request.headers });
-    const roleCode = (session?.user?.roleCode as string) ?? "user";
+    const roleCode = (session?.session?.roleCode as string) ?? "user";
 
     if (!canAccess(roleCode, pathname)) {
       return NextResponse.redirect(new URL("/unauthorized", request.url));
@@ -37,7 +37,7 @@ export async function proxy(request: NextRequest) {
     res.headers.set("x-role-code", roleCode);
     res.headers.set(
       "x-role-name",
-      (session?.user?.roleName as string) ?? "User",
+      (session?.session?.roleName as string) ?? "User",
     );
     res.headers.set("x-user-id", session?.user?.id ?? "");
     return res;
