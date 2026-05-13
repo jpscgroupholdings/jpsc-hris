@@ -84,7 +84,7 @@ export default function JobFunctionsStep({
                   onChange={handleChange}
                   readOnly={jobFunctionsReadOnly}
                   rows={3}
-                  className={`w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none ${
+                  className={`w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring focus:ring-gold-500 focus:border-gold-500 resize-none ${
                     jobFunctionsReadOnly
                       ? "bg-gray-100 text-gray-500 cursor-not-allowed"
                       : "bg-white"
@@ -103,7 +103,7 @@ export default function JobFunctionsStep({
                   onChange={handleChange}
                   readOnly={jobFunctionsReadOnly}
                   rows={3}
-                  className={`w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none ${
+                  className={`w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring focus:ring-gold-500 focus:border-gold-500 resize-none ${
                     jobFunctionsReadOnly
                       ? "bg-gray-100 text-gray-500 cursor-not-allowed"
                       : "bg-white"

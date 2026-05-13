@@ -6,18 +6,15 @@ import {
   UserIcon,
   LoaderIcon,
   MenuIcon,
-  XIcon,
   LayoutDashboardIcon,
   UsersIcon,
   ClockIcon,
   WalletIcon,
-  DoorOpenIcon,
-  BarChart3Icon,
   SettingsIcon,
   HandCoinsIcon,
   ChevronLeftIcon,
-  ClipboardListIcon,
-  CheckCheckIcon,
+  ChartNoAxesCombinedIcon,
+  ListIcon,
 } from "lucide-react";
 import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
@@ -43,11 +40,11 @@ const navItems: NavItem[] = [
   {
     label: "Performace Evaluation",
     path: "/performance",
-    icon: CheckCheckIcon,
+    icon: ListIcon,
   },
   // { label: "Access Control", path: "/access", icon: DoorOpenIcon },
-  { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
-  { label: "Configurations", path: "/admin", icon: SettingsIcon },
+  { label: "Analytics", path: "/analytics", icon: ChartNoAxesCombinedIcon },
+  { label: "Admin Access", path: "/admin", icon: SettingsIcon },
 ];
 
 interface NavBarProps {
@@ -179,7 +176,7 @@ export default function NavBar({ children }: NavBarProps) {
             fixed top-0 bottom-0 left-0 w-64
             ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
             lg:relative lg:top-auto lg:bottom-auto lg:translate-x-0
-            ${isCollapsed ? "lg:w-18" : "lg:w-50"}
+            ${isCollapsed ? "lg:w-18" : "lg:w-60"}
           `}
         >
           {/* Nav */}
