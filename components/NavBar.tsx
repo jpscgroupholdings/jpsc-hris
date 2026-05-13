@@ -40,7 +40,11 @@ const navItems: NavItem[] = [
   },
   { label: "Transactions", path: "/transaction/txn", icon: HandCoinsIcon },
   { label: "Employees", path: "/employee/user", icon: UsersIcon },
-  { label: "Production", path: "/production", icon: CheckCheckIcon },
+  {
+    label: "Performace Evaluation",
+    path: "/performance",
+    icon: CheckCheckIcon,
+  },
   // { label: "Access Control", path: "/access", icon: DoorOpenIcon },
   { label: "Analytics", path: "/analytics", icon: BarChart3Icon },
   { label: "Configurations", path: "/admin", icon: SettingsIcon },

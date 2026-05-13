@@ -179,44 +179,64 @@ export default function DesignationForm({
           </span>
           <div className="p-3 space-y-4">
             <div className="flex flex-row gap-2">
-              <InputField
-                type="text"
-                label="Responsibility 1"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility1}
-                onChange={(e) =>
-                  handleInputChange("responsibility1", e.target.value)
-                }
-              />
-              <InputField
-                type="text"
-                label="Responsibility 2"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility2}
-                onChange={(e) =>
-                  handleInputChange("responsibility2", e.target.value)
-                }
-              />
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 1
+                </label>
+                <textarea
+                  value={formData.responsibility1}
+                  onChange={(e) =>
+                    handleInputChange("responsibility1", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 2
+                </label>
+                <textarea
+                  value={formData.responsibility2}
+                  onChange={(e) =>
+                    handleInputChange("responsibility2", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
             </div>
             <div className="flex flex-row gap-2">
-              <InputField
-                type="text"
-                label="Responsibility 3"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility3}
-                onChange={(e) =>
-                  handleInputChange("responsibility3", e.target.value)
-                }
-              />
-              <InputField
-                type="text"
-                label="Responsibility 4"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility4}
-                onChange={(e) =>
-                  handleInputChange("responsibility4", e.target.value)
-                }
-              />
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 3
+                </label>
+                <textarea
+                  value={formData.responsibility3}
+                  onChange={(e) =>
+                    handleInputChange("responsibility3", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 4
+                </label>
+                <textarea
+                  value={formData.responsibility4}
+                  onChange={(e) =>
+                    handleInputChange("responsibility4", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -228,44 +248,64 @@ export default function DesignationForm({
           </span>
           <div className="p-3 space-y-4">
             <div className="flex flex-row gap-2">
-              <InputField
-                type="text"
-                label="Responsibility 5"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility5}
-                onChange={(e) =>
-                  handleInputChange("responsibility5", e.target.value)
-                }
-              />
-              <InputField
-                type="text"
-                label="Responsibility 6"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility6}
-                onChange={(e) =>
-                  handleInputChange("responsibility6", e.target.value)
-                }
-              />
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 5
+                </label>
+                <textarea
+                  value={formData.responsibility5}
+                  onChange={(e) =>
+                    handleInputChange("responsibility5", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 6
+                </label>
+                <textarea
+                  value={formData.responsibility6}
+                  onChange={(e) =>
+                    handleInputChange("responsibility6", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
             </div>
             <div className="flex flex-row gap-2">
-              <InputField
-                type="text"
-                label="Responsibility 7"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility7}
-                onChange={(e) =>
-                  handleInputChange("responsibility7", e.target.value)
-                }
-              />
-              <InputField
-                type="text"
-                label="Responsibility 8"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility8}
-                onChange={(e) =>
-                  handleInputChange("responsibility8", e.target.value)
-                }
-              />
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 7
+                </label>
+                <textarea
+                  value={formData.responsibility7}
+                  onChange={(e) =>
+                    handleInputChange("responsibility7", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 8
+                </label>
+                <textarea
+                  value={formData.responsibility8}
+                  onChange={(e) =>
+                    handleInputChange("responsibility8", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -277,44 +317,64 @@ export default function DesignationForm({
           </span>
           <div className="p-3 space-y-4">
             <div className="flex flex-row gap-2">
-              <InputField
-                type="text"
-                label="Responsibility 9"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility9}
-                onChange={(e) =>
-                  handleInputChange("responsibility9", e.target.value)
-                }
-              />
-              <InputField
-                type="text"
-                label="Responsibility 10"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility10}
-                onChange={(e) =>
-                  handleInputChange("responsibility10", e.target.value)
-                }
-              />
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 9
+                </label>
+                <textarea
+                  value={formData.responsibility9}
+                  onChange={(e) =>
+                    handleInputChange("responsibility9", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 10
+                </label>
+                <textarea
+                  value={formData.responsibility10}
+                  onChange={(e) =>
+                    handleInputChange("responsibility10", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
             </div>
             <div className="flex flex-row gap-2">
-              <InputField
-                type="text"
-                label="Responsibility 11"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility11}
-                onChange={(e) =>
-                  handleInputChange("responsibility11", e.target.value)
-                }
-              />
-              <InputField
-                type="text"
-                label="Responsibility 12"
-                placeholder="Job Responsibility..."
-                value={formData.responsibility12}
-                onChange={(e) =>
-                  handleInputChange("responsibility12", e.target.value)
-                }
-              />
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 11
+                </label>
+                <textarea
+                  value={formData.responsibility11}
+                  onChange={(e) =>
+                    handleInputChange("responsibility11", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
+              <div className="flex flex-col w-full">
+                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
+                  Responsibility 12
+                </label>
+                <textarea
+                  value={formData.responsibility12}
+                  onChange={(e) =>
+                    handleInputChange("responsibility12", e.target.value)
+                  }
+                  placeholder="Job Responsibility..."
+                  rows={2}
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 resize-none bg-white"
+                />
+              </div>
             </div>
           </div>
         </div>
