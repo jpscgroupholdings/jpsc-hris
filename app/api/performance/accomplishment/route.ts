@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/database/dbConnect";
 import { Accomplishment } from "@/models/performance/accomplishment";
-import "@/models/employee/user";
 import "@/models/admin/department";
 import "@/models/admin/designation";
 
@@ -11,7 +10,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const {
-      userId,
+      designationId,
       dateStart,
       dateEnd,
       accomplishment1,
@@ -22,7 +21,7 @@ export async function POST(req: NextRequest) {
     } = body;
 
     if (
-      !userId ||
+      !designationId ||
       !dateStart ||
       !dateEnd ||
       !accomplishment1 ||
@@ -38,7 +37,7 @@ export async function POST(req: NextRequest) {
     }
 
     const accomplishment = await Accomplishment.create({
-      userId,
+      designationId,
       dateStart: new Date(dateStart),
       dateEnd: new Date(dateEnd),
       accomplishment1,
@@ -47,7 +46,7 @@ export async function POST(req: NextRequest) {
       accomplishment4,
       accomplishment5,
     });
-
+    // console.log(accomplishment);
     return NextResponse.json({ data: accomplishment }, { status: 201 });
   } catch (err: any) {
     console.error(err);
@@ -62,12 +61,12 @@ export async function GET(req: NextRequest) {
   try {
     await dbConnect();
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    const designationId = searchParams.get("designationId");
 
-    const query = userId ? { userId } : {};
+    const query = designationId ? { designationId } : {};
     const accomplishments = await Accomplishment.find(query)
       .populate({
-        path: "userId",
+        path: "designationId",
         select: "name firstName lastName email departmentId designationId",
         populate: [
           { path: "departmentId", select: "name" },

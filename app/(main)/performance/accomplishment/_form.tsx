@@ -7,6 +7,7 @@ import Button from "@/components/UI/Button";
 import { NewspaperIcon, XIcon, EditIcon } from "lucide-react";
 import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
 import InputField from "@/components/UI/InputField";
+import { getAllDesignation } from "@/actions/admin/designationActions";
 
 interface AccomplishmentFormProps {
   initialData?: any; // Pass the existing document here for Edit mode
@@ -20,7 +21,7 @@ export default function AccomplishmentForm({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState<SearchSelectOption[]>([]);
-  const [userId, setUserId] = useState<string>("");
+  const [designationId, setUserId] = useState<string>("");
 
   const [form, setForm] = useState({
     dateStart: "",
@@ -34,29 +35,48 @@ export default function AccomplishmentForm({
 
   const isEditMode = !!initialData?._id;
 
-  // 1. Fetch Employee options for the SearchSelect
   useEffect(() => {
-    const fetchEmployees = async () => {
+    const fetchDesignations = async () => {
       try {
-        const res = await fetch("/api/employee/user/");
-        const json = await res.json();
-        const mapped = json.map((emp: any) => ({
-          value: emp._id,
-          label: `${emp.firstName} ${emp.lastName}`,
-          description: emp.designation?.name || emp.designation,
+        const res = await getAllDesignation();
+        if (!res.success) return;
+        const mapped = res.data.map((des: any) => ({
+          value: des._id,
+          label: des.name,
+          description: des.departmentId?.name || "",
         }));
         setOptions(mapped);
       } catch (error) {
         console.error("Fetch error:", error);
       }
     };
-    fetchEmployees();
+    fetchDesignations();
   }, []);
+  // useEffect(() => {
+  //   const fetchEmployees = async () => {
+  //     try {
+  //       const res = await getAllDesignation();
+  //       // const res = await fetch("/api/employee/user/");
+  //       const json = await res.json();
+  //       const mapped = res.map((des: any) => ({
+  //         value: des._id,
+  //         label: `${des.firstName} ${des.lastName}`,
+  //         description: des.designationId?.name || des.designationId,
+  //       }));
+  //       setOptions(mapped);
+  //     } catch (error) {
+  //       console.error("Fetch error:", error);
+  //     }
+  //   };
+  //   fetchEmployees();
+  // }, []);
 
   // 2. Populate form if in Edit Mode
   useEffect(() => {
     if (initialData) {
-      setUserId(initialData.userId?._id || initialData.userId || "");
+      setUserId(
+        initialData.designationId?._id || initialData.designationId || "",
+      );
       setForm({
         dateStart: initialData.dateStart
           ? new Date(initialData.dateStart).toISOString().split("T")[0]
@@ -79,7 +99,7 @@ export default function AccomplishmentForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userId) return toast.error("Please select an employee");
+    if (!designationId) return toast.error("Please select a Designation");
 
     setLoading(true);
     try {
@@ -91,9 +111,8 @@ export default function AccomplishmentForm({
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, userId }),
+        body: JSON.stringify({ designationId, ...form }),
       });
-
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || "Failed to save accomplishment");
@@ -130,10 +149,10 @@ export default function AccomplishmentForm({
         <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
           <SearchSelect
             className="pb-6"
-            label="Employee"
-            placeholder="Select an employee..."
+            label="Designation"
+            placeholder="Select an Designation..."
             options={options}
-            value={userId || undefined}
+            value={designationId || undefined}
             onChange={(val) => setUserId(val || "")}
             disabled={loading || isEditMode} // Usually you don't change the owner during edit
           />

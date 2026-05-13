@@ -2,7 +2,8 @@ import { User as UserIcon } from "lucide-react";
 import InputField from "@/components/UI/InputField";
 import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
 import { Evaluation } from "@/models/performance/evaluation";
-
+import { authClient } from "@/lib/auth/auth-client";
+import { useEffect } from "react";
 interface PersonnelStepProps {
   form: Partial<Evaluation>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -16,6 +17,12 @@ export default function PersonnelStep({
   userOptions,
   setForm,
 }: PersonnelStepProps) {
+  const { data: session } = authClient.useSession();
+  useEffect(() => {
+    if (session?.user?.id) {
+      setForm((p: any) => ({ ...p, evaluatedBy: session.user.id }));
+    }
+  }, [session?.user?.id]);
   return (
     <section className="bg-white p-8 rounded-3xl border shadow-sm space-y-8">
       <div className="flex items-center gap-3 text-xl font-bold text-gray-800 border-b pb-4">
@@ -28,13 +35,12 @@ export default function PersonnelStep({
           value={form.userId as any}
           onChange={(v) => setForm((p: any) => ({ ...p, userId: v as string }))}
         />
-        <SearchSelect
+        <InputField
+          type="text"
           label="Evaluated By"
-          options={userOptions}
-          value={form.evaluatedBy as any}
-          onChange={(v) =>
-            setForm((p: any) => ({ ...p, evaluatedBy: v as string }))
-          }
+          value={session?.user.name}
+          disabled
+          className="cursor-not-allowed"
         />
         <InputField
           label="Start Period"
