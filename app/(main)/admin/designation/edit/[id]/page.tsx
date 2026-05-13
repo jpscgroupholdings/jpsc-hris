@@ -46,7 +46,7 @@ export default function EditDesignationPage() {
     <div className="p-8">
       <DesignationForm
         initialData={initialData}
-        onSuccess={() => router.push("/adnin")}
+        onSuccess={() => router.push("/admin")}
       />
     </div>
   );

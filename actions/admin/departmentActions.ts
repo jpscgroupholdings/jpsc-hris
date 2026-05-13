@@ -1,18 +1,17 @@
 "use server";
 import dbConnect from "@/lib/database/dbConnect";
 import { Department } from "@/models/admin/department";
-
 export async function getAllDepartment() {
   try {
     await dbConnect();
     const departments = await Department.find({}).lean();
-    const serialized = departments.map((dept) => ({
-      ...dept,
-      _id: dept._id.toString(),
-    }));
+
+    // This converts ObjectIds, Dates, and Buffers into plain strings/objects
+    const serialized = JSON.parse(JSON.stringify(departments));
+    // console.log(serialized);
     return { success: true, data: serialized };
   } catch (error) {
-    console.error(error);
+    console.error("Fetching Departments Failed:", error);
     throw new Error("Fetching Departments Failed");
   }
 }

@@ -7,18 +7,10 @@ export async function getAllDesignation() {
   try {
     await dbConnect();
     const designations = await Designation.find({})
-      .populate("departmentId", "name shortName") // ← fetches only name & shortName from Department
+      .populate("departmentId", "name shortName")
       .lean();
-
-    const serialized = designations.map((des) => ({
-      ...des,
-      _id: des._id.toString(),
-      departmentId: {
-        ...(des.departmentId as any),
-        _id: (des.departmentId as any)._id.toString(), // ← now an object, not a string
-      },
-    }));
-
+    const serialized = JSON.parse(JSON.stringify(designations));
+    console.log("serialized", serialized);
     return { success: true, data: serialized };
   } catch (error) {
     console.error(error);

@@ -49,7 +49,7 @@ export default function ConfigPage() {
           icon={EditIcon}
           variant="info"
           className="scale-75"
-          onClick={() => router.push(`/department/edit/${row._id}`)}
+          onClick={() => router.push(`admin/department/edit/${row._id}`)}
         />
       ),
     },
@@ -81,7 +81,7 @@ export default function ConfigPage() {
           icon={EditIcon}
           variant="info"
           className="scale-75"
-          onClick={() => router.push(`/designation/edit/${row._id}`)}
+          onClick={() => router.push(`admin/designation/edit/${row._id}`)}
         />
       ),
     },
@@ -113,7 +113,7 @@ export default function ConfigPage() {
           icon={EditIcon}
           variant="info"
           className="scale-75"
-          onClick={() => router.push(`/role/edit/${row._id}`)}
+          onClick={() => router.push(`admin/role/edit/${row._id}`)}
         />
       ),
     },
@@ -183,7 +183,7 @@ export default function ConfigPage() {
             label="Add Department"
             icon={PlusCircleIcon}
             variant="success"
-            onClick={() => router.push("/department/create")}
+            onClick={() => router.push("admin/department/create")}
           />
         </div>
         <div className="rounded-xl shadow-lg border overflow-hidden">
@@ -216,7 +216,7 @@ export default function ConfigPage() {
             label="Add Designation"
             icon={PlusCircleIcon}
             variant="success"
-            onClick={() => router.push("/designation/create")}
+            onClick={() => router.push("admin/designation/create")}
           />
         </div>
         <div className="rounded-xl shadow-lg border overflow-hidden">
@@ -249,7 +249,7 @@ export default function ConfigPage() {
             label="Add Role"
             icon={PlusCircleIcon}
             variant="success"
-            onClick={() => router.push("/role/create")}
+            onClick={() => router.push("admin/role/create")}
           />
         </div>
         <div className="rounded-xl shadow-lg border overflow-hidden">
