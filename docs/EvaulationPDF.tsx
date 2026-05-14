@@ -110,21 +110,21 @@ export function mapEvaluationData(raw: any) {
     subordinatesDevelopment: raw?.subordinatesDevelopment ?? "",
     subordinatesDevelopmentRemarks: raw?.subordinatesDevelopmentRemarks ?? "",
 
-    acc1Title: raw?.accomplishmentId?.accomplishment1 ?? "Accomplishment 1",
+    acc1Title: raw?.accomplishmentRemarks1 ?? "",
     acc1Score: raw?.accomplishmentScore1 ?? "",
-    acc1Remarks: raw?.accomplishmentRemarks1 ?? "",
-    acc2Title: raw?.accomplishmentId?.accomplishment2 ?? "Accomplishment 2",
+    acc1Remarks: "Accomplishment 1",
+    acc2Title: raw?.accomplishmentRemarks2 ?? "",
     acc2Score: raw?.accomplishmentScore2 ?? "",
-    acc2Remarks: raw?.accomplishmentRemarks2 ?? "",
-    acc3Title: raw?.accomplishmentId?.accomplishment3 ?? "Accomplishment 3",
+    acc2Remarks: "Accomplishment 2",
+    acc3Title: raw?.accomplishmentRemarks3 ?? "",
     acc3Score: raw?.accomplishmentScore3 ?? "",
-    acc3Remarks: raw?.accomplishmentRemarks3 ?? "",
-    acc4Title: raw?.accomplishmentId?.accomplishment4 ?? "Accomplishment 4",
+    acc3Remarks: "Accomplishment 3",
+    acc4Title: raw?.accomplishmentRemarks4 ?? "",
     acc4Score: raw?.accomplishmentScore4 ?? "",
-    acc4Remarks: raw?.accomplishmentRemarks4 ?? "",
-    acc5Title: raw?.accomplishmentId?.accomplishment5 ?? "Accomplishment 5",
+    acc4Remarks: "Accomplishment 4",
+    acc5Title: raw?.accomplishmentRemarks5 ?? "",
     acc5Score: raw?.accomplishmentScore5 ?? "",
-    acc5Remarks: raw?.accomplishmentRemarks5 ?? "",
+    acc5Remarks: "Accomplishment 5",
 
     sectionScore1: raw?.sectionScore1 ?? "",
     sectionPercent1: raw?.sectionPercent1 ?? "",
@@ -1162,9 +1162,8 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
         <View style={{ flexDirection: "row", backgroundColor: "#1a1a2e" }}>
           {[
             ["#", 0.4],
-            ["Accomplishment Title", 3],
+            ["Accomplishments", 3],
             ["Score", 1],
-            ["Remarks", 2.5],
           ].map(([label, flex]) => (
             <Text
               key={label as string}
@@ -1184,7 +1183,6 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
         {[1, 2, 3, 4, 5].map((n) => {
           const title = data[`acc${n}Title` as keyof typeof data] as string;
           const score = data[`acc${n}Score` as keyof typeof data];
-          const remarks = data[`acc${n}Remarks` as keyof typeof data] as string;
           return (
             <View
               key={n}
@@ -1243,16 +1241,6 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
                   {String(score ?? "")}
                 </Text>
               </View>
-              <Text
-                style={{
-                  flex: 2.5,
-                  fontSize: 10,
-                  padding: "5 6",
-                  color: "#333",
-                }}
-              >
-                {remarks || ""}
-              </Text>
             </View>
           );
         })}
