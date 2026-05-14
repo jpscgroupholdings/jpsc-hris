@@ -1,5 +1,6 @@
 import mongoose, { models, Schema } from "mongoose";
-import { Designation } from "@/models/admin/designation";
+import type { Designation } from "@/models/admin/designation";
+import "@/models/admin/designation";
 
 export interface Accomplishment {
   _id: string;
@@ -16,7 +17,7 @@ export interface Accomplishment {
 const AccomplishmentSchema = new Schema<Accomplishment>({
   designationId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Designation",
     required: true,
   },
   dateStart: {
