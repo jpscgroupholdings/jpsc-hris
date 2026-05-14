@@ -1,6 +1,7 @@
 "use client";
 
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { format } from "date-fns";
 
 // ─────────────────────────────────────────────
 // HELPERS
@@ -61,9 +62,9 @@ export function mapEvaluationData(raw: any) {
     position: raw?.userId?.designationId?.name ?? "",
     department: raw?.userId?.departmentId?.name ?? "",
     supervisorName,
-    evaluationDate: formatDate(raw?.evaluationDate) ?? "",
-    periodFrom: formatDate(raw?.evaluationDateStart),
-    periodTo: formatDate(raw?.evaluationDateEnd),
+    evaluationDate: format(new Date(raw?.evaluationDate), "MMM dd yyyy"),
+    periodFrom: format(new Date(raw?.evaluationDateStart), "MMM dd yyyy"),
+    periodTo: format(new Date(raw?.evaluationDateEnd), "MMM dd yyyy"),
 
     kjf1a: raw?.jobFunction1 ?? "",
     kjf1b: raw?.jobFunction2 ?? "",
@@ -138,9 +139,9 @@ export function mapEvaluationData(raw: any) {
       "Evaluation_Form_" +
       employeeName.replaceAll(" ", "_") +
       "(" +
-      formatDate(raw?.evaluationDateStart) +
+      format(new Date(raw?.evaluationDateStart), "MM/dd/yyyy") +
       "-" +
-      formatDate(raw?.evaluationDateEnd) +
+      format(new Date(raw?.evaluationDateEnd), "MM/dd/yyyy") +
       ")",
   };
 }
