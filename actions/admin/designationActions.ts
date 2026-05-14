@@ -10,7 +10,6 @@ export async function getAllDesignation() {
       .populate("departmentId", "name shortName")
       .lean();
     const serialized = JSON.parse(JSON.stringify(designations));
-    console.log("serialized", serialized);
     return { success: true, data: serialized };
   } catch (error) {
     console.error(error);

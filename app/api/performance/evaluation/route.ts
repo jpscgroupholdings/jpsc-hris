@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
           { path: "designationId", select: "name" },
         ],
       })
-      .populate("evaluatedBy", "firstName lastName")
+      .populate("evaluatedBy", "name")
       .sort({ createdAt: -1 })
       .lean();
 

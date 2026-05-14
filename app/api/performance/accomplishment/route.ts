@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/database/dbConnect";
 import { Accomplishment } from "@/models/performance/accomplishment";
-import "@/models/admin/department";
 import "@/models/admin/designation";
 
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
     const body = await req.json();
+    console.log("POST body:", body);
 
     const {
       designationId,
@@ -57,25 +57,46 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+// export async function GET(req: NextRequest) {
+//   try {
+//     await dbConnect();
+//     const { searchParams } = new URL(req.url);
+//     const designationId = searchParams.get("designationId");
+
+//     const query = designationId ? { designationId } : {};
+//     const accomplishments = await Accomplishment.find(query)
+//       .populate({
+//         path: "designationId",
+//         select: "name firstName lastName email departmentId designationId",
+//         populate: [
+//           { path: "departmentId", select: "name" },
+//           { path: "designationId", select: "name" },
+//         ],
+//       })
+//       .sort({ createdAt: -1 });
+
+//     return NextResponse.json({ data: accomplishments });
+//   } catch (err: any) {
+//     console.error(err);
+//     return NextResponse.json(
+//       { error: err.message || "Internal server error" },
+//       { status: 500 },
+//     );
+//   }
+// }
+
+export async function GET() {
   try {
     await dbConnect();
-    const { searchParams } = new URL(req.url);
-    const designationId = searchParams.get("designationId");
+    // const designationId = searchParams.get("designationId");
 
-    const query = designationId ? { designationId } : {};
-    const accomplishments = await Accomplishment.find(query)
-      .populate({
-        path: "designationId",
-        select: "name firstName lastName email departmentId designationId",
-        populate: [
-          { path: "departmentId", select: "name" },
-          { path: "designationId", select: "name" },
-        ],
-      })
-      .sort({ createdAt: -1 });
+    // const query = designationId ? { designationId } : {};
+    const accomplishments = await Accomplishment.find()
+      // .populate("designationId")
+      .lean();
+    // .sort({ createdAt: -1 });
 
-    return NextResponse.json({ data: accomplishments });
+    return NextResponse.json({ status: 200, data: accomplishments });
   } catch (err: any) {
     console.error(err);
     return NextResponse.json(
