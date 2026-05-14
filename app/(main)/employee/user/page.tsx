@@ -98,7 +98,7 @@ export default function Employee() {
           icon={PlusCircleIcon}
           iconSize={28}
           variant="success"
-          onClick={() => router.push("/employee/create")}
+          onClick={() => router.push("/employee/user/create")}
         />
       </div>
 

@@ -34,15 +34,6 @@ function getRatingInfo(score: number): { label: string; color: string } {
   return { label: "Unsatisfactory", color: "#dd776e" };
 }
 
-function formatDate(d: any): string {
-  if (!d) return "";
-  return new Date(d).toLocaleDateString("en-PH", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 // ─────────────────────────────────────────────
 // DATA MAPPER
 // ─────────────────────────────────────────────
@@ -56,15 +47,14 @@ export function mapEvaluationData(raw: any) {
   const supervisorName = raw?.evaluatedBy
     ? `${raw.evaluatedBy.firstName ?? ""} ${raw.evaluatedBy.lastName ?? ""}`.trim()
     : "";
-
   return {
     employeeName,
     position: raw?.userId?.designationId?.name ?? "",
     department: raw?.userId?.departmentId?.name ?? "",
     supervisorName,
-    evaluationDate: format(new Date(raw?.evaluationDate), "MMM dd yyyy"),
-    periodFrom: format(new Date(raw?.evaluationDateStart), "MMM dd yyyy"),
-    periodTo: format(new Date(raw?.evaluationDateEnd), "MMM dd yyyy"),
+    evaluationDate: format(new Date(raw?.evaluationDate), "MMM dd yyyy") ?? "",
+    periodFrom: format(new Date(raw?.evaluationDateStart), "MMM dd yyyy") ?? "",
+    periodTo: format(new Date(raw?.evaluationDateEnd), "MMM dd yyyy") ?? "",
 
     kjf1a: raw?.jobFunction1 ?? "",
     kjf1b: raw?.jobFunction2 ?? "",
@@ -145,10 +135,6 @@ export function mapEvaluationData(raw: any) {
       ")",
   };
 }
-
-// ─────────────────────────────────────────────
-// STYLES  (base font 11, headers scale up)
-// ─────────────────────────────────────────────
 
 const S = StyleSheet.create({
   page: {
@@ -776,7 +762,7 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
       <Page size="A4" style={S.page}>
         <PageHeader data={data} />
         <Text style={S.sectionHeader}>
-          II. PERFORMANCE COMPETENCY EVALUATION (1 of 2)
+          II. PERFORMANCE COMPETENCY EVALUATION
         </Text>
         <Text style={S.instrText}>
           Evaluate performance competencies based on actual performance. Select
@@ -813,13 +799,6 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
       {/* ═══════════════ PAGE 2b — Section II Competencies 5–8 + Optional ═══════════════ */}
       <Page size="A4" style={S.page}>
         <PageHeader data={data} />
-        <Text style={S.sectionHeader}>
-          II. PERFORMANCE COMPETENCY EVALUATION (2 of 2)
-        </Text>
-        <Text style={S.instrText}>
-          Continued — competency evaluation for the remaining performance
-          factors.
-        </Text>
 
         {COMPETENCIES.slice(4).map((comp) => (
           <View key={comp.title} style={S.compRow}>

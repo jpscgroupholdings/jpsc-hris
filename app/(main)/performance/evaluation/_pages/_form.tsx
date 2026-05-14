@@ -53,9 +53,8 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
   );
 
   const isEditMode = !!initialData?._id;
-
   const [form, setForm] = useState<Partial<Evaluation>>({
-    userId: initialData?.userId || "",
+    userId: initialData?.userId._id || "",
     evaluatedBy: initialData?.evaluatedBy || "",
     evaluationDateStart: initialData?.evaluationDateStart || "",
     evaluationDateEnd: initialData?.evaluationDateEnd || "",
@@ -119,7 +118,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
   useEffect(() => {
     if (initialData) {
       setForm({
-        userId: initialData.userId || "",
+        userId: initialData.userId._id || "",
         evaluatedBy:
           initialData.evaluatedBy?._id || initialData.evaluatedBy || "",
         evaluationDateStart: initialData.evaluationDateStart
@@ -463,7 +462,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         {currentStep === 4 && (
           <button
             type="button"
-            onClick={() => router.push("/performance/evaluation")}
+            onClick={() => router.push("/performance/")}
             className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all ml-auto"
           >
             Done — Back to List <ChevronRight size={16} />

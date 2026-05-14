@@ -40,7 +40,7 @@ export default function PersonnelStep({
           label="Evaluated By"
           value={session?.user.name}
           disabled
-          className="cursor-not-allowed"
+          className="disabled:cursor-not-allowed"
         />
         <InputField
           label="Start Period"
