@@ -1,6 +1,13 @@
 "use client";
 
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Image,
+} from "@react-pdf/renderer";
 import { format } from "date-fns";
 
 // ─────────────────────────────────────────────
@@ -146,7 +153,7 @@ const S = StyleSheet.create({
   },
 
   // ── Repeating page header ──
-  pageHeader: { alignItems: "center", marginBottom: 6 },
+  pageHeader: { alignItems: "center", marginBottom: 12 },
   pageHeaderCompany: {
     fontSize: 13,
     fontFamily: "Helvetica-Bold",
@@ -403,7 +410,8 @@ const PageHeader = ({
 }: {
   data: ReturnType<typeof mapEvaluationData>;
 }) => (
-  <View>
+  <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+    <Image src="/images/jpsc_logo.png" style={{ width: 100, height: "auto" }} />
     <View style={S.pageHeader}>
       <Text style={S.pageHeaderCompany}>JPSC GROUP HOLDINGS INC.</Text>
       <Text style={S.pageHeaderSub}>
