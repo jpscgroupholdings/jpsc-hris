@@ -62,7 +62,6 @@ export interface Evaluation {
   subordinatesDevelopmentRemarks: string;
 
   //Section 3
-  accomplishmentId: Accomplishment;
   accomplishmentScore1: number;
   accomplishmentRemarks1: string;
   accomplishmentScore2: number;
@@ -147,7 +146,6 @@ const EvaluationSchema = new Schema<Evaluation>({
     maxLength: 225,
   },
 
-  accomplishmentId: { type: Schema.Types.ObjectId, required: true },
   accomplishmentScore1: { type: Number, required: true },
   accomplishmentRemarks1: { type: String, required: true, trim: true },
   accomplishmentScore2: { type: Number, required: true },
