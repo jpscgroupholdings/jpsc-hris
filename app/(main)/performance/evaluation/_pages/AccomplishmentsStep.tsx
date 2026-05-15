@@ -1,15 +1,12 @@
 "use client";
 
-import { Target, CheckCircle2 } from "lucide-react";
+import { Target, CheckCircle2, ChevronDown } from "lucide-react";
 import InputField from "@/components/UI/InputField";
-import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
 import { Evaluation } from "@/models/performance/evaluation";
 
 interface AccomplishmentsStepProps {
   form: Partial<Evaluation>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  accomplishmentOptions: SearchSelectOption[];
-  handleAccomplishmentChange: (id: string | null) => void;
   s3Percent: string;
   loading: boolean;
   isEditMode: boolean;
@@ -18,8 +15,6 @@ interface AccomplishmentsStepProps {
 export default function AccomplishmentsStep({
   form,
   handleChange,
-  accomplishmentOptions,
-  handleAccomplishmentChange,
   s3Percent,
   loading,
   isEditMode,
@@ -32,35 +27,25 @@ export default function AccomplishmentsStep({
           Accomplishments
         </div>
       </div>
+
       {/* Directions */}
       <div>
         <p className="font-bold text-lg">Key Job Function Evaluation:</p>
         <p className="text-sm">
-          Evaluate the Following key job functions based on the employee's
+          Evaluate the following key job functions based on the employee's
           actual performance during the evaluation period. <br />
           <br />
           For each job function, assign an importance ranking (Critical = 3,
-          Very Important = 2, Important = 1) and perforamce rating using the
+          Very Important = 2, Important = 1) and performance rating using the
           defined scale (ME=5, HC=4, PC=3, ND=2, U=1). <br />
           <br />
           Ratings must be based on actual output, quality, timeliness, and
-          consistency of work. PRovide brief comments or examples to support the
+          consistency of work. Provide brief comments or examples to support the
           rating given. <br />
           <br />
           The assigned ratings and importance rankings shall be used to compute
-          the weighted Section I performance score.
+          the weighted Section III performance score.
         </p>
-      </div>
-
-      {/* Import report */}
-      <div className="bg-purple-50/50 p-6 rounded-2xl border border-purple-100">
-        <SearchSelect
-          label="Import Production Report"
-          placeholder="Search report to load tasks..."
-          options={accomplishmentOptions}
-          value={form.accomplishmentId as any}
-          onChange={handleAccomplishmentChange}
-        />
       </div>
 
       {/* Accomplishment rows */}
@@ -71,32 +56,48 @@ export default function AccomplishmentsStep({
             className="flex flex-col md:flex-row gap-6 p-5 bg-gray-50 rounded-2xl border border-gray-200"
           >
             <div className="flex-1">
-              <div className="text-[10px] font-black text-purple-400 uppercase mb-2">
-                Item {i} Task Description
-              </div>
-              <div className="text-gray-800 text-sm font-medium bg-white p-3 rounded-lg border border-gray-100 min-h-11">
-                {(form as any)[`accomplishmentRemarks${i}`] || (
-                  <span className="text-gray-300 italic">No report loaded</span>
-                )}
-              </div>
-            </div>
-            <div className="w-full md:w-32">
               <InputField
-                label="Score (0-5)"
-                type="number"
-                name={`accomplishmentScore${i}`}
-                value={(form as any)[`accomplishmentScore${i}`]}
+                label={`Item ${i} Task Description`}
+                type="text"
+                name={`accomplishmentRemarks${i}`}
+                value={(form as any)[`accomplishmentRemarks${i}`]}
                 onChange={handleChange}
-                min={0}
-                max={5}
+                placeholder="Describe the task or accomplishment..."
               />
+            </div>
+            <div className="lg:col-span-2">
+              <label className="block text-[11px] font-bold font-sans text-azure-950 uppercase tracking-widest mb-2 ml-1">
+                Score (1-5)
+              </label>
+              <div className="relative group">
+                <select
+                  className="w-full appearance-none bg-white border border-gray-300 rounded-xl pl-4 pr-10 py-3 text-sm 
+                 text-gray-700 cursor-pointer transition-all duration-200
+                 focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 
+                 hover:border-gray-400"
+                >
+                  <option value="" disabled hidden>
+                    Select Score
+                  </option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+
+                {/* Custom Chevron Arrow */}
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400 group-focus-within:text-gold-500">
+                  <ChevronDown />
+                </div>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Submit — saves to DB, parent advances to Summary step */}
-      <div className="flex justify-end pt-4 border-t">
+      {/* Submit */}
+      <div className="flex justify-end pt-4">
         <button
           type="submit"
           disabled={loading}
@@ -118,7 +119,7 @@ export default function AccomplishmentsStep({
           ) : (
             <>
               <CheckCircle2 size={18} />
-              {isEditMode ? "Update & View Summary" : "Submit & View Summary"}
+              {isEditMode ? "Update Evaluation" : "Submit Evaluation"}
             </>
           )}
         </button>

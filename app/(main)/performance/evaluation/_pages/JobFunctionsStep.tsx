@@ -1,4 +1,4 @@
-import { Briefcase } from "lucide-react";
+import { Briefcase, ChevronDown } from "lucide-react";
 import InputField from "@/components/UI/InputField";
 import { Evaluation } from "@/models/performance/evaluation";
 
@@ -113,15 +113,31 @@ export default function JobFunctionsStep({
 
               {/* Score */}
               <div className="lg:col-span-2">
-                <InputField
-                  label="Score (0-5)"
-                  type="number"
-                  name={`jobFunctionScore${i}`}
-                  value={(form as any)[`jobFunctionScore${i}`]}
-                  onChange={handleChange}
-                  min={0}
-                  max={5}
-                />
+                <label className="block text-[11px] font-bold font-sans text-azure-950 uppercase tracking-widest mb-2 ml-1">
+                  Score (1-5)
+                </label>
+                <div className="relative group">
+                  <select
+                    className="w-full appearance-none bg-white border border-gray-300 rounded-xl pl-4 pr-10 py-3 text-sm 
+                 text-gray-700 cursor-pointer transition-all duration-200
+                 focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 
+                 hover:border-gray-400"
+                  >
+                    <option value="" disabled hidden>
+                      Select Score
+                    </option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+
+                  {/* Custom Chevron Arrow */}
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400 group-focus-within:text-gold-500">
+                    <ChevronDown />
+                  </div>
+                </div>
               </div>
             </div>
           );

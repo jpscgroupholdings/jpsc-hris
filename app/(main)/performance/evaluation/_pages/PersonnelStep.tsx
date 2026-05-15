@@ -17,12 +17,13 @@ export default function PersonnelStep({
   userOptions,
   setForm,
 }: PersonnelStepProps) {
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   useEffect(() => {
     if (session?.user?.id) {
       setForm((p: any) => ({ ...p, evaluatedBy: session.user.id }));
     }
   }, [session?.user?.id]);
+  // evaluator = session ? session?user.name :
   return (
     <section className="bg-white p-8 rounded-3xl border shadow-sm space-y-8">
       <div className="flex items-center gap-3 text-xl font-bold text-gray-800 border-b pb-4">
@@ -38,7 +39,7 @@ export default function PersonnelStep({
         <InputField
           type="text"
           label="Evaluated By"
-          value={session?.user.name}
+          value={isPending ? "Loading" : session?.user.name}
           disabled
           className="disabled:cursor-not-allowed"
         />

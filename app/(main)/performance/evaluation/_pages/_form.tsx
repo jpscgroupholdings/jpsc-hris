@@ -21,7 +21,6 @@ import JobFunctionsStep from "./JobFunctionsStep";
 import CompetenciesStep from "./CompetenciesStep";
 import AccomplishmentsStep from "./AccomplishmentsStep";
 import SummaryStep from "./SummaryStep";
-import { getAllAccomplishmentByDesignationId } from "@/actions/performance/accomplishmentActions";
 
 const STEPS = [
   { id: 0, label: "Personnel", icon: UserIcon, color: "blue" },
@@ -40,19 +39,9 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
   const [savedData, setSavedData] = useState<any>(initialData ?? null);
 
   const [userOptions, setUserOptions] = useState<SearchSelectOption[]>([]);
-  const [accomplishmentOptions, setAccomplishmentOptions] = useState<
-    SearchSelectOption[]
-  >([]);
-  const [rawAccomplishments, setRawAccomplishments] = useState<any[]>([]);
-
-  // Track the selected user's designationId so we can fetch accomplishments
-  const [selectedDesignationId, setSelectedDesignationId] = useState<string>(
-    initialData?.userId?.designationId?._id ||
-      initialData?.userId?.designationId ||
-      "",
-  );
 
   const isEditMode = !!initialData?._id;
+
   const [form, setForm] = useState<Partial<Evaluation>>({
     userId: initialData?.userId._id || "",
     evaluatedBy: initialData?.evaluatedBy || "",
@@ -101,7 +90,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     subordinatesDevelopment: initialData?.subordinatesDevelopment || 0,
     subordinatesDevelopmentRemarks:
       initialData?.subordinatesDevelopmentRemarks || "",
-    accomplishmentId: initialData?.accomplishmentId || "",
     accomplishmentScore1: initialData?.accomplishmentScore1 || 0,
     accomplishmentRemarks1: initialData?.accomplishmentRemarks1 || "",
     accomplishmentScore2: initialData?.accomplishmentScore2 || 0,
@@ -170,7 +158,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         subordinatesDevelopment: initialData.subordinatesDevelopment || 0,
         subordinatesDevelopmentRemarks:
           initialData.subordinatesDevelopmentRemarks || "",
-        accomplishmentId: initialData.accomplishmentId || "",
         accomplishmentScore1: initialData.accomplishmentScore1 || 0,
         accomplishmentRemarks1: initialData.accomplishmentRemarks1 || "",
         accomplishmentScore2: initialData.accomplishmentScore2 || 0,
@@ -185,7 +172,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     }
   }, [initialData]);
 
-  // ── 1. Fetch users only (no accomplishments yet — we don't know designationId) ──
+  // Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -206,10 +193,9 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     fetchUsers();
   }, []);
 
-  // ── 2. When userId changes: fetch user → get designationId →
-  //        load job functions + accomplishments in one go ──
+  // When userId changes: fetch user → auto-fill job functions from designation
   useEffect(() => {
-    if (!form.userId) return;
+    if (!form.userId || isEditMode) return;
 
     const fetchUserData = async () => {
       try {
@@ -220,40 +206,21 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         const designation = user.designationId;
         if (!designation) return;
 
-        const designationId = designation._id || designation;
-        setSelectedDesignationId(designationId);
-
-        // Auto-fill job functions from designation responsibilities (skip in edit mode)
-        if (!isEditMode) {
-          setForm((prev) => ({
-            ...prev,
-            jobFunction1: designation.responsibility1 || "",
-            jobFunction2: designation.responsibility2 || "",
-            jobFunction3: designation.responsibility3 || "",
-            jobFunction4: designation.responsibility4 || "",
-            jobFunction5: designation.responsibility5 || "",
-            jobFunction6: designation.responsibility6 || "",
-            jobFunction7: designation.responsibility7 || "",
-            jobFunction8: designation.responsibility8 || "",
-            jobFunction9: designation.responsibility9 || "",
-            jobFunction10: designation.responsibility10 || "",
-            jobFunction11: designation.responsibility11 || "",
-            jobFunction12: designation.responsibility12 || "",
-          }));
-        }
-
-        // Fetch accomplishments filtered by this designation
-        const aRes = await getAllAccomplishmentByDesignationId(designationId);
-        const aData = aRes.data || [];
-        console.log(aData);
-        setRawAccomplishments(aData);
-        setAccomplishmentOptions(
-          aData.map((a: any) => ({
-            value: a._id,
-            label: `Report: ${new Date(a.dateStart).toLocaleDateString()}`,
-            description: `By: ${a.designationId?.name || "N/A"}`,
-          })),
-        );
+        setForm((prev) => ({
+          ...prev,
+          jobFunction1: designation.responsibility1 || "",
+          jobFunction2: designation.responsibility2 || "",
+          jobFunction3: designation.responsibility3 || "",
+          jobFunction4: designation.responsibility4 || "",
+          jobFunction5: designation.responsibility5 || "",
+          jobFunction6: designation.responsibility6 || "",
+          jobFunction7: designation.responsibility7 || "",
+          jobFunction8: designation.responsibility8 || "",
+          jobFunction9: designation.responsibility9 || "",
+          jobFunction10: designation.responsibility10 || "",
+          jobFunction11: designation.responsibility11 || "",
+          jobFunction12: designation.responsibility12 || "",
+        }));
       } catch {
         toast.error("Failed to load user data.");
       }
@@ -323,22 +290,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     }));
   };
 
-  const handleAccomplishmentChange = (id: string | null) => {
-    const selected = rawAccomplishments.find((a) => a._id === id);
-    if (selected) {
-      setForm((prev: any) => ({
-        ...prev,
-        accomplishmentId: id as any,
-        accomplishmentRemarks1: selected.accomplishment1 || "N/A",
-        accomplishmentRemarks2: selected.accomplishment2 || "N/A",
-        accomplishmentRemarks3: selected.accomplishment3 || "N/A",
-        accomplishmentRemarks4: selected.accomplishment4 || "N/A",
-        accomplishmentRemarks5: selected.accomplishment5 || "N/A",
-      }));
-    }
-  };
-
-  // Submit → save to DB → advance to Summary
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -367,7 +318,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
           body: JSON.stringify(payload),
         },
       );
-
+      console.log("res,", res);
       if (!res.ok) throw new Error("Failed to save");
 
       const json = await res.json();
@@ -421,8 +372,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         <AccomplishmentsStep
           form={form}
           handleChange={handleChange}
-          accomplishmentOptions={accomplishmentOptions}
-          handleAccomplishmentChange={handleAccomplishmentChange}
           s3Percent={calculations.s3Percent}
           loading={loading}
           isEditMode={isEditMode}
