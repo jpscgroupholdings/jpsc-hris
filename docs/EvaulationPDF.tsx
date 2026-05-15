@@ -205,8 +205,8 @@ const S = StyleSheet.create({
     color: "white",
     fontFamily: "Helvetica-Bold",
     fontSize: 10.5,
-    padding: "5 8",
-    marginTop: 10,
+    // padding: "5 8",
+    // marginTop: 10,
     marginBottom: 5,
   },
   instrText: { fontSize: 9, color: "#555", marginBottom: 6, lineHeight: 1.5 },
@@ -703,7 +703,7 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
             <View key={n} style={S.kjfRow}>
               <Text style={S.kjfNum}>{n}.</Text>
               <View style={S.kjfBody}>
-                <Text style={S.kjfFuncBold}>{fa}</Text>
+                <Text style={S.kjfFuncText}>{fa}</Text>
                 {fb ? <Text style={S.kjfFuncText}>{fb}</Text> : null}
                 <View style={S.importanceRow}>
                   <Text style={S.importanceLabel}>Importance: </Text>
@@ -894,82 +894,44 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
       </Page>
 
       {/* ═══════════════ PAGE 3 — Supervisory + Section III ═══════════════ */}
-      <Page size="A4" style={S.page}>
-        <PageHeader data={data} />
+      {/* hiding area */}
+      {(data.leadership || data.subordinatesDevelopment) && (
+        <Page size="A4" style={S.page}>
+          <PageHeader data={data} />
 
-        <Text style={S.sectionHeader}>SUPERVISORY PERFORMANCE REVIEW</Text>
-        <Text style={S.instrText}>
-          Complete this section only for employees who supervise other staff. If
-          not supervisory, this section may be left blank.
-        </Text>
-
-        {SUPERVISORY_COMPETENCIES.map((comp) => (
-          <View key={comp.title} style={S.compRow}>
-            <View style={S.compLeft}>
-              <Text style={S.compTitle}>{comp.title}</Text>
-              <Bullets items={comp.bullets} />
-            </View>
-            <View style={S.compRight}>
-              <RatingChips
-                selected={data[comp.scoreKey as keyof typeof data] as number}
-              />
-              <View style={S.remarksBox}>
-                <Text>
-                  {(data[comp.remarksKey as keyof typeof data] as string) ?? ""}
-                </Text>
-              </View>
-              <View style={S.scoreBox}>
-                <Text style={S.scoreLabel}>Score:</Text>
-                <Text style={S.scoreValue}>
-                  {String(data[comp.scoreKey as keyof typeof data] ?? "")}
-                </Text>
-              </View>
-            </View>
-          </View>
-        ))}
-
-        {/* <View style={S.computeBox}>
-          <Text style={S.computeTitle}>
-            SUPERVISORY PERFORMANCE COMPUTATION
+          <Text style={S.sectionHeader}>SUPERVISORY PERFORMANCE REVIEW</Text>
+          <Text style={S.instrText}>
+            Complete this section only for employees who supervise other staff.
+            If not supervisory, this section may be left blank.
           </Text>
-          <View style={S.computeRow}>
-            <Text style={S.computeItem}>
-              <Text style={S.computeBold}>Total Score: </Text>
-              {isSupervisory
-                ? String(
-                    (Number(data.leadership) || 0) +
-                      (Number(data.subordinatesDevelopment) || 0),
-                  )
-                : "N/A"}
-            </Text>
-            <Text style={S.computeItem}>
-              <Text style={S.computeBold}>Competencies Rated: </Text>2
-            </Text>
-            <Text style={S.computeItem}>
-              <Text style={S.computeBold}>Supervisory Score (÷2): </Text>
-              {isSupervisory
-                ? (
-                    ((Number(data.leadership) || 0) +
-                      (Number(data.subordinatesDevelopment) || 0)) /
-                    2
-                  ).toFixed(2)
-                : "N/A"}
-            </Text>
-            <Text style={S.computeItem}>
-              <Text style={S.computeBold}>Supervisory %: </Text>
-              {isSupervisory
-                ? (
-                    (((Number(data.leadership) || 0) +
-                      (Number(data.subordinatesDevelopment) || 0)) /
-                      2 /
-                      5) *
-                    100
-                  ).toFixed(1) + "%"
-                : "N/A"}
-            </Text>
-          </View>
-        </View> */}
-      </Page>
+          {SUPERVISORY_COMPETENCIES.map((comp) => (
+            <View key={comp.title} style={S.compRow}>
+              <View style={S.compLeft}>
+                <Text style={S.compTitle}>{comp.title}</Text>
+                <Bullets items={comp.bullets} />
+              </View>
+              <View style={S.compRight}>
+                <RatingChips
+                  selected={data[comp.scoreKey as keyof typeof data] as number}
+                />
+                <View style={S.remarksBox}>
+                  <Text>
+                    {(data[comp.remarksKey as keyof typeof data] as string) ??
+                      ""}
+                  </Text>
+                </View>
+                <View style={S.scoreBox}>
+                  <Text style={S.scoreLabel}>Score:</Text>
+                  <Text style={S.scoreValue}>
+                    {String(data[comp.scoreKey as keyof typeof data] ?? "")}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </Page>
+      )}
+
       <Page size="A4" style={S.page}>
         <PageHeader data={data} />
         <Text style={[S.sectionHeader, { marginTop: 12 }]}>
