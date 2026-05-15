@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { signUp } from "@/actions/auth/authActions";
 import InputField from "@/components/UI/InputField";
-import Button from "@/components/UI/Button";
 import { useRouter } from "next/navigation";
 import type { Department } from "@/models/admin/department";
 import type { Designation } from "@/models/admin/designation";
 import type { Role } from "@/models/admin/role";
+import type { Company } from "@/models/admin/company";
 import {
   MailIcon,
   LockIcon,
@@ -31,7 +31,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
   const router = useRouter();
   const isEditMode = !!initialData?._id;
 
-  // Form State
+  // --- 1. FORM STATE ---
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
@@ -42,21 +42,25 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
   const [cardNumber, SetcardNumber] = useState("");
   const [balance, setBalance] = useState(0);
 
-  // Selection State
+  // --- 2. SELECTION STATE (SELECTED IDS) ---
   const [department, setDepartment] = useState<string | null>(null);
-  const [departmentsList, setDepartmentsList] = useState<Department[]>([]);
   const [designation, setDesignation] = useState<string | null>(null);
-  const [designationsList, setDesignationsList] = useState<Designation[]>([]);
-  // Added Role State
   const [roleId, setRoleId] = useState<string | null>(null);
-  const [rolesList, setRolesList] = useState<Role[]>([]);
+  const [companyId, setCompanyId] = useState<string | null>(null);
 
-  // Status State
+  // --- 3. FETCHED LISTS DATA STATE ---
+  const [departmentsList, setDepartmentsList] = useState<Department[]>([]);
+  const [designationsList, setDesignationsList] = useState<Designation[]>([]);
+  const [rolesList, setRolesList] = useState<Role[]>([]);
+  const [companyList, setCompanyList] = useState<Company[]>([]);
+
+  // --- 4. STATUS LOADERS ---
   const [loading, setLoading] = useState(false);
-  const [loadingDepts, setLoadingDepts] = useState(false);
+  const [loadingBaseData, setLoadingBaseData] = useState(false);
   const [loadingDesignations, setLoadingDesignations] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // --- 5. INITIAL DATA MAPPING FOR EDIT MODE ---
   useEffect(() => {
     if (initialData) {
       setEmail(initialData.email || "");
@@ -74,7 +78,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
       SetcardNumber(initialData.cardNumber || "");
       setBalance(initialData.balance || 0);
 
-      // Fixed mapping for IDs
+      // Extract raw IDs from nested objects or fallback to string IDs
       setDepartment(
         initialData.departmentId?._id || initialData.departmentId || null,
       );
@@ -82,52 +86,71 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
         initialData.designationId?._id || initialData.designationId || null,
       );
       setRoleId(initialData.roleId?._id || initialData.roleId || null);
+      setCompanyId(initialData.companyId?._id || initialData.companyId || null); // Fixed 'comapnyId' typo
     }
   }, [initialData]);
 
+  // --- 6. OPTION MAPS FOR SEARCHSELECT ---
   const deptOptions: SearchSelectOption[] = departmentsList.map((d) => ({
-    value: d._id,
-    label: d.name,
+    value: String(d._id),
+    label: String(d.name),
   }));
 
   const designationOptions: SearchSelectOption[] = designationsList.map(
     (d) => ({
-      value: d._id,
-      label: d.name,
+      value: String(d._id),
+      label: String(d.name),
     }),
   );
 
-  // Map roles to options
   const roleOptions: SearchSelectOption[] = rolesList.map((r) => ({
-    value: r._id,
-    label: r.name,
+    value: String(r._id),
+    label: String(r.name),
   }));
 
+  const companyOptions: SearchSelectOption[] = companyList.map((c) => ({
+    value: String(c._id),
+    label: String(c.name),
+  }));
+
+  // --- 7. EFFECT FOR STATIC DROPDOWNS (Loads once on mount) ---
   useEffect(() => {
-    const fetchBaseData = async () => {
-      setLoadingDepts(true);
+    const fetchGlobalDropData = async () => {
+      setLoadingBaseData(true);
       try {
-        const [deptRes, roleRes] = await Promise.all([
+        const [deptRes, roleRes, companyRes] = await Promise.all([
           fetch("/api/admin/department"),
           fetch("/api/admin/role"),
+          fetch("/api/admin/company"), // Fetching the complete company list
         ]);
+
         const depts = await deptRes.json();
         const roles = await roleRes.json();
-        setDepartmentsList(depts);
-        setRolesList(roles);
+        const companiesJson = await companyRes.json();
+
+        // Safely extract arrays (handles pure arrays or wrapped { data: [...] } objects)
+        setDepartmentsList(Array.isArray(depts) ? depts : depts.data || []);
+        setRolesList(Array.isArray(roles) ? roles : roles.data || []);
+        setCompanyList(
+          Array.isArray(companiesJson)
+            ? companiesJson
+            : companiesJson.data || [],
+        );
       } catch (err) {
-        toast.error("Could not load form data");
+        toast.error("Could not load dropdown fields data");
       } finally {
-        setLoadingDepts(false);
+        setLoadingBaseData(false);
       }
     };
-    fetchBaseData();
+    fetchGlobalDropData();
   }, []);
 
+  // --- 8. EFFECT FOR DYNAMIC DROPDOWNS (Depends on parent Department selection) ---
   useEffect(() => {
     const fetchDesignations = async () => {
       if (!department) {
         setDesignationsList([]);
+        // Only wipe selected designation value if it doesn't match the record we are currently editing
         if (
           !initialData ||
           department !==
@@ -137,15 +160,16 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
         }
         return;
       }
+
       setLoadingDesignations(true);
       try {
         const response = await fetch(
           `/api/admin/designation?departmentId=${department}`,
         );
         const data = await response.json();
-        setDesignationsList(data);
+        setDesignationsList(Array.isArray(data) ? data : data.data || []);
       } catch (err) {
-        toast.error("Could not load designations");
+        toast.error("Could not load associated designations");
       } finally {
         setLoadingDesignations(false);
       }
@@ -153,6 +177,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
     fetchDesignations();
   }, [department, initialData]);
 
+  // --- 9. UTILITY METHODS ---
   const handleCopy = async () => {
     if (!password) return;
     await navigator.clipboard.writeText(password);
@@ -168,38 +193,48 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
       !email ||
       !designation ||
       !department ||
-      !roleId
+      !roleId ||
+      !companyId
     ) {
-      return toast.error("Please fill in all required fields");
+      return toast.error(
+        "Please fill in all required fields including Company Unit",
+      );
     }
 
     const birthDateObject = new Date(birthdate);
-    const name = `${firstName} ${middleName.charAt(0).toUpperCase()} . ${lastName}`;
-    const username = (firstName.charAt(0) + middleName.charAt(0) + lastName)
+    const name = `${firstName} ${middleName ? middleName.charAt(0).toUpperCase() + " . " : ""}${lastName}`;
+    const username = (
+      firstName.charAt(0) +
+      (middleName?.charAt(0) || "") +
+      lastName
+    )
       .toLowerCase()
       .replace(/\s/g, "");
 
     try {
       setLoading(true);
 
+      const payload = {
+        firstName,
+        middleName,
+        lastName,
+        name,
+        birthdate: birthDateObject,
+        mobileNumber,
+        email,
+        departmentId: department,
+        designationId: designation,
+        roleId: roleId,
+        companyId: companyId,
+        cardNumber,
+        balance,
+      };
+
       if (isEditMode) {
         const res = await fetch(`/api/employee/user/${initialData._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            firstName,
-            middleName,
-            lastName,
-            name,
-            birthdate: birthDateObject,
-            mobileNumber,
-            email,
-            departmentId: department,
-            designationId: designation,
-            roleId: roleId, // Added roleId
-            cardNumber,
-            balance,
-          }),
+          body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error("Update failed");
         toast.success("Employee updated successfully");
@@ -218,7 +253,8 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           designation,
           cardNumber,
           balance,
-          roleId, // Added roleId to signup action
+          roleId,
+          // If your sign up action supports companyId, add it here: ,companyId
         );
         toast.success(`Employee Created successfully for user ${username}`);
       }
@@ -233,7 +269,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
   }
 
   return (
-    <div>
+    <div className="py-12">
       <div className="text-center mb-6">
         <h1 className="text-3xl font-extrabold text-gray-900">
           {isEditMode ? "Edit Employee Details" : "Create a new Employee"}
@@ -299,7 +335,7 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           options={deptOptions}
           value={department ?? undefined}
           onChange={(val) => setDepartment(val)}
-          disabled={loadingDepts}
+          disabled={loadingBaseData}
           placeholder="Select Department"
         />
 
@@ -314,13 +350,22 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           }
         />
 
-        {/* Added Role SearchSelect */}
         <SearchSelect
           label="System Role"
           options={roleOptions}
           value={roleId ?? undefined}
           onChange={(val) => setRoleId(val)}
+          disabled={loadingBaseData}
           placeholder="Select a Role"
+        />
+
+        <SearchSelect
+          label="Company Unit"
+          options={companyOptions}
+          value={companyId ?? undefined}
+          onChange={(val) => setCompanyId(val)}
+          disabled={loadingBaseData}
+          placeholder="Select a Company"
         />
 
         {!isEditMode && (

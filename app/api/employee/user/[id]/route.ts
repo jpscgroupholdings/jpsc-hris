@@ -60,6 +60,7 @@ export async function PUT(
         departmentId: body.departmentId,
         designationId: body.designationId,
         roleId: body.roleId,
+        companyId: body.companyId,
       },
       { new: true },
     );
