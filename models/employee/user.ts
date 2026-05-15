@@ -2,9 +2,10 @@ import mongoose, { models, Schema } from "mongoose";
 import "@/models/admin/department";
 import "@/models/admin/designation";
 import "@/models/admin/role";
-import { Designation } from "../admin/designation";
-import { Role } from "../admin/role";
+import { Designation } from "@/models/admin/designation";
+import { Role } from "@/models/admin/role";
 import { Department } from "@/models/admin/department";
+import { Company } from "@/models/admin/company";
 
 export interface User {
   _id: string;
@@ -25,6 +26,7 @@ export interface User {
   balance: number;
   cardNumber: string;
   roleId: Role;
+  companyId: Company;
 }
 
 const UserSchema = new Schema<User>(
@@ -50,6 +52,7 @@ const UserSchema = new Schema<User>(
       required: false,
     },
     roleId: { type: Schema.Types.ObjectId, ref: "Role", required: false },
+    companyId: { type: Schema.Types.ObjectId, ref: "Company", required: false },
   },
   {
     collection: "user",
