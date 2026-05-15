@@ -29,7 +29,6 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
         ],
       })
       .populate("evaluatedBy", "name firstName lastName")
-      .populate("accomplishmentId")
       .lean();
 
     if (!evaluation) {

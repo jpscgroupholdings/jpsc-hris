@@ -52,12 +52,12 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
-    if (!mongoose.isValidObjectId(body.accomplishmentId)) {
-      return NextResponse.json(
-        { error: "Invalid accomplishmentId" },
-        { status: 400 },
-      );
-    }
+    // if (!mongoose.isValidObjectId(body.accomplishmentId)) {
+    //   return NextResponse.json(
+    //     { error: "Invalid accomplishmentId" },
+    //     { status: 400 },
+    //   );
+    // }
 
     const evaluation = await Evaluation.create(body);
 
