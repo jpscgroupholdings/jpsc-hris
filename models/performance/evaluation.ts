@@ -1,6 +1,5 @@
 import mongoose, { models, Schema } from "mongoose";
 import { User } from "@/models/employee/user";
-import { Accomplishment } from "@/models/performance/accomplishment";
 import "@/models/admin/department";
 import "@/models/admin/designation";
 import "@/models/employee/user";

@@ -1,4 +1,6 @@
 import EvaluationForm from "../../_pages/_form";
+import dbConnect from "@/lib/database/dbConnect";
+import { Evaluation } from "@/models/performance/evaluation";
 
 interface EditEvaluationPageProps {
   params: Promise<{ id: string }>;
@@ -9,15 +11,21 @@ export default async function EditEvaluationPage({
 }: EditEvaluationPageProps) {
   const { id } = await params;
 
-  // Ensure this matches your actual server URL (especially for local dev)
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  await dbConnect();
 
-  // Updated path to /performance/evaluation/ based on your JSON
-  const res = await fetch(`${baseUrl}/api/performance/evaluation/${id}`, {
-    cache: "no-store",
-  });
+  const evaluation = await Evaluation.findById(id)
+    .populate({
+      path: "userId",
+      select: "firstName lastName email departmentId designationId",
+      populate: [
+        { path: "departmentId", select: "name" },
+        { path: "designationId", select: "name" },
+      ],
+    })
+    .populate("evaluatedBy", "firstName lastName")
+    .lean();
 
-  if (!res.ok) {
+  if (!evaluation) {
     return (
       <div className="container mx-auto py-10 px-4">
         <h1 className="text-2xl font-black text-red-500">
@@ -28,14 +36,7 @@ export default async function EditEvaluationPage({
     );
   }
 
-  const json = await res.json();
-
-  // Since your JSON shows "data" is an array, we take the first index [0]
-  const evaluationData = Array.isArray(json.data) ? json.data[0] : json.data;
-
-  if (!evaluationData) {
-    return <div>No evaluation data found.</div>;
-  }
+  const evaluationData = JSON.parse(JSON.stringify(evaluation));
 
   return (
     <div className="container mx-auto py-10">
@@ -48,7 +49,6 @@ export default async function EditEvaluationPage({
           {evaluationData.userId?.lastName}
         </p>
       </div>
-
       <EvaluationForm initialData={evaluationData} />
     </div>
   );
