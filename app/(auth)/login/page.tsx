@@ -55,9 +55,7 @@ export default function Login() {
             <h1 className="text-3xl font-bold tracking-tight text-white">
               Welcome
             </h1>
-            <p className="text-sm text-gray-300">
-              Sign in to manage your SmartCard access
-            </p>
+            <p className="text-sm text-gray-300">Sign in to continue...</p>
           </div>
 
           <div className="space-y-4">
@@ -103,23 +101,18 @@ export default function Login() {
 
       {/* Info Section */}
       <div className="relative z-10 flex-1 flex flex-col justify-center p-8 md:p-16 text-white bg-transparent md:bg-white/5">
-        <div className="max-w-lg mx-auto md:mx-0 space-y-4">
-          <div className="h-1 w-12 bg-gold-400 rounded-full mb-4" />
-          <h2 className="text-4xl font-bold leading-tight">
-            Seamless <br />
-            Corporate Access
+        <div className="max-w-xl mx-auto md:mx-0 space-y-4 p-6 rounded-3xl bg-azure-900/60">
+          <div className="h-2 w-12 bg-gold-500 rounded-full mb-2" />
+          <h2 className="text-5xl font-sans font-bold leading-tight">
+            <span className="underline">JPSC</span> <br />
+            Human Resource Information System
           </h2>
           <p className="leading-relaxed text-lg text-gray-200">
-            The{" "}
-            <span className="font-bold text-gold-200 underline">
-              Smart Access System
-            </span>{" "}
-            is an integrated, company-wide platform that unifies three core
-            employee functions — physical door access, daily attendance
-            tracking, and canteen cashless payments — into a single contactless
-            card. The system eliminates the need for multiple identification
-            tools and gives HR and admin staff real-time visibility into
-            employee activity.
+            A centralized, digital hub for managing employee data, automating
+            routine HR tasks, and supporting compliance. Its primary purpose is
+            to streamline core administrative processes—such as payroll,
+            benefits, and time tracking—improving efficiency and providing
+            data-driven insights for strategic decision-making.
           </p>
         </div>
       </div>

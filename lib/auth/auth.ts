@@ -30,8 +30,8 @@ export const auth = betterAuth({
     },
   },
   session: {
-    expiresIn: 300,
-    updateAge: 60,
+    expiresIn: 600,
+    updateAge: 120,
     additionalFields: {
       roleCode: { type: "string" },
       roleName: { type: "string" },

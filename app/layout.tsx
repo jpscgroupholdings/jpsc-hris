@@ -6,12 +6,13 @@ import Loading from "@/components/Loading";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "JPSC - Smart Access System",
+  title: "JPSC - HRIS",
   description:
-    "The Smart Access System is an integrated, company-wide platform that unifies three core employee functions — physical door access, daily attendance tracking, and canteen cashless payments — into a single contactless card. The system eliminates the need for multiple identification tools and gives HR and admin staff real-time visibility into employee activity.",
+    "A centralized, digital hub for managing employee data, automating routine HR tasks, and supporting compliance. Its primary purpose is to streamline core administrative processes—such as payroll, benefits, and time tracking—improving efficiency and providing data-driven insights for strategic decision-making.",
   icons: {
     icon: "/images/jpsc_logo.png",
   },
+  keywords: ["hris", "jpsc"],
 };
 
 export default function RootLayout({
