@@ -118,9 +118,11 @@ export default function NavBar({ children }: NavBarProps) {
         {/* User / sign out — shrink-0 so it never compresses */}
         <button
           onClick={() => {
-            router.push(`/employee/user/view/${session?.user.id}`);
+            if (isPending || !session?.user?.id) return;
+            router.push(`/employee/user/view/${session.user.id}`);
           }}
-          className="flex items-center gap-2 shrink-0 hover:opacity-75 transition-opacity"
+          disabled={isPending} // ← prevents click during load
+          className="flex items-center gap-2 shrink-0 hover:opacity-75 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <div className="text-right hidden md:block">
             {isPending ? (
