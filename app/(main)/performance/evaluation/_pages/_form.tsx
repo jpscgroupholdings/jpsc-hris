@@ -16,14 +16,14 @@ import { SearchSelectOption } from "@/components/UI/SelectField";
 import { Evaluation } from "@/models/performance/evaluation";
 
 import StepProgressBar from "./StepProgressBar";
-import PersonnelStep from "./PersonnelStep";
+import EvaluationStep from "./EvaluationStep";
 import JobFunctionsStep from "./JobFunctionsStep";
 import CompetenciesStep from "./CompetenciesStep";
 import AccomplishmentsStep from "./AccomplishmentsStep";
 import SummaryStep from "./SummaryStep";
 
 const STEPS = [
-  { id: 0, label: "Personnel", icon: UserIcon, color: "blue" },
+  { id: 0, label: "Details", icon: UserIcon, color: "blue" },
   { id: 1, label: "Job Functions", icon: Briefcase, color: "orange" },
   { id: 2, label: "Competencies", icon: ClipboardCheck, color: "emerald" },
   { id: 3, label: "Accomplishments", icon: Target, color: "purple" },
@@ -346,7 +346,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
       />
 
       {currentStep === 0 && (
-        <PersonnelStep
+        <EvaluationStep
           form={form}
           handleChange={handleChange}
           userOptions={userOptions}

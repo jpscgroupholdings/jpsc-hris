@@ -22,7 +22,7 @@ export default function JobFunctionsStep({
       <div className="flex justify-between items-end border-b pb-4">
         <div className="flex items-center gap-3 text-xl font-bold text-gray-800">
           <Briefcase className="text-orange-500" />
-          Section 1: Job Description & Responsibilities
+          I: Job Description & Responsibilities
         </div>
       </div>
       {/* Directions */}

@@ -104,8 +104,8 @@ export default function CompetenciesStep({
     <section className="bg-white p-8 rounded-3xl border shadow-sm space-y-8">
       <div className="flex justify-between items-end border-b pb-4">
         <div className="flex items-center gap-3 text-xl font-bold text-gray-800">
-          <ClipboardCheck className="text-emerald-500" /> Section II:
-          Performance Competency Evaluation
+          <ClipboardCheck className="text-emerald-500" />
+          II: Performance Competency Evaluation
         </div>
       </div>
 

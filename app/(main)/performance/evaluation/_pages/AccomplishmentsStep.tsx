@@ -23,8 +23,7 @@ export default function AccomplishmentsStep({
     <section className="bg-white p-8 rounded-3xl border shadow-sm space-y-8">
       <div className="flex justify-between items-end border-b pb-4">
         <div className="flex items-center gap-3 text-xl font-bold text-purple-800">
-          <Target className="text-purple-500" /> Section 3: Production
-          Accomplishments
+          <Target className="text-purple-500" /> III: Production Accomplishments
         </div>
       </div>
 

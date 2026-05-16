@@ -4,19 +4,19 @@ import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
 import { Evaluation } from "@/models/performance/evaluation";
 import { authClient } from "@/lib/auth/auth-client";
 import { useEffect } from "react";
-interface PersonnelStepProps {
+interface EvaluationStepProps {
   form: Partial<Evaluation>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   userOptions: SearchSelectOption[];
   setForm: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export default function PersonnelStep({
+export default function EvaluationStep({
   form,
   handleChange,
   userOptions,
   setForm,
-}: PersonnelStepProps) {
+}: EvaluationStepProps) {
   const { data: session, isPending } = authClient.useSession();
   useEffect(() => {
     if (session?.user?.id) {
@@ -27,7 +27,7 @@ export default function PersonnelStep({
   return (
     <section className="bg-white p-8 rounded-3xl border shadow-sm space-y-8">
       <div className="flex items-center gap-3 text-xl font-bold text-gray-800 border-b pb-4">
-        <UserIcon className="text-blue-500" /> Personnel Information
+        <UserIcon className="text-blue-500" /> Evaluation Details
       </div>
       <div className="grid grid-cols-1  gap-6">
         <SearchSelect
