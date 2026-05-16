@@ -20,6 +20,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { toast } from "sonner";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
+import Breadcrumbs from "./Breadcrumbs";
 
 type NavItem = {
   label: string;
@@ -221,7 +222,10 @@ export default function NavBar({ children }: NavBarProps) {
           </div>
         </aside>
         <main className="flex-1 min-w-0 min-h-0 overflow-auto">
-          <div className="h-full w-full p-3 md:p-6 ">{children}</div>
+          <div className="h-full w-full p-3 md:p-6 ">
+            {/* <Breadcrumbs /> */}
+            {children}
+          </div>
         </main>
       </div>
     </div>
