@@ -5,6 +5,7 @@ import { User } from "@/models/employee/user";
 import { DigitalWallet } from "@/models/transaction/digitalWallet";
 import { Department } from "@/models/admin/department";
 import { toast } from "sonner";
+import { Company } from "@/models/admin/company";
 
 export async function getAllUser() {
   try {
@@ -65,6 +66,21 @@ export async function getUserById(userId: string) {
       .lean();
 
     return JSON.parse(JSON.stringify(user));
+  } catch (error) {
+    toast.error("Error:" + error);
+    throw new Error("Error fetching employee");
+  }
+}
+
+export async function getTotalUserByShortName(shortName: string) {
+  try {
+    await dbConnect();
+
+    const company = await Company.findOne({ shortName: shortName }).lean();
+
+    const userCount = await User.countDocuments({ companyId: company._id });
+
+    return userCount;
   } catch (error) {
     toast.error("Error:" + error);
     throw new Error("Error fetching employee");
