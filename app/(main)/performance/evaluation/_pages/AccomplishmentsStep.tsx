@@ -34,13 +34,22 @@ export default function AccomplishmentsStep({
           Evaluate the following key job functions based on the employee's
           actual performance during the evaluation period. <br />
           <br />
-          For each job function, assign an importance ranking (Critical = 3,
-          Very Important = 2, Important = 1) and performance rating using the
-          defined scale (ME=5, HC=4, PC=3, ND=2, U=1). <br />
+          For each job function, assign an importance ranking{" "}
+          <span className="font-extrabold text-gold-950">
+            (Critical = 3, Very Important = 2, Important = 1)
+          </span>
+          and performance rating using the defined scale{" "}
+          <span className="font-extrabold text-gold-950">
+            (ME=5, HC=4, PC=3, ND=2, U=1)
+          </span>
+          . <br />
           <br />
-          Ratings must be based on actual output, quality, timeliness, and
-          consistency of work. Provide brief comments or examples to support the
-          rating given. <br />
+          Ratings must be based on{" "}
+          <span className="font-extrabold text-gold-950">
+            actual output, quality, timeliness, and consistency of work
+          </span>
+          . Provide brief comments or examples to support the rating given.{" "}
+          <br />
           <br />
           The assigned ratings and importance rankings shall be used to compute
           the weighted Section III performance score.
