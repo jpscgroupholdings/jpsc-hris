@@ -28,12 +28,20 @@ export default function CombinedMonitoringPage() {
   const evalColumns = [
     {
       name: "Employee",
-      selector: (row: Evaluation) => row.userId.name,
-      sortable: true,
-    },
-    {
-      name: "Department",
-      selector: (row: Evaluation) => row.userId?.departmentId?.name ?? "N/A",
+      selector: (row: Evaluation) => row.userId?.name,
+      cell: (row: Evaluation) => (
+        <div className="flex flex-col">
+          <span
+            className=" text-azure-400 underline cursor-pointer"
+            onClick={() =>
+              router.push(`/performance/evaluation/view/${row._id}`)
+            }
+          >
+            {row.userId?.name ?? "N/A"}
+          </span>
+          <span className="">{row.userId?.designationId.name ?? "N/A"}</span>
+        </div>
+      ),
       sortable: true,
     },
     {
@@ -56,9 +64,10 @@ export default function CombinedMonitoringPage() {
     },
     {
       name: "Score",
+      selector: (row: Evaluation) => row.finalScore ?? 0,
       cell: (row: Evaluation) => (
         <span className={`font-semibold ${getScoreColor(row.finalPercent)}`}>
-          {row.finalScore?.toFixed(2)} ({row.finalPercent}%)
+          {row.finalScore?.toFixed(2)}
         </span>
       ),
       sortable: true,
@@ -67,14 +76,6 @@ export default function CombinedMonitoringPage() {
       name: "Actions",
       cell: (row: Evaluation) => (
         <div className="flex gap-2 scale-75">
-          <Button
-            label="View"
-            icon={ViewIcon}
-            variant="success"
-            onClick={() =>
-              router.push(`/performance/evaluation/view/${row._id}`)
-            }
-          />
           <Button
             label="Edit"
             icon={EditIcon}
@@ -129,7 +130,9 @@ export default function CombinedMonitoringPage() {
       const fullName =
         i.userId?.name.toLowerCase() ||
         i.userId?.departmentId.name.toLowerCase() ||
-        i.userId?.designationId.name.toLowerCase();
+        i.userId?.designationId.name.toLowerCase() ||
+        i.evaluationDateStart.toLowerCase() ||
+        i.evaluationDateEnd.toLowerCase();
       return fullName?.includes(evalFilter.toLowerCase());
     });
   }, [evalData, evalFilter]);
@@ -145,7 +148,7 @@ export default function CombinedMonitoringPage() {
             onClick={() => router.push("/performance/evaluation/create")}
           />
         </div>
-        <div className="rounded-xl shadow-lg border overflow-hidden">
+        <div className="rounded-xl shadow-lg border overflow-hidden font-sans">
           <DataTable
             columns={evalColumns}
             data={filteredEval}
