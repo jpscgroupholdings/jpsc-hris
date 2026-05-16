@@ -53,7 +53,7 @@ interface NavBarProps {
 
 export default function NavBar({ children }: NavBarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [query, setQuery] = useState("");
 
   const router = useRouter();
@@ -86,7 +86,7 @@ export default function NavBar({ children }: NavBarProps) {
       {/* ══════════════════════════════════════
           TOPBAR — spans full width
       ══════════════════════════════════════ */}
-      <header className="w-full h-20 shrink-0 z-40 flex items-center px-3 gap-2 bg-background border-b border-gold-800">
+      <header className="w-full justify-between h-20 shrink-0 z-40 flex items-center px-3 gap-2 bg-background border-b border-gold-800">
         {/* Mobile hamburger */}
         <button
           className="lg:hidden p-2 rounded-md text-foreground hover:bg-gold-800/50 transition-colors shrink-0"
@@ -107,25 +107,12 @@ export default function NavBar({ children }: NavBarProps) {
             height={225}
             quality={75}
             priority
-            className="object-contain hidden lg:block"
+            // REMOVED: "hidden lg:block"
+            // ADDED: responsive width classes (w-28 on mobile, scaling up on larger screens)
+            className="object-contain w-56 h-auto"
           />
-          <div className="lg:hidden leading-tight">
-            <p className="text-foreground font-bold text-sm">SmartAccess</p>
-            <p className="text-gold-400 text-[10px]">Admin Console</p>
-          </div>
         </div>
-
         {/* Search — takes all remaining space between brand and avatar */}
-        <div className="flex-1 relative mx-2">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gold-400 pointer-events-none" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search..."
-            className="w-full bg-gold-900/50 border border-gold-800 rounded-full pl-9 pr-4 py-2 text-sm
-        focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500/50 outline-none transition-all"
-          />
-        </div>
 
         {/* User / sign out — shrink-0 so it never compresses */}
         <button
