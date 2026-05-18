@@ -187,7 +187,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
           uData.map((u: any) => ({
             value: u._id,
             label: `${u.firstName} ${u.lastName}`,
-            description: u.designationId?.name,
+            description: u.designationId?.name || "Staff",
           })),
         );
       } catch {

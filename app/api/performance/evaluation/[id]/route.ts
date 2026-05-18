@@ -39,7 +39,7 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
         { status: 404 },
       );
     }
-
+    console.log(evaluation);
     return NextResponse.json({ data: evaluation }, { status: 200 });
   } catch (error) {
     console.error("[EVALUATION GET BY ID]", error);

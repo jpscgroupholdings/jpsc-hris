@@ -79,14 +79,10 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
       setBalance(initialData.balance || 0);
 
       // Extract raw IDs from nested objects or fallback to string IDs
-      setDepartment(
-        initialData.departmentId?._id || initialData.departmentId || null,
-      );
-      setDesignation(
-        initialData.designationId?._id || initialData.designationId || null,
-      );
+      setDepartment(initialData.departmentId?._id || null);
+      setDesignation(initialData.designationId?._id || null);
       setRoleId(initialData.roleId?._id || initialData.roleId || null);
-      setCompanyId(initialData.companyId?._id || initialData.companyId || null); // Fixed 'comapnyId' typo
+      setCompanyId(initialData.companyId?._id || initialData.companyId || null);
     }
   }, [initialData]);
 

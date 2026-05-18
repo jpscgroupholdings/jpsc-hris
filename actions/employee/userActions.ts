@@ -67,8 +67,8 @@ export async function getUserById(userId: string) {
 
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
-    toast.error("Error:" + error);
-    throw new Error("Error fetching employee");
+    toast.error("Error Fetching Employees");
+    throw new Error("Error fetching employees");
   }
 }
 
@@ -82,7 +82,7 @@ export async function getTotalUserByShortName(shortName: string) {
 
     return userCount;
   } catch (error) {
-    toast.error("Error:" + error);
-    throw new Error("Error fetching employee");
+    toast.error("Error Fetching Employees");
+    throw new Error("Error fetching employees");
   }
 }
