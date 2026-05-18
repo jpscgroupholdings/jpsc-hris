@@ -63,6 +63,7 @@ export async function getUserById(userId: string) {
       .populate("departmentId", "name")
       .populate("designationId", "name")
       .populate("roleId", "name")
+      .populate("companyId", "name")
       .lean();
 
     return JSON.parse(JSON.stringify(user));

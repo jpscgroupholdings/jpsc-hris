@@ -3,7 +3,15 @@ import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 import { format } from "date-fns";
 import Button from "@/components/UI/Button";
-import { LogOut, EditIcon, MailIcon, UserIcon, LockIcon } from "lucide-react";
+import {
+  LogOut,
+  EditIcon,
+  MailIcon,
+  UserIcon,
+  LockIcon,
+  BookUserIcon,
+  Building2Icon,
+} from "lucide-react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { signOut } from "@/actions/auth/authActions";
@@ -69,8 +77,8 @@ export default function Profile() {
             {/* PERSONAL INFORMATION HEADER */}
             <tr className="bg-gold-100">
               <td colSpan={2} className="px-4 py-3 text-sm font-semibold">
-                <div className="flex items-center gap-2">
-                  <UserIcon size={16} />
+                <div className="flex items-center gap-2 text-lg">
+                  <UserIcon size={24} />
                   Personal Information
                 </div>
               </td>
@@ -102,8 +110,8 @@ export default function Profile() {
 
             <tr className="odd:bg-gold-100 even:bg-gold-200">
               <td colSpan={2} className="px-4 py-3 text-sm font-semibold w-1/3">
-                <div className="flex items-center gap-2">
-                  <MailIcon size={16} />
+                <div className="flex items-center gap-2 text-lg">
+                  <BookUserIcon size={24} />
                   Contact Information
                 </div>
               </td>
@@ -131,13 +139,16 @@ export default function Profile() {
 
             <tr className="bg-gold-100">
               <td colSpan={2} className="px-4 py-3 text-sm font-semibold w-1/3">
-                <div className="flex items-center gap-2">
-                  <MailIcon size={16} />
+                <div className="flex items-center gap-2 text-lg">
+                  <Building2Icon size={24} />
                   Company Profile
                 </div>
               </td>
             </tr>
-
+            <tr className="odd:bg-gold-100 even:bg-gold-200">
+              <td className="px-4 py-3 text-sm font-semibold">Company</td>
+              <td className="px-4 py-3 text-sm">{userData?.companyId?.name}</td>
+            </tr>
             <tr className="odd:bg-gold-100 even:bg-gold-200">
               <td className="px-4 py-3 text-sm font-semibold">Department</td>
               <td className="px-4 py-3 text-sm">

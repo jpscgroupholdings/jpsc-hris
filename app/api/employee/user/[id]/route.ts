@@ -3,6 +3,7 @@ import dbConnect from "@/lib/database/dbConnect";
 import { User } from "@/models/employee/user";
 import "@/models/admin/department";
 import "@/models/admin/designation";
+import "@/models/admin/company";
 
 export async function GET(
   request: Request,
@@ -17,6 +18,7 @@ export async function GET(
     const employee = await User.findById(id)
       .populate("departmentId")
       .populate("designationId")
+      .populate("companyId")
       .populate("roleId")
       .lean();
 

@@ -198,10 +198,10 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
     }
 
     const birthDateObject = new Date(birthdate);
-    const name = `${firstName} ${middleName ? middleName.charAt(0).toUpperCase() + " . " : ""}${lastName}`;
+    const name = `${firstName} ${lastName}`;
     const username = (
       firstName.charAt(0) +
-      (middleName?.charAt(0) || "") +
+      (middleName ? middleName?.charAt(0) : "") +
       lastName
     )
       .toLowerCase()
@@ -250,13 +250,14 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           cardNumber,
           balance,
           roleId,
+          companyId,
           // If your sign up action supports companyId, add it here: ,companyId
         );
+        router.push("employee/user");
         toast.success(`Employee Created successfully for user ${username}`);
       }
 
       router.push("/employee/user");
-      router.refresh();
     } catch (err) {
       toast.error(String(err));
     } finally {

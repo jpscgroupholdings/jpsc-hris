@@ -16,6 +16,7 @@ export async function GET() {
     const employees = await User.find()
       .populate("departmentId", "name shortName")
       .populate("designationId", "name shortName")
+      .populate("companyId", "name shortName")
       .lean();
 
     const wallets = await DigitalWallet.find().lean();

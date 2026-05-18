@@ -21,6 +21,7 @@ export async function signUp(
   cardNumber: string,
   balance: number,
   roleId: string,
+  companyId: string,
 ) {
   const response = await auth.api.signUpEmail({
     body: {
@@ -36,6 +37,7 @@ export async function signUp(
       departmentId,
       designationId,
       roleId,
+      companyId,
     },
   });
 

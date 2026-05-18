@@ -27,6 +27,7 @@ export const auth = betterAuth({
       departmentId: { type: "string", input: true, required: true },
       designationId: { type: "string", input: true, required: true },
       roleId: { type: "string", required: false },
+      companyId: { type: "string", required: false },
     },
   },
   session: {
