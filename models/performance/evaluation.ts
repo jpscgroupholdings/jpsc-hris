@@ -3,6 +3,7 @@ import { User } from "@/models/employee/user";
 import "@/models/admin/department";
 import "@/models/admin/designation";
 import "@/models/employee/user";
+import "@/models/admin/company";
 
 export interface Evaluation {
   // basic info
