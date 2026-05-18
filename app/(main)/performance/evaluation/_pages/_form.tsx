@@ -39,11 +39,15 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
   const [savedData, setSavedData] = useState<any>(initialData ?? null);
 
   const [userOptions, setUserOptions] = useState<SearchSelectOption[]>([]);
+  const [accomplishmentOptions, setAccomplishmentOptions] = useState<
+    SearchSelectOption[]
+  >([]);
+  const [rawAccomplishments, setRawAccomplishments] = useState<any[]>([]);
 
   const isEditMode = !!initialData?._id;
 
   const [form, setForm] = useState<Partial<Evaluation>>({
-    userId: initialData?.userId._id || "",
+    userId: initialData?.userId?._id || initialData?.userId || "",
     evaluatedBy: initialData?.evaluatedBy || "",
     evaluationDateStart: initialData?.evaluationDateStart || "",
     evaluationDateEnd: initialData?.evaluationDateEnd || "",
@@ -106,7 +110,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
   useEffect(() => {
     if (initialData) {
       setForm({
-        userId: initialData.userId._id || "",
+        userId: initialData.userId?._id || initialData.userId || "",
         evaluatedBy:
           initialData.evaluatedBy?._id || initialData.evaluatedBy || "",
         evaluationDateStart: initialData.evaluationDateStart
@@ -172,7 +176,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     }
   }, [initialData]);
 
-  // Fetch users
+  // Fetch users once on mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -193,9 +197,9 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     fetchUsers();
   }, []);
 
-  // When userId changes: fetch user → auto-fill job functions from designation
+  // When userId changes: fetch user → auto-fill job functions + load accomplishments
   useEffect(() => {
-    if (!form.userId || isEditMode) return;
+    if (!form.userId) return;
 
     const fetchUserData = async () => {
       try {
@@ -206,21 +210,26 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         const designation = user.designationId;
         if (!designation) return;
 
-        setForm((prev) => ({
-          ...prev,
-          jobFunction1: designation.responsibility1 || "",
-          jobFunction2: designation.responsibility2 || "",
-          jobFunction3: designation.responsibility3 || "",
-          jobFunction4: designation.responsibility4 || "",
-          jobFunction5: designation.responsibility5 || "",
-          jobFunction6: designation.responsibility6 || "",
-          jobFunction7: designation.responsibility7 || "",
-          jobFunction8: designation.responsibility8 || "",
-          jobFunction9: designation.responsibility9 || "",
-          jobFunction10: designation.responsibility10 || "",
-          jobFunction11: designation.responsibility11 || "",
-          jobFunction12: designation.responsibility12 || "",
-        }));
+        const designationId = designation._id || designation;
+
+        // Auto-fill job functions from designation (skip in edit mode)
+        if (!isEditMode) {
+          setForm((prev) => ({
+            ...prev,
+            jobFunction1: designation.responsibility1 || "",
+            jobFunction2: designation.responsibility2 || "",
+            jobFunction3: designation.responsibility3 || "",
+            jobFunction4: designation.responsibility4 || "",
+            jobFunction5: designation.responsibility5 || "",
+            jobFunction6: designation.responsibility6 || "",
+            jobFunction7: designation.responsibility7 || "",
+            jobFunction8: designation.responsibility8 || "",
+            jobFunction9: designation.responsibility9 || "",
+            jobFunction10: designation.responsibility10 || "",
+            jobFunction11: designation.responsibility11 || "",
+            jobFunction12: designation.responsibility12 || "",
+          }));
+        }
       } catch {
         toast.error("Failed to load user data.");
       }
@@ -280,14 +289,32 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     };
   }, [form]);
 
+  // Widened to include HTMLSelectElement so select scores are captured
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value, type } = e.target;
     setForm((prev: any) => ({
       ...prev,
       [name]: type === "number" ? parseFloat(value) || 0 : value,
     }));
+  };
+
+  const handleAccomplishmentChange = (id: string | null) => {
+    const selected = rawAccomplishments.find((a) => a._id === id);
+    if (selected) {
+      setForm((prev: any) => ({
+        ...prev,
+        accomplishmentId: id as any,
+        accomplishmentRemarks1: selected.accomplishment1 || "N/A",
+        accomplishmentRemarks2: selected.accomplishment2 || "N/A",
+        accomplishmentRemarks3: selected.accomplishment3 || "N/A",
+        accomplishmentRemarks4: selected.accomplishment4 || "N/A",
+        accomplishmentRemarks5: selected.accomplishment5 || "N/A",
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -318,7 +345,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
           body: JSON.stringify(payload),
         },
       );
-      console.log("res,", res);
+
       if (!res.ok) throw new Error("Failed to save");
 
       const json = await res.json();
@@ -372,6 +399,8 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         <AccomplishmentsStep
           form={form}
           handleChange={handleChange}
+          accomplishmentOptions={accomplishmentOptions}
+          handleAccomplishmentChange={handleAccomplishmentChange}
           s3Percent={calculations.s3Percent}
           loading={loading}
           isEditMode={isEditMode}
@@ -397,7 +426,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
             <ChevronLeft size={16} /> Previous
           </button>
         )}
-
         {currentStep < LAST_INPUT_STEP && (
           <button
             type="button"
@@ -407,7 +435,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
             Next <ChevronRight size={16} />
           </button>
         )}
-
         {currentStep === 4 && (
           <button
             type="button"

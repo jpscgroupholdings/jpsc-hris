@@ -29,7 +29,11 @@ const RING_MAP: Record<string, string> = {
   indigo: "ring-2 ring-indigo-300",
 };
 
-export default function StepProgressBar({ steps, currentStep, onStepClick }: StepProgressBarProps) {
+export default function StepProgressBar({
+  steps,
+  currentStep,
+  onStepClick,
+}: StepProgressBarProps) {
   return (
     <div className="bg-white border rounded-2xl shadow-sm p-4 mb-8">
       <div className="flex items-center justify-between">
@@ -39,19 +43,25 @@ export default function StepProgressBar({ steps, currentStep, onStepClick }: Ste
           const isDone = idx < currentStep;
 
           return (
-            <div key={step.id} className="flex items-center flex-1">
+            // 1. Removed `flex-1` from here so the wrapper doesn't force extra space on the last step
+            // 2. Added `flex-1` only to steps that aren't the last one so lines stretch evenly
+            <div
+              key={step.id}
+              className={`flex items-center ${idx < steps.length - 1 ? "flex-1" : ""}`}
+            >
               <button
                 type="button"
                 onClick={() => onStepClick(idx)}
-                className="flex flex-col items-center gap-1 group"
+                className="flex flex-col items-center gap-1 group shrink-0" // Added shrink-0 to prevent text pinching
               >
                 <div
                   className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all
-                    ${isDone
-                      ? COLOR_MAP[step.color]
-                      : isActive
-                      ? `${COLOR_MAP[step.color]} ${RING_MAP[step.color]}`
-                      : "border-gray-200 text-gray-300 bg-white"
+                    ${
+                      isDone
+                        ? COLOR_MAP[step.color]
+                        : isActive
+                          ? `${COLOR_MAP[step.color]} ${RING_MAP[step.color]}`
+                          : "border-gray-200 text-gray-300 bg-white"
                     }`}
                 >
                   {isDone ? <Check size={16} /> : <Icon size={16} />}
@@ -63,6 +73,7 @@ export default function StepProgressBar({ steps, currentStep, onStepClick }: Ste
                   {step.label}
                 </span>
               </button>
+
               {idx < steps.length - 1 && (
                 <div
                   className={`flex-1 h-0.5 mx-2 transition-all ${
