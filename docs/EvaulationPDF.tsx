@@ -54,6 +54,17 @@ export function mapEvaluationData(raw: any) {
   const supervisorName = raw?.evaluatedBy
     ? `${raw.evaluatedBy.firstName ?? ""} ${raw.evaluatedBy.lastName ?? ""}`.trim()
     : "";
+  const COMPANY_LOGOS: Record<string, string> = {
+    JPSC: "/images/jpsc_logo.png",
+    JPTECH: "/images/digital-one.jpeg",
+    JPFOODLAB: "/images/jp-foodlab.jpeg",
+    JPPRO: "/images/jp-pro.jpeg",
+    JPSON: "/images/jp-son.jpeg",
+  };
+
+  const companyCode = raw?.userId?.companyId?.shortName || "JPSC";
+  console.log(companyCode);
+  // condition that will have different jpg to company
   return {
     employeeName,
     position: raw?.userId?.designationId?.name ?? "",
@@ -62,6 +73,8 @@ export function mapEvaluationData(raw: any) {
     evaluationDate: format(new Date(raw?.evaluationDate), "MMM dd yyyy") ?? "",
     periodFrom: format(new Date(raw?.evaluationDateStart), "MMM dd yyyy") ?? "",
     periodTo: format(new Date(raw?.evaluationDateEnd), "MMM dd yyyy") ?? "",
+
+    companyLogo: COMPANY_LOGOS[companyCode] || "/images/jpsc_logo.png",
 
     kjf1a: raw?.jobFunction1 ?? "",
     kjf1b: raw?.jobFunction2 ?? "",
@@ -411,7 +424,7 @@ const PageHeader = ({
   data: ReturnType<typeof mapEvaluationData>;
 }) => (
   <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-    <Image src="/images/jpsc_logo.png" style={{ width: 100, height: "auto" }} />
+    <Image src={data.companyLogo} style={{ width: 150, height: "auto" }} />
     <View style={S.pageHeader}>
       <Text style={S.pageHeaderCompany}>JPSC GROUP HOLDINGS INC.</Text>
       <Text style={S.pageHeaderSub}>
@@ -632,7 +645,7 @@ export const EvaluationPDF = ({ data: raw }: { data: any }) => {
   const data = mapEvaluationData(raw);
   const isSupervisory = !!raw?.leadership;
   const hasOptional = !!data.optionalCompetencyDescription?.trim();
-
+  console.log("LOGO SRC:", data.companyLogo);
   return (
     <Document title={data.fileName}>
       {/* ═══════════════ PAGE 1 — Header + Legend + Section I ═══════════════ */}

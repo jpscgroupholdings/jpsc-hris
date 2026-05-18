@@ -129,7 +129,7 @@ export default function NavBar({ children }: NavBarProps) {
               <LoaderIcon className="w-4 h-4 animate-spin text-gold-400" />
             ) : (
               <>
-                <p className="text-sm font-semibold text-foreground leading-none">
+                <p className="font-sans text-sm font-medium text-foreground">
                   {session?.user.username}
                 </p>
               </>
