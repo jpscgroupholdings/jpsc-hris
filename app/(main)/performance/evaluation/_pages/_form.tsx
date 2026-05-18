@@ -187,7 +187,7 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
           uData.map((u: any) => ({
             value: u._id,
             label: `${u.firstName} ${u.lastName}`,
-            description: u.designationId?.name || "Staff",
+            description: u.designationId?.name,
           })),
         );
       } catch {
@@ -399,8 +399,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         <AccomplishmentsStep
           form={form}
           handleChange={handleChange}
-          accomplishmentOptions={accomplishmentOptions}
-          handleAccomplishmentChange={handleAccomplishmentChange}
           s3Percent={calculations.s3Percent}
           loading={loading}
           isEditMode={isEditMode}

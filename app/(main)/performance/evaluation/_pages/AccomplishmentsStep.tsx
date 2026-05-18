@@ -1,7 +1,7 @@
 "use client";
 
 import { Target, CheckCircle2, ChevronDown } from "lucide-react";
-import { SearchSelect, SearchSelectOption } from "@/components/UI/SelectField";
+import InputField from "@/components/UI/InputField";
 import { Evaluation } from "@/models/performance/evaluation";
 
 interface AccomplishmentsStepProps {
@@ -11,8 +11,6 @@ interface AccomplishmentsStepProps {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => void;
-  accomplishmentOptions: SearchSelectOption[];
-  handleAccomplishmentChange: (id: string | null) => void;
   s3Percent: string;
   loading: boolean;
   isEditMode: boolean;
@@ -34,31 +32,15 @@ const SCORE_LABEL: Record<number, string> = {
   1: "Unsatisfactory",
 };
 
-const IMPORTANCE = [
-  "Critical",
-  "Critical",
-  "Very Important",
-  "Very Important",
-  "Important",
-];
-const IMPORTANCE_STYLE = [
-  "text-red-500",
-  "text-red-500",
-  "text-orange-500",
-  "text-orange-500",
-  "text-green-500",
-];
-
 export default function AccomplishmentsStep({
   form,
   handleChange,
-  accomplishmentOptions,
-  handleAccomplishmentChange,
   s3Percent,
   loading,
   isEditMode,
 }: AccomplishmentsStepProps) {
-  const handleSelectChange =
+  // Adapter: tells handleChange to treat the value as a number
+  const handleScoreChange =
     (scoreName: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
       handleChange({
         ...e,
@@ -77,32 +59,35 @@ export default function AccomplishmentsStep({
         <div className="flex items-center gap-3 text-xl font-bold text-purple-800">
           <Target className="text-purple-500" /> III: Production Accomplishments
         </div>
-        <div className="text-right">
-          <span className="text-xs font-bold text-gray-400">SECTION SCORE</span>
-          <p className="text-xl font-black text-purple-600">{s3Percent}%</p>
-        </div>
       </div>
 
+      {/* Directions */}
       <div>
-        <p className="font-bold text-lg">
-          Production Accomplishment Evaluation:
+        <p className="font-bold text-lg">Key Job Function Evaluation:</p>
+        <p className="text-sm">
+          Evaluate the following key job functions based on the employee's
+          actual performance during the evaluation period. <br />
+          <br />
+          For each job function, assign an importance ranking{" "}
+          <span className="font-extrabold text-gold-950">
+            (Critical = 3, Very Important = 2, Important = 1)
+          </span>
+          and performance rating using the defined scale{" "}
+          <span className="font-extrabold text-gold-950">
+            (ME=5, HC=4, PC=3, ND=2, U=1)
+          </span>
+          . <br />
+          <br />
+          Ratings must be based on{" "}
+          <span className="font-extrabold text-gold-950">
+            actual output, quality, timeliness, and consistency of work
+          </span>
+          . Provide brief comments or examples to support the rating given.{" "}
+          <br />
+          <br />
+          The assigned ratings and importance rankings shall be used to compute
+          the weighted Section III performance score.
         </p>
-        <p className="text-sm text-gray-600 leading-relaxed">
-          Select the employee's production report to auto-load their
-          accomplishments. Rate each accomplishment using the defined scale
-          (ME=5, HC=4, PC=3, ND=2, U=1). Ratings must reflect actual output,
-          quality, and timeliness.
-        </p>
-      </div>
-
-      {/* Import report */}
-      <div className="bg-purple-50/50 p-6 rounded-2xl border border-purple-100">
-        {accomplishmentOptions.length === 0 && (
-          <p className="text-xs text-gray-400 mt-2 italic">
-            No reports found for this employee's designation. Select an employee
-            first.
-          </p>
-        )}
       </div>
 
       {/* Accomplishment rows */}
@@ -114,65 +99,50 @@ export default function AccomplishmentsStep({
           return (
             <div
               key={i}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-5 bg-gray-50 rounded-2xl border border-gray-200"
+              className="flex flex-col md:flex-row gap-6 p-5 bg-gray-50 rounded-2xl border border-gray-200"
             >
-              {/* Importance tag */}
-              <div className="lg:col-span-12 flex items-center gap-2">
-                <span className="text-xs font-black uppercase tracking-wider text-gray-400">
-                  Item {i}
-                </span>
-                <span
-                  className={`text-xs font-semibold ${IMPORTANCE_STYLE[i - 1]}`}
-                >
-                  — {IMPORTANCE[i - 1]}
-                </span>
+              {/* Task description */}
+              <div className="flex-1">
+                <InputField
+                  label={`Item ${i} Task Description`}
+                  type="text"
+                  name={`accomplishmentRemarks${i}`}
+                  value={(form as any)[`accomplishmentRemarks${i}`]}
+                  onChange={handleChange}
+                  placeholder="Describe the task or accomplishment..."
+                />
               </div>
 
-              {/* Task description — read-only, filled from accomplishment report */}
-              <div className="lg:col-span-9">
-                <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-gray-500">
-                  Task / Accomplishment Description
-                </label>
-                <div className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 min-h-13">
-                  {(form as any)[`accomplishmentRemarks${i}`] || (
-                    <span className="text-gray-300 italic">
-                      No report loaded — select a report above
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Score select */}
-              <div className="lg:col-span-3">
-                <label className="block text-[11px] font-bold uppercase tracking-widest mb-2 text-gray-500">
+              {/* Score select — wired to form */}
+              <div className="w-full md:w-40">
+                <label className="block text-[11px] font-bold font-sans uppercase tracking-widest mb-2 ml-1 text-gray-500">
                   Score (1–5)
                 </label>
                 <div className="relative group">
                   <select
                     name={scoreName}
                     value={currentScore || ""}
-                    onChange={handleSelectChange(scoreName)}
+                    onChange={handleScoreChange(scoreName)}
                     className="w-full appearance-none bg-white border border-gray-300 rounded-xl pl-4 pr-10 py-3 text-sm
                       text-gray-700 cursor-pointer transition-all duration-200
                       focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400
                       hover:border-gray-400"
                   >
-                    <option value="" disabled>
-                      Select Score
-                    </option>
-                    <option value="1">1 — Unsatisfactory</option>
-                    <option value="2">2 — Needs Development</option>
-                    <option value="3">3 — Proficient & Competent</option>
-                    <option value="4">4 — Highly Commendable</option>
-                    <option value="5">5 — Mastery & Excellence</option>
+                    <option value="">Select Score</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400 group-focus-within:text-purple-500">
                     <ChevronDown size={16} />
                   </div>
                 </div>
+                {/* Color badge */}
                 {currentScore > 0 && (
                   <div
-                    className={`mt-2 text-center text-xs font-bold rounded-lg py-1 ${SCORE_BADGE[currentScore] ?? ""}`}
+                    className={`mt-2 text-center text-xs font-bold rounded-lg py-1 ${SCORE_BADGE[currentScore]}`}
                   >
                     {SCORE_LABEL[currentScore]}
                   </div>
@@ -184,7 +154,7 @@ export default function AccomplishmentsStep({
       </div>
 
       {/* Submit */}
-      <div className="flex justify-end pt-4 border-t">
+      <div className="flex justify-end pt-4">
         <button
           type="submit"
           disabled={loading}
@@ -206,7 +176,7 @@ export default function AccomplishmentsStep({
           ) : (
             <>
               <CheckCircle2 size={18} />
-              {isEditMode ? "Update & View Summary" : "Submit & View Summary"}
+              {isEditMode ? "Update Evaluation" : "Submit Evaluation"}
             </>
           )}
         </button>

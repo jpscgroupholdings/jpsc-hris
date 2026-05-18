@@ -61,9 +61,7 @@ function ScoreSelect({
             focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400
             hover:border-gray-400"
         >
-          <option value="" disabled>
-            Select Score
-          </option>
+          <option value="">Select Score</option>
           {SCORE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}

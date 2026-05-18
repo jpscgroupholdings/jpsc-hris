@@ -150,9 +150,7 @@ export default function JobFunctionsStep({
                       focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400
                       hover:border-gray-400"
                   >
-                    <option value="" disabled>
-                      Select Score
-                    </option>
+                    <option value="">Select Score</option>
                     {[
                       { value: 1, label: "1 — Unsatisfactory" },
                       { value: 2, label: "2 — Needs Development" },
