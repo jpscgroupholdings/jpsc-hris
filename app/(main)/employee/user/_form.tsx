@@ -334,17 +334,20 @@ export default function RegisterForm({ initialData }: RegisterFormProps) {
           disabled={loadingBaseData}
           placeholder="Select Department"
         />
-
-        <SearchSelect
-          label="Designation"
-          options={designationOptions}
-          value={designation ?? undefined}
-          onChange={(val) => setDesignation(val)}
-          disabled={!department || loadingDesignations}
-          placeholder={
-            !department ? "Select Department first..." : "Select a Designation"
-          }
-        />
+        {department && (
+          <SearchSelect
+            label="Designation"
+            options={designationOptions}
+            value={designation ?? undefined}
+            onChange={(val) => setDesignation(val)}
+            disabled={!department || loadingDesignations}
+            placeholder={
+              !department
+                ? "Select Department first..."
+                : "Select a Designation"
+            }
+          />
+        )}
 
         <SearchSelect
           label="System Role"
