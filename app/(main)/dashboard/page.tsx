@@ -35,9 +35,9 @@ export default function Dashboard() {
         ] = await Promise.all([
           getTotalUser(),
           getTotalUserByShortName("JPSC"),
-          getTotalUserByShortName("JPTech"),
+          getTotalUserByShortName("JPTECH"),
           getTotalUserByShortName("JPPRO"),
-          getTotalUserByShortName("JP&SON"),
+          getTotalUserByShortName("JPSON"),
           getTotalUserByShortName("JPFOODLAB"),
         ]);
 
@@ -61,7 +61,6 @@ export default function Dashboard() {
   }, []);
 
   return (
-    // CHANGED: Swapped 'flex flex-col' for an adaptive CSS Grid
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 p-4 md:p-6">
       {/* Total Card */}
       <Card
