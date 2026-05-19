@@ -32,17 +32,85 @@ const STEPS = [
 
 const LAST_INPUT_STEP = 3;
 
+// ─── Per-step validation ───────────────────────────────────────────────────────
+function validateStep(step: number, form: Partial<Evaluation>): string | null {
+  switch (step) {
+    case 0:
+      if (!form.userId) return "Please select an employee.";
+      // if (!form.evaluatedBy) return "Please select a supervisor.";
+      if (!form.evaluationDateStart) return "Please set the period start date.";
+      if (!form.evaluationDateEnd) return "Please set the period end date.";
+      return null;
+
+    case 1:
+      const responsibilities = [
+        "jobFunction1",
+        "jobFunction2",
+        "jobFunction3",
+        "jobFunction4",
+        "jobFunction5",
+        "jobFunction6",
+        "jobFunction7",
+        "jobFunction8",
+        "jobFunction9",
+        "jobFunction10",
+        "jobFunction11",
+        "jobFunction12",
+      ];
+      for (const key of responsibilities) {
+        if (!form[key as keyof Evaluation]?.toString().trim())
+          return `Please fill in responsibility: ${key.replace(/jobFunction/, "Job Function ")}.`;
+      }
+      for (let i = 1; i <= 6; i++) {
+        const score = (form as any)[`jobFunctionScore${i}`];
+        if (!score || Number(score) === 0)
+          return `Please set a score for Job Responsibility row ${i}.`;
+      }
+      return null;
+
+    case 2: {
+      const competencies = [
+        "jobKnowledge",
+        "workQuality",
+        "productivity",
+        "versatility",
+        "initiative",
+        "cooperation",
+        "dependability",
+        "communication",
+      ];
+      for (const key of competencies) {
+        if (
+          !form[key as keyof Evaluation] ||
+          Number(form[key as keyof Evaluation]) === 0
+        )
+          return `Please score all competencies. Missing: ${key.replace(/([A-Z])/g, " $1")}.`;
+      }
+      return null;
+    }
+
+    case 3:
+      for (let i = 1; i <= 5; i++) {
+        const remarks = (form as any)[`accomplishmentRemarks${i}`];
+        const score = (form as any)[`accomplishmentScore${i}`];
+        if (!remarks?.trim())
+          return `Please enter a description for Accomplishment ${i}.`;
+        if (!score || Number(score) === 0)
+          return `Please set a score for Accomplishment ${i}.`;
+      }
+      return null;
+
+    default:
+      return null;
+  }
+}
+
 export default function EvaluationForm({ initialData }: { initialData?: any }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [savedData, setSavedData] = useState<any>(initialData ?? null);
-
   const [userOptions, setUserOptions] = useState<SearchSelectOption[]>([]);
-  const [accomplishmentOptions, setAccomplishmentOptions] = useState<
-    SearchSelectOption[]
-  >([]);
-  const [rawAccomplishments, setRawAccomplishments] = useState<any[]>([]);
 
   const isEditMode = !!initialData?._id;
 
@@ -197,9 +265,9 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     fetchUsers();
   }, []);
 
-  // When userId changes: fetch user → auto-fill job functions + load accomplishments
+  // When userId changes: fetch user → auto-fill job functions from designation
   useEffect(() => {
-    if (!form.userId) return;
+    if (!form.userId || isEditMode) return;
 
     const fetchUserData = async () => {
       try {
@@ -210,26 +278,21 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
         const designation = user.designationId;
         if (!designation) return;
 
-        const designationId = designation._id || designation;
-
-        // Auto-fill job functions from designation (skip in edit mode)
-        if (!isEditMode) {
-          setForm((prev) => ({
-            ...prev,
-            jobFunction1: designation.responsibility1 || "",
-            jobFunction2: designation.responsibility2 || "",
-            jobFunction3: designation.responsibility3 || "",
-            jobFunction4: designation.responsibility4 || "",
-            jobFunction5: designation.responsibility5 || "",
-            jobFunction6: designation.responsibility6 || "",
-            jobFunction7: designation.responsibility7 || "",
-            jobFunction8: designation.responsibility8 || "",
-            jobFunction9: designation.responsibility9 || "",
-            jobFunction10: designation.responsibility10 || "",
-            jobFunction11: designation.responsibility11 || "",
-            jobFunction12: designation.responsibility12 || "",
-          }));
-        }
+        setForm((prev) => ({
+          ...prev,
+          jobFunction1: designation.responsibility1 || "",
+          jobFunction2: designation.responsibility2 || "",
+          jobFunction3: designation.responsibility3 || "",
+          jobFunction4: designation.responsibility4 || "",
+          jobFunction5: designation.responsibility5 || "",
+          jobFunction6: designation.responsibility6 || "",
+          jobFunction7: designation.responsibility7 || "",
+          jobFunction8: designation.responsibility8 || "",
+          jobFunction9: designation.responsibility9 || "",
+          jobFunction10: designation.responsibility10 || "",
+          jobFunction11: designation.responsibility11 || "",
+          jobFunction12: designation.responsibility12 || "",
+        }));
       } catch {
         toast.error("Failed to load user data.");
       }
@@ -241,11 +304,11 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
   // Score calculations
   const calculations = useMemo(() => {
     const s1Weighted =
-      form.jobFunctionScore1! * 3 +
+      form.jobFunctionScore1! * 3 + //Critical
       form.jobFunctionScore2! * 3 +
-      form.jobFunctionScore3! * 2 +
+      form.jobFunctionScore3! * 2 + //Very Important
       form.jobFunctionScore4! * 2 +
-      form.jobFunctionScore5! * 1 +
+      form.jobFunctionScore5! * 1 + //Importtant
       form.jobFunctionScore6! * 1;
     const s1Score = s1Weighted / 12;
     const s1Percent = (s1Score / 5) * 100;
@@ -289,7 +352,6 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     };
   }, [form]);
 
-  // Widened to include HTMLSelectElement so select scores are captured
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -302,25 +364,17 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     }));
   };
 
-  const handleAccomplishmentChange = (id: string | null) => {
-    const selected = rawAccomplishments.find((a) => a._id === id);
-    if (selected) {
-      setForm((prev: any) => ({
-        ...prev,
-        accomplishmentId: id as any,
-        accomplishmentRemarks1: selected.accomplishment1 || "N/A",
-        accomplishmentRemarks2: selected.accomplishment2 || "N/A",
-        accomplishmentRemarks3: selected.accomplishment3 || "N/A",
-        accomplishmentRemarks4: selected.accomplishment4 || "N/A",
-        accomplishmentRemarks5: selected.accomplishment5 || "N/A",
-      }));
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
+    // Validate step 3 before submitting
+    const err = validateStep(3, form);
+    if (err) {
+      toast.error(err);
+      return;
+    }
+
+    setLoading(true);
     const payload = {
       ...form,
       evaluationDate: new Date().toISOString(),
@@ -361,15 +415,40 @@ export default function EvaluationForm({ initialData }: { initialData?: any }) {
     }
   };
 
-  const goNext = () => setCurrentStep((s) => Math.min(s + 1, STEPS.length - 1));
+  const goNext = () => {
+    const err = validateStep(currentStep, form);
+    if (err) {
+      toast.error(err);
+      return;
+    }
+    setCurrentStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+
   const goPrev = () => setCurrentStep((s) => Math.max(s - 1, 0));
+
+  // Allow clicking a step in the progress bar only if all prior steps are valid
+  const handleStepClick = (step: number) => {
+    if (step <= currentStep) {
+      setCurrentStep(step);
+      return;
+    }
+    // Validate each step up to the target
+    for (let s = currentStep; s < step; s++) {
+      const err = validateStep(s, form);
+      if (err) {
+        toast.error(err);
+        return;
+      }
+    }
+    setCurrentStep(step);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto pb-32 px-4">
       <StepProgressBar
         steps={STEPS}
         currentStep={currentStep}
-        onStepClick={setCurrentStep}
+        onStepClick={handleStepClick}
       />
 
       {currentStep === 0 && (

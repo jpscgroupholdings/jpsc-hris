@@ -193,10 +193,6 @@ export default function CompetenciesStep({
           <ClipboardCheck className="text-emerald-500" />
           II: Performance Competency Evaluation
         </div>
-        <div className="text-right">
-          <span className="text-xs font-bold text-gray-400">SECTION SCORE</span>
-          <p className="text-xl font-black text-emerald-600">{s2Percent}%</p>
-        </div>
       </div>
 
       <div>

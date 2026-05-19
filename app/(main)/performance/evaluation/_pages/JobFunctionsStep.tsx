@@ -25,10 +25,6 @@ export default function JobFunctionsStep({
           <Briefcase className="text-orange-500" />
           I: Job Description & Responsibilities
         </div>
-        <div className="text-right">
-          <span className="text-xs font-bold text-gray-400">SECTION SCORE</span>
-          <p className="text-xl font-black text-orange-500">{s1Percent}%</p>
-        </div>
       </div>
 
       {/* Directions */}
