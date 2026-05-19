@@ -63,33 +63,34 @@ export default function DesignationForm({
   useEffect(() => {
     const fetchDeps = async () => {
       const res = await getAllDepartment();
-      if (res.success) setDepartments(res.data);
+      if (res.success) {
+        setDepartments(res.data);
+
+        if (initialData) {
+          setFormData({
+            code: initialData.code ?? "",
+            name: initialData.name ?? "",
+            shortName: initialData.shortName ?? "",
+            responsibility1: initialData.responsibility1 ?? "",
+            responsibility2: initialData.responsibility2 ?? "",
+            responsibility3: initialData.responsibility3 ?? "",
+            responsibility4: initialData.responsibility4 ?? "",
+            responsibility5: initialData.responsibility5 ?? "",
+            responsibility6: initialData.responsibility6 ?? "",
+            responsibility7: initialData.responsibility7 ?? "",
+            responsibility8: initialData.responsibility8 ?? "",
+            responsibility9: initialData.responsibility9 ?? "",
+            responsibility10: initialData.responsibility10 ?? "",
+            responsibility11: initialData.responsibility11 ?? "",
+            responsibility12: initialData.responsibility12 ?? "",
+            departmentId:
+              (initialData.departmentId as any)?._id?.toString() ?? "",
+            status: initialData.status ?? true,
+          });
+        }
+      }
     };
     fetchDeps();
-  }, []);
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        code: initialData.code ?? "",
-        name: initialData.name ?? "",
-        shortName: initialData.shortName ?? "",
-        responsibility1: initialData.responsibility1 ?? "",
-        responsibility2: initialData.responsibility2 ?? "",
-        responsibility3: initialData.responsibility3 ?? "",
-        responsibility4: initialData.responsibility4 ?? "",
-        responsibility5: initialData.responsibility5 ?? "",
-        responsibility6: initialData.responsibility6 ?? "",
-        responsibility7: initialData.responsibility7 ?? "",
-        responsibility8: initialData.responsibility8 ?? "",
-        responsibility9: initialData.responsibility9 ?? "",
-        responsibility10: initialData.responsibility10 ?? "",
-        responsibility11: initialData.responsibility11 ?? "",
-        responsibility12: initialData.responsibility12 ?? "",
-        departmentId: initialData.departmentId ?? "",
-        status: initialData.status ?? true,
-      });
-    }
   }, [initialData]);
 
   const handleInputChange = (field: string, value: any) => {
@@ -147,19 +148,23 @@ export default function DesignationForm({
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
       />
 
-      <SearchSelect
-        label="Department"
-        options={departments.map((dep) => ({
-          value: dep._id,
-          label: dep.name,
-          description: dep.code,
-        }))}
-        value={formData.departmentId}
-        onChange={(val) =>
-          setFormData({ ...formData, departmentId: val || "" })
-        }
-        placeholder="Select Department"
-      />
+      {departments.length > 0 ? (
+        <SearchSelect
+          label="Department"
+          options={departments.map((dep) => ({
+            value: dep._id.toString(),
+            label: dep.name,
+            description: dep.code,
+          }))}
+          value={formData.departmentId}
+          onChange={(val) =>
+            setFormData({ ...formData, departmentId: val || "" })
+          }
+          placeholder="Select Department"
+        />
+      ) : (
+        <p className="text-sm text-gray-400">Loading departments...</p>
+      )}
 
       <InputField
         label="Short Name"
