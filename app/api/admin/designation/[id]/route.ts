@@ -29,3 +29,14 @@ export async function PUT(
     return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    await dbConnect();
+
+    await Designation.findOneAndDelete(params);
+  } catch {}
+}
