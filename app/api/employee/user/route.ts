@@ -72,7 +72,6 @@ export async function POST(req: Request) {
         email,
         password,
         name,
-        role: role || "user",
 
         data: {
           firstName,
@@ -83,6 +82,8 @@ export async function POST(req: Request) {
           username,
           departmentId: new mongoose.Types.ObjectId(body.departmentId),
           designationId: new mongoose.Types.ObjectId(body.designationId),
+          companyId: new mongoose.Types.ObjectId(body.companyId),
+          roleId: new mongoose.Types.ObjectId(body.roleId),
         },
       },
       headers: await headers(),

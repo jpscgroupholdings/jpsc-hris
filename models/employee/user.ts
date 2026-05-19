@@ -39,7 +39,12 @@ const UserSchema = new Schema<User>(
     lastName: { type: String, required: false, trim: true },
     name: { type: String, required: false, trim: true },
     birthDate: { type: Date, required: false },
-    mobileNumber: { type: String, required: false, trim: true },
+    mobileNumber: {
+      type: String,
+      required: false,
+      trim: true,
+      default: "09XXXXXXX",
+    },
     username: { type: String, required: false, trim: true, unique: true },
     departmentId: {
       type: Schema.Types.ObjectId,

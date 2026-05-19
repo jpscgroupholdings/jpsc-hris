@@ -18,7 +18,8 @@ const DigitalWalletSchema = new Schema<DigitalWallet>({
     unique: false,
     required: true,
     default: "0000000000000000",
-    length: 16,
+    minlength: 16,
+    maxlength: 16,
   },
   balance: {
     type: Number,
