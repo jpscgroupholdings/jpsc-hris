@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "A centralized, digital hub for managing employee data, automating routine HR tasks, and supporting compliance. Its primary purpose is to streamline core administrative processes—such as payroll, benefits, and time tracking—improving efficiency and providing data-driven insights for strategic decision-making.",
   icons: {
-    icon: "/images/jpsc_logo.png",
+    icon: "/images/jpgroup_icon.png",
   },
   keywords: ["hris", "jpsc"],
 };
